@@ -1,0 +1,54 @@
+.dashboard #content {
+    width: unset;
+}
+
+td, th {
+    border: none;
+}
+
+.toggle-nav-sidebar {
+    border: none;
+    position: absolute;
+}
+
+#nav-sidebar {
+    border: none;
+    background-color: var(--primary);
+}
+
+.main.shifted > #nav-sidebar {
+    left: 0
+}
+
+.module {
+    margin-bottom: 0;
+}
+
+tr:nth-child(odd), .row-form-errors {
+    background-color: var(--primary);
+    color: white;
+}
+
+tr:nth-child(even), tr:nth-child(even) .errorlist, tr:nth-child(odd) + .row-form-errors, tr:nth-child(odd) + .row-form-errors .errorlist {
+    background-color: var(--primary);
+    color: white;
+}
+
+#nav-sidebar tbody{
+    color: white;
+   background-color: var(--primary);
+}
+
+a:link, a:visited {
+    color: var(--white);
+}
+
+.module caption{
+    background-color: #3c5dff;
+    font-weight: bold;
+}
+
+#nav-sidebar .current-model{
+     background-color: var(--primary-light);
+
+}

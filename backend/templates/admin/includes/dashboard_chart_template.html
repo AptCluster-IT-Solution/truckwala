@@ -1,0 +1,32 @@
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1"></script>
+
+<div class="row">
+    <div class="col-12">
+        <h3 class="mt-3">{{ title }}</h3>
+        <canvas id="{{ title.split|join:'-' }}-chart" height="80"></canvas>
+    </div>
+</div>
+
+<script>
+    new Chart(document.getElementById("{{ title.split|join:'-' }}-chart").getContext("2d"), {
+        type: "line",
+        data: {
+            labels: {{weekdays | safe}},
+            datasets: [
+                {
+                    label: "Total Count",
+                    backgroundColor: "#2d2b55",
+                    borderColor: "#417690",
+                    data: [21000, 26900, 28700, 22000, 27300, 29200, 25000]
+                }
+            ]
+        },
+        options: {
+            title: {
+                text: "{{ title }}",
+                display: true
+            }
+        }
+    })
+
+</script>

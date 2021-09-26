@@ -1,0 +1,44 @@
+version: "3"
+
+services:
+  db:
+    image: postgres
+    env_file:
+      - ./db/.env
+    volumes:
+      - ./db/data:/var/lib/postgres/data
+
+
+  backend:
+    image: 869809771819.dkr.ecr.ap-south-1.amazonaws.com/truck-booking
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: poetry run python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./backend:/usr/src/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    env_file:
+      - ./backend/.env
+    environment:
+      - DEBUG=1
+
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./web/nginx-proxy.conf:/etc/nginx/conf.d/default.conf
+      - ./backend/staticfiles:/staticfiles
+      - ./backend/mediafiles:/mediafiles
+      # - ./client/dist:/var/www/client # maps frontend build inside web
+    depends_on:
+      - backend
+
+volumes:
+  db:
