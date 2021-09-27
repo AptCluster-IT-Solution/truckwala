@@ -1,3 +1,5 @@
+import json
+
 from main.helpers.rds_secrets import get_rds_secret
 
 CORS_ALLOWED_ORIGINS = [
@@ -9,9 +11,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:1996",
 ]
 
-rds_details = get_rds_secret()
-# {"username": "postgres", "password": "G5bUC4Egp3nQRp", "engine": "postgres",
-#  "host": "truckbooking.cfqufhugggtn.ap-south-1.rds.amazonaws.com", "port": 5432, "dbInstanceIdentifier": "truckbooking"}
+rds_details: dict = json.loads(get_rds_secret())
 
 DATABASES = {
     "default": {
