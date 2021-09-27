@@ -36,7 +36,7 @@ router.register("vehicles", VehicleModelViewSet)
 # -------------- vehicles app view sets --------------
 
 # -------------- bookings app view sets --------------
-router.register("bookings", VehicleModelViewSet)
+# router.register("bookings", BookingModelViewSet)
 router.register("customer-ads", CustomerAdModelViewSet)
 router.register("driver-ads", DriverAdModelViewSet)
 # -------------- bookings app view sets --------------
