@@ -16,7 +16,7 @@ rds_details: dict = json.loads(get_rds_secret())
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": rds_details.get("dbInstanceIdentifier"),
+        "NAME": "postgres",
         "USER": rds_details.get("username"),
         "PASSWORD": rds_details.get("password"),
         "HOST": rds_details.get("host"),
