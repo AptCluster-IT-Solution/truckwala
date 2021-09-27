@@ -5,10 +5,11 @@
 import boto3
 import base64
 from botocore.exceptions import ClientError
+from decouple import config
 
 
 def get_rds_secret():
-    secret_name = "stage/truckbooking/postgres"
+    secret_name = "stagenew/truckbooking/postgres"
     region_name = "ap-south-1"
 
     # Create a Secrets Manager client
@@ -16,8 +17,8 @@ def get_rds_secret():
     client = session.client(
         service_name='secretsmanager',
         region_name=region_name,
-        aws_access_key_id="AKIA4VBFT2UV5B6YCUOO",
-        aws_secret_access_key="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"
+        aws_access_key_id=config("aws_access_key_id"),
+        aws_secret_access_key=config("aws_secret_access_key")
     )
 
     # In this sample we only handle the specific exceptions for the 'GetSecretValue' API.
