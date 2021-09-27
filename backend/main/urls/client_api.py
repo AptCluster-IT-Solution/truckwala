@@ -6,7 +6,7 @@ from rest_framework.routers import DefaultRouter
 
 from bookings.models import CustomerAd
 from bookings.views import CustomerAdModelViewSet, DriverAdModelViewSet
-from vehicles.views import VehicleModelViewSet
+from vehicles.views import VehicleModelViewSet, VehicleCategoryModelViewSet
 from users.views import (
     RegisterAPI,
     UserViewset,
@@ -33,6 +33,7 @@ router.register("customers", CustomerViewset)
 
 # -------------- vehicles app view sets --------------
 router.register("vehicles", VehicleModelViewSet)
+router.register("vehicle-categories", VehicleCategoryModelViewSet)
 # -------------- vehicles app view sets --------------
 
 # -------------- bookings app view sets --------------
