@@ -1,9 +1,11 @@
 from rest_framework import viewsets
-from rest_framework.decorators import action
+from rest_framework.decorators import action, parser_classes
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
 from bookings.models import CustomerAd, DriverAd, Booking
-from bookings.serializers import CustomerAdSerializer, DriverAdSerializer
+from bookings.serializers import CustomerAdSerializer, DriverAdSerializer, CustomerAdBidSerializer, \
+    DriverAdBidSerializer
 from main.custom.permissions import (
     IsPosterOrReadOnly,
     IsCustomer,
@@ -19,22 +21,21 @@ class CustomerAdModelViewSet(viewsets.ModelViewSet):
     action_permissions = {
         IsPosterOrReadOnly: ["update", "partial_update", "destroy", "list", "retrieve"],
         IsCustomer: ["create"],
-        IsDriver: ["accept"],
+        IsDriver: ["bid"],
     }
 
     def perform_create(self, serializer):
         serializer.save(poster=self.request.user.customer_profile)
 
     @action(detail=True, methods=["patch"])
-    def accept(self, request, pk=None):
+    def bid(self, request, pk=None):
         ad = self.get_object()
-        ad.acceptor = request.user.driver_profile
-        ad.save(update_fields=["acceptor"])
-
-        ad.booking.status = Booking.ACCEPTED
-        ad.booking.save(update_fields=["status"])
-
-        return Response({"acceptor": "ad accepted"})
+        serializer = CustomerAdBidSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(ad_id=ad.id, bidder_id=request.user.driver_profile.id)
+            return Response(serializer.data)
+        else:
+            raise ValidationError(serializer.errors)
 
 
 class DriverAdModelViewSet(viewsets.ModelViewSet):
@@ -44,19 +45,18 @@ class DriverAdModelViewSet(viewsets.ModelViewSet):
     action_permissions = {
         IsDriver: ["create"],
         IsPosterOrReadOnly: ["update", "partial_update", "destroy", "list", "retrieve"],
-        IsCustomer: ["accept"],
+        IsCustomer: ["bid"],
     }
 
     def perform_create(self, serializer):
         serializer.save(poster=self.request.user.driver_profile)
 
     @action(detail=True, methods=["patch"])
-    def accept(self, request, pk=None):
+    def bid(self, request, pk=None):
         ad = self.get_object()
-        ad.acceptor = request.user.customer_profile
-        ad.save(update_fields=["acceptor"])
-
-        ad.booking.status = Booking.ACCEPTED
-        ad.booking.save(update_fields=["status"])
-
-        return Response({"acceptor": "ad accepted"})
+        serializer = DriverAdBidSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(ad_id=ad.id, bidder_id=request.user.customer_profile.id)
+            return Response(serializer.data)
+        else:
+            raise ValidationError(serializer.errors)
