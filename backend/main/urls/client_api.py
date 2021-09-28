@@ -6,6 +6,7 @@ from rest_framework.routers import DefaultRouter
 
 from bookings.models import CustomerAd
 from bookings.views import CustomerAdModelViewSet, DriverAdModelViewSet
+from notifications.views import NotificationModelViewSet
 from vehicles.views import VehicleModelViewSet, VehicleCategoryModelViewSet
 from users.views import (
     RegisterAPI,
@@ -41,6 +42,10 @@ router.register("vehicle-categories", VehicleCategoryModelViewSet)
 router.register("customer-ads", CustomerAdModelViewSet)
 router.register("driver-ads", DriverAdModelViewSet)
 # -------------- bookings app view sets --------------
+
+# -------------- notifications app view sets --------------
+router.register("notifications", NotificationModelViewSet, basename="Notification")
+# -------------- notifications app view sets --------------
 
 urlpatterns += router.urls
 
