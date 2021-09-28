@@ -19,7 +19,7 @@ class CustomerAdModelViewSet(viewsets.ModelViewSet):
     serializer_class = CustomerAdSerializer
     permission_classes = [ActionBasedPermission]
     action_permissions = {
-        IsPosterOrReadOnly: ["update", "partial_update", "destroy", "list", "retrieve"],
+        IsPosterOrReadOnly: ["update", "partial_update", "destroy", "list", "retrieve", "me"],
         IsCustomer: ["create"],
         IsDriver: ["bid"],
     }
@@ -27,6 +27,19 @@ class CustomerAdModelViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(poster=self.request.user.customer_profile)
+
+
+    @action(detail=False, methods=["GET"])
+    def me(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset()).filter(poster__user=self.request.user)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
     @action(detail=True, methods=["patch"])
     def bid(self, request, pk=None):
@@ -44,9 +57,21 @@ class CustomerAdBidModelViewSet(viewsets.ModelViewSet):
     serializer_class = CustomerAdBidSerializer
     permission_classes = [ActionBasedPermission]
     action_permissions = {
-        IsPosterOrReadOnly: ["accept", "reject", "update", "partial_update", "destroy", "list", "retrieve"],
+        IsPosterOrReadOnly: ["accept", "reject", "update", "partial_update", "destroy", "list", "retrieve", "me"],
         IsDriver: ["create"],
     }
+
+    @action(detail=False, methods=["GET"])
+    def me(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset()).filter(bidder__user=self.request.user)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
     @action(detail=True, methods=['PATCH'])
     def accept(self, request, pk=None):
@@ -78,13 +103,25 @@ class DriverAdModelViewSet(viewsets.ModelViewSet):
     permission_classes = [ActionBasedPermission]
     action_permissions = {
         IsDriver: ["create"],
-        IsPosterOrReadOnly: ["update", "partial_update", "destroy", "list", "retrieve"],
+        IsPosterOrReadOnly: ["update", "partial_update", "destroy", "list", "retrieve", "me"],
         IsCustomer: ["bid"],
     }
     filterset_fields = ['start_place', 'end_place', 'vehicle__category']
 
     def perform_create(self, serializer):
         serializer.save(poster=self.request.user.driver_profile)
+
+    @action(detail=False, methods=["GET"])
+    def me(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset()).filter(poster__user=self.request.user)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
     @action(detail=True, methods=["patch"])
     def bid(self, request, pk=None):
@@ -102,9 +139,21 @@ class DriverAdBidModelViewSet(viewsets.ModelViewSet):
     serializer_class = DriverAdBidSerializer
     permission_classes = [ActionBasedPermission]
     action_permissions = {
-        IsPosterOrReadOnly: ["accept", "reject", "update", "partial_update", "destroy", "list", "retrieve"],
+        IsPosterOrReadOnly: ["accept", "reject", "update", "partial_update", "destroy", "list", "retrieve", "me"],
         IsCustomer: ["create"],
     }
+
+    @action(detail=False, methods=["GET"])
+    def me(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset()).filter(bidder__user=self.request.user)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
     @action(detail=True, methods=['PATCH'])
     def accept(self, request, pk=None):
