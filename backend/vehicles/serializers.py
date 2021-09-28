@@ -15,6 +15,7 @@ class ImageUrlField(serializers.RelatedField):  # noqa
 
 class VehicleSerializer(serializers.ModelSerializer):
     driver = serializers.StringRelatedField(required=False)
+    category = serializers.StringRelatedField(required=False)
     image_set = serializers.ListField(write_only=True)
     images = ImageUrlField(many=True, read_only=True)
     document_set = serializers.ListField(write_only=True)

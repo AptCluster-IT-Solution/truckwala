@@ -71,6 +71,9 @@ class Driver(models.Model):
     is_verified = models.BooleanField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return self.user.full_name
+
 
 class Customer(models.Model):
     user: User = models.OneToOneField(
@@ -78,6 +81,9 @@ class Customer(models.Model):
     )
     is_verified = models.BooleanField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.user.full_name
 
 
 def get_user_document_path(_, filename):
