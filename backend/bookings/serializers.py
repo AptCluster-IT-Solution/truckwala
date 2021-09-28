@@ -5,7 +5,7 @@ from users.serializers import UserSerializer, CustomerSerializer, DriverSerializ
 
 
 class CustomerAdSerializer(serializers.ModelSerializer):
-    poster = UserSerializer(source="poster.user")
+    poster = UserSerializer(source="poster.user", required=False)
     acceptor = serializers.StringRelatedField(required=False)
 
     class Meta:
