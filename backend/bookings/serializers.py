@@ -25,7 +25,7 @@ class CustomerAdBidSerializer(serializers.ModelSerializer):
 
 
 class DriverAdSerializer(serializers.ModelSerializer):
-    poster = UserSerializer(source="poster.user")
+    poster = UserSerializer(source="poster.user", required=False)
     acceptor = serializers.StringRelatedField(required=False)
 
     class Meta:

@@ -3,7 +3,7 @@ from django.dispatch import receiver
 from django.contrib.contenttypes.models import ContentType
 from fcm_django.models import FCMDevice
 
-from bookings.models import Booking, CustomerAd, DriverAd
+from bookings.models import Booking, CustomerAd, DriverAd, CustomerAdBid, DriverAdBid
 from notifications.models import Notification
 
 
@@ -16,6 +16,51 @@ def delete_notification_on_sender_delete(**kwargs):
     Notification.objects.filter(
         object_id=instance.pk, content_type=instance_ct.id
     ).delete()
+
+
+@receiver(post_save, sender=CustomerAdBid)
+@receiver(post_save, sender=DriverAdBid)
+def create_notification_on_bid(**kwargs):
+    instance = kwargs.get('instance')
+
+    if kwargs.get('created'):
+        Notification.objects.create(
+            notification_type=Notification.BID,
+            subject=f"{instance.bidder.user.full_name} has requested to accept your ad.",
+            message=f"{instance.bidder.user.full_name} has requested to accept your ad.",
+            entered_by=instance.bidder.user,
+            created_for=instance.ad.poster.user,
+            content_type=ContentType.objects.get_for_model(instance),
+            object_id=instance.pk,
+        )
+
+@receiver(post_save, sender=CustomerAd)
+def create_notification_on_bid(**kwargs):
+    instance = kwargs.get('instance')
+
+    if kwargs.get('created'):
+        Notification.objects.create(
+            notification_type=Notification.CUSTOMER_AD,
+            subject=f"{instance.poster.user.full_name} is looking for a transport",
+            message=f"{instance.poster.user.full_name} is looking for a transport",
+            entered_by=instance.poster.user,
+            content_type=ContentType.objects.get_for_model(instance),
+            object_id=instance.pk,
+        )
+
+@receiver(post_save, sender=DriverAd)
+def create_notification_on_bid(**kwargs):
+    instance = kwargs.get('instance')
+
+    if kwargs.get('created'):
+        Notification.objects.create(
+            notification_type=Notification.DRIVER_AD,
+            subject=f"{instance.poster.user.full_name} is looking for a transport",
+            message=f"{instance.poster.user.full_name} is looking for a transport",
+            entered_by=instance.poster.user,
+            content_type=ContentType.objects.get_for_model(instance),
+            object_id=instance.pk,
+        )
 
 
 @receiver(post_save, sender=Notification)

@@ -8,11 +8,15 @@ User = get_user_model()
 
 class Notification(models.Model):
     CUSTOMER_AD = "C"
+    DRIVER_AD = "D"
+    BID = "B"
     AD_ACCEPTED = "A"
     GLOBAL = "G"
     NOTIFICATION_TYPES = (
         (CUSTOMER_AD, "New Customer Ad"),
+        (DRIVER_AD, "New Driver Ad"),
         (AD_ACCEPTED, "Ad Accepted"),
+        (BID, "Bid Added"),
         (GLOBAL, "Global System-wide "),
     )
     notification_type = models.CharField(max_length=1, choices=NOTIFICATION_TYPES)
