@@ -8,7 +8,7 @@ from .models import User, Driver, Customer, DriverDocument, CustomerDocument
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ("id", "phone_number", "password", "gender", "date_of_birth", "email")
+        fields = ("id", "full_name", "phone_number", "password", "gender", "date_of_birth", "email")
         extra_kwargs = {"password": {"write_only": True}}
 
 

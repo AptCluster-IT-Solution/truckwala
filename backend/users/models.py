@@ -57,9 +57,12 @@ class User(AbstractUser):
 
     @transaction.atomic
     def save(self, *args, **kwargs):
-        self.first_name = self.first_name.capitalize()
-        self.last_name = self.last_name.capitalize()
-        self.full_name = f"{self.first_name} {self.last_name}"
+        if not self.full_name:
+            self.first_name = self.first_name.capitalize()
+            self.last_name = self.last_name.capitalize()
+            self.full_name = f"{self.first_name} {self.last_name}"
+        else:
+            self.full_name = self.full_name.capitalize()
 
         super(User, self).save(*args, **kwargs)
 

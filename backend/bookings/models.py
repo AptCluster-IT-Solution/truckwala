@@ -25,7 +25,10 @@ class Ad(models.Model):
 
 class CustomerAd(Ad):
     poster = models.ForeignKey(
-        Customer, on_delete=models.CASCADE, related_name="posted_ads", blank=True
+        Customer,
+        on_delete=models.CASCADE,
+        related_name="posted_ads",
+        blank=True
     )
     acceptor = models.ForeignKey(
         Driver,
@@ -39,16 +42,46 @@ class CustomerAd(Ad):
         return f"{str(self.poster)} - {str(self.created)}"
 
 
+class CustomerAdBid(models.Model):
+    ad = models.ForeignKey(CustomerAd, related_name='bids', on_delete=models.CASCADE)
+    bidder = models.ForeignKey(
+        Driver,
+        on_delete=models.CASCADE,
+        related_name="bid_ads",
+        blank=True,
+    )
+    cost = models.PositiveIntegerField(default=0)
+    description = models.TextField(max_length=1000, default="")
+
+
 class DriverAd(Ad):
     poster = models.ForeignKey(
-        Driver, on_delete=models.CASCADE, related_name="posted_ads"
+        Driver,
+        on_delete=models.CASCADE,
+        related_name="posted_ads"
     )
     acceptor = models.ForeignKey(
-        Customer, on_delete=models.CASCADE, related_name="accepted_ads", blank=True, null=True,
+        Customer,
+        on_delete=models.CASCADE,
+        related_name="accepted_ads",
+        blank=True,
+        null=True,
     )
 
     def __str__(self):
         return f"{str(self.poster)} - {str(self.created)}"
+
+
+class DriverAdBid(models.Model):
+    ad = models.ForeignKey(DriverAd, related_name='bids', on_delete=models.CASCADE)
+    bidder = models.ForeignKey(
+        Customer,
+        on_delete=models.CASCADE,
+        related_name="bid_ads",
+        blank=True,
+    )
+    load = models.PositiveIntegerField(default=0)
+    description = models.TextField(max_length=1000, default="")
 
 
 class Booking(models.Model):
@@ -78,3 +111,8 @@ class Booking(models.Model):
 
     def __str__(self):
         return f"{str(self.ad)} - {str(self.created)}"
+
+
+class Transaction(models.Model):
+    booking = models.ForeignKey(Booking, related_name='transactions', on_delete=models.CASCADE)
+    amount = models.PositiveIntegerField()
