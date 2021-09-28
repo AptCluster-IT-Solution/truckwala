@@ -44,7 +44,7 @@ class DriverAd(Ad):
         Driver, on_delete=models.CASCADE, related_name="posted_ads"
     )
     acceptor = models.ForeignKey(
-        Customer, on_delete=models.CASCADE, related_name="accepted_ads"
+        Customer, on_delete=models.CASCADE, related_name="accepted_ads", blank=True, null=True,
     )
 
     def __str__(self):

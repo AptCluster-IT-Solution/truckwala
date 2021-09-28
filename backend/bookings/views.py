@@ -48,7 +48,7 @@ class DriverAdModelViewSet(viewsets.ModelViewSet):
     }
 
     def perform_create(self, serializer):
-        serializer.save(poster=self.request.user.customer_profile)
+        serializer.save(poster=self.request.user.driver_profile)
 
     @action(detail=True, methods=["patch"])
     def accept(self, request, pk=None):
