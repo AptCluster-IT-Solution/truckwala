@@ -34,9 +34,9 @@ class DriverAdSerializer(serializers.ModelSerializer):
 
 
 class DriverAdBidSerializer(serializers.ModelSerializer):
-    ad = DriverAdSerializer()
+    ad = DriverAdSerializer(required=False)
     ad_id = serializers.CharField(write_only=True, required=False)
-    bidder = UserSerializer(source="bidder.user")
+    bidder = UserSerializer(source="bidder.user", required=False)
     bidder_id = serializers.CharField(write_only=True, required=False)
 
     class Meta:

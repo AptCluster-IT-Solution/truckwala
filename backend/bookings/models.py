@@ -3,6 +3,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
 from users.models import Customer, Driver
+from vehicles.models import Vehicle
 
 
 class Ad(models.Model):
@@ -66,6 +67,12 @@ class DriverAd(Ad):
         on_delete=models.CASCADE,
         related_name="accepted_ads",
         blank=True,
+        null=True,
+    )
+    vehicle = models.ForeignKey(
+        Vehicle,
+        on_delete=models.CASCADE,
+        related_name="ads",
         null=True,
     )
 

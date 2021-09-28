@@ -168,6 +168,17 @@ python-versions = ">=3.6"
 Django = ">=2.2"
 
 [[package]]
+name = "django-filter"
+version = "21.1"
+description = "Django-filter is a reusable Django application for allowing users to filter querysets dynamically."
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+Django = ">=2.2"
+
+[[package]]
 name = "django-hosts"
 version = "4.0"
 description = "Dynamic and static host resolving for Django. Maps hostnames to URLconfs."
@@ -728,7 +739,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "7fcad46df3a7ac2feb4d4d54c61cfa351795d37e996e32c16027fc276726a381"
+content-hash = "e53586dbefce285e6424c6f3c8c6dd3a48d746aee0b7f79e700ae14bc3e47dc4"
 
 [metadata.files]
 asgiref = [
@@ -837,6 +848,10 @@ django = [
 django-cors-headers = [
     {file = "django-cors-headers-3.8.0.tar.gz", hash = "sha256:4b8e13bf8d3df50ac4b986bd87085c3073dd56402ede109222ea34a774f9ec1b"},
     {file = "django_cors_headers-3.8.0-py3-none-any.whl", hash = "sha256:425c20ceffa42b9ac11b02611eece4ae6c5fef2ff0f039c14c1df20e00c80df8"},
+]
+django-filter = [
+    {file = "django-filter-21.1.tar.gz", hash = "sha256:632a251fa8f1aadb4b8cceff932bb52fe2f826dd7dfe7f3eac40e5c463d6836e"},
+    {file = "django_filter-21.1-py3-none-any.whl", hash = "sha256:f4a6737a30104c98d2e2a5fb93043f36dd7978e0c7ddc92f5998e85433ea5063"},
 ]
 django-hosts = [
     {file = "django-hosts-4.0.tar.gz", hash = "sha256:59a870d453f113c889a7888bae5408888870350e83e362740f382dad569c2281"},
