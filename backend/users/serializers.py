@@ -55,12 +55,16 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class DriverSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
     class Meta:
         model = Driver
         fields = "__all__"
 
 
 class CustomerSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
     class Meta:
         model = Customer
         fields = "__all__"

@@ -1,10 +1,11 @@
 from rest_framework import serializers
 
 from bookings.models import CustomerAd, DriverAd
+from users.serializers import UserSerializer, CustomerSerializer, DriverSerializer
 
 
 class CustomerAdSerializer(serializers.ModelSerializer):
-    poster = serializers.StringRelatedField(required=False)
+    poster = CustomerSerializer()
     acceptor = serializers.StringRelatedField(required=False)
 
     class Meta:
@@ -13,7 +14,7 @@ class CustomerAdSerializer(serializers.ModelSerializer):
 
 
 class DriverAdSerializer(serializers.ModelSerializer):
-    poster = serializers.StringRelatedField(required=False)
+    poster = DriverSerializer()
     acceptor = serializers.StringRelatedField(required=False)
 
     class Meta:
