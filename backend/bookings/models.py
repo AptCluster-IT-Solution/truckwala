@@ -52,6 +52,7 @@ class CustomerAdBid(models.Model):
     )
     cost = models.PositiveIntegerField(default=0)
     description = models.TextField(max_length=1000, default="")
+    is_accepted = models.BooleanField(blank=True, null=True)
 
 
 class DriverAd(Ad):
@@ -82,6 +83,7 @@ class DriverAdBid(models.Model):
     )
     load = models.PositiveIntegerField(default=0)
     description = models.TextField(max_length=1000, default="")
+    is_accepted = models.BooleanField(blank=True, null=True)
 
 
 class Booking(models.Model):

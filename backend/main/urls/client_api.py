@@ -5,7 +5,8 @@ from rest_framework import permissions
 from rest_framework.routers import DefaultRouter
 
 from bookings.models import CustomerAd
-from bookings.views import CustomerAdModelViewSet, DriverAdModelViewSet
+from bookings.views import CustomerAdModelViewSet, DriverAdModelViewSet, CustomerAdBidModelViewSet, \
+    DriverAdBidModelViewSet
 from notifications.views import NotificationModelViewSet
 from vehicles.views import VehicleModelViewSet, VehicleCategoryModelViewSet
 from users.views import (
@@ -40,7 +41,9 @@ router.register("vehicle-categories", VehicleCategoryModelViewSet)
 # -------------- bookings app view sets --------------
 # router.register("bookings", BookingModelViewSet)
 router.register("customer-ads", CustomerAdModelViewSet)
+router.register("customer-ad-bids", CustomerAdBidModelViewSet)
 router.register("driver-ads", DriverAdModelViewSet)
+router.register("driver-ad-bids", DriverAdBidModelViewSet)
 # -------------- bookings app view sets --------------
 
 # -------------- notifications app view sets --------------

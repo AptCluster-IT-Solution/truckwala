@@ -13,6 +13,12 @@ class ActionBasedPermission(AllowAny):
                 return klass().has_permission(request, view)
         return False
 
+    def has_object_permission(self, request, view, obj):
+        for klass, actions in getattr(view, "action_permissions", {}).items():
+            if view.action in actions:
+                return klass().has_object_permission(request, view, obj)
+        return False
+
 
 class IsCustomer(permissions.BasePermission):
     """
@@ -55,10 +61,17 @@ class IsPosterOrReadOnly(permissions.BasePermission):
     """
 
     def has_object_permission(self, request, view, obj):
+        print("i am here")
         # Read permissions are allowed to any request,
         # so we'll always allow GET, HEAD or OPTIONS requests.
         if request.method in permissions.SAFE_METHODS:
             return True
 
         # Instance must have an attribute named `owner`.
-        return obj.poster == request.user
+        if hasattr(obj, 'poster'):
+            print("from here")
+            return obj.poster == request.user
+        elif hasattr(obj, 'ad') and hasattr(obj.ad, "poster"):
+            print("or here")
+            return obj.ad.poster == request.user
+        return False
