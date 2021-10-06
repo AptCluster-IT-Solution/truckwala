@@ -91,6 +91,7 @@ class DriversListJson(StaffUserRequiredMixin, BaseDatatableView):
     columns = ['id', 'full_name', 'phone_number', 'email', 'date_joined']
 
     def filter_queryset(self, qs):
+        qs = qs.filter(is_verified=True)
         search = self.request.GET.get('search[value]', None)
         if search:
             qs = qs.filter(Q(user__full_name__istartswith=search) |
@@ -140,6 +141,7 @@ class CustomersListJson(StaffUserRequiredMixin, BaseDatatableView):
     columns = ['id', 'full_name', 'phone_number', 'email', 'date_joined']
 
     def filter_queryset(self, qs):
+        qs = qs.filter(is_verified=True)
         search = self.request.GET.get('search[value]', None)
         if search:
             qs = qs.filter(Q(user__full_name__istartswith=search) |
