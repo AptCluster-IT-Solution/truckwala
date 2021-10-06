@@ -1,11 +1,10 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
-from main.admin import admin_site, admin_register
-from .models import User, Driver, Customer
+from .models import User, Driver, Customer, DriverDocument, CustomerDocument
 
 
-@admin_register(User)
+@admin.register(User)
 class UserAdmin(BaseUserAdmin):
     add_fieldsets = (
         (None, {"fields": ("phone_number", "password")}),
@@ -42,14 +41,7 @@ class UserAdmin(BaseUserAdmin):
         (_("Important dates"), {"fields": ("last_login", "date_joined")}),
     )
 
-
-@admin_register(Customer)
-class CustomerAdmin(admin.ModelAdmin):
-    def has_add_permission(self, request):
-        return False
-
-
-@admin_register(Driver)
-class DriverAdmin(admin.ModelAdmin):
-    def has_add_permission(self, request):
-        return False
+admin.site.register(Customer)
+admin.site.register(Driver)
+admin.site.register(DriverDocument)
+admin.site.register(CustomerDocument)

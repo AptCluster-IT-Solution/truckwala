@@ -3,7 +3,6 @@ from django.urls import path
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 
-from main.admin import admin_site
 import users.views as users_views
 import admin_panel.views as admin_views
 
@@ -34,5 +33,5 @@ urlpatterns = [
     path('transactions_list_data/', admin_views.TransactionsListJson.as_view(), name="transactions_list_json"),
 
     path("", admin_views.Dashboard.as_view(), name="dashboard"),
-    path("", admin_site.urls),
+    path("", admin.site.urls),
 ]
