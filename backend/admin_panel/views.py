@@ -90,6 +90,14 @@ class DriversListJson(StaffUserRequiredMixin, BaseDatatableView):
     model = Driver
     columns = ['id', 'full_name', 'phone_number', 'email', 'date_joined']
 
+    def filter_queryset(self, qs):
+        search = self.request.GET.get('search[value]', None)
+        if search:
+            qs = qs.filter(Q(user__full_name__istartswith=search) |
+                           Q(user__phone_number__istartswith=search) |
+                           Q(user__email__istartswith=search))
+        return qs
+
     def prepare_results(self, qs):
         # prepare list with output column data
         # queryset is already paginated here
@@ -130,6 +138,14 @@ class CustomersPage(StaffUserRequiredMixin, TemplateView):
 class CustomersListJson(StaffUserRequiredMixin, BaseDatatableView):
     model = Customer
     columns = ['id', 'full_name', 'phone_number', 'email', 'date_joined']
+
+    def filter_queryset(self, qs):
+        search = self.request.GET.get('search[value]', None)
+        if search:
+            qs = qs.filter(Q(user__full_name__istartswith=search) |
+                           Q(user__phone_number__istartswith=search) |
+                           Q(user__email__istartswith=search))
+        return qs
 
     def prepare_results(self, qs):
         json_data = []
@@ -180,6 +196,17 @@ class DriverAdsListJson(StaffUserRequiredMixin, BaseDatatableView):
     columns = ['id', 'driver', 'customer', 'vehicle', 'start_place', 'end_place',
                'start_time', 'end_time', 'cost', 'quantity', 'created', ]
 
+    def filter_queryset(self, qs):
+        search = self.request.GET.get('search[value]', None)
+        if search:
+            qs = qs.filter(
+                Q(poster__user__full_name__istartswith=search) |
+                Q(vehicle__registration_number__istartswith=search) |
+                Q(start_place__istartswith=search) |
+                Q(end_place__istartswith=search)
+            )
+        return qs
+
     def prepare_results(self, qs):
         # prepare list with output column data
         # queryset is already paginated here
@@ -209,6 +236,16 @@ class CustomerAdsListJson(StaffUserRequiredMixin, BaseDatatableView):
     model = CustomerAd
     columns = ['id', 'customer', 'driver', 'start_place', 'end_place',
                'start_time', 'end_time', 'cost', 'quantity', 'created', ]
+
+    def filter_queryset(self, qs):
+        search = self.request.GET.get('search[value]', None)
+        if search:
+            qs = qs.filter(
+                Q(poster__user__full_name__istartswith=search) |
+                Q(start_place__istartswith=search) |
+                Q(end_place__istartswith=search)
+            )
+        return qs
 
     def prepare_results(self, qs):
         json_data = []
