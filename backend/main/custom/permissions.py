@@ -71,7 +71,6 @@ class IsPosterOrReadOnly(permissions.BasePermission):
     """
 
     def has_object_permission(self, request, view, obj):
-        print("i am here")
         # Read permissions are allowed to any request,
         # so we'll always allow GET, HEAD or OPTIONS requests.
         if request.method in permissions.SAFE_METHODS:
@@ -79,9 +78,7 @@ class IsPosterOrReadOnly(permissions.BasePermission):
 
         # Instance must have an attribute named `owner`.
         if hasattr(obj, 'poster'):
-            print("from here")
-            return obj.poster == request.user
+            return obj.poster.user == request.user
         elif hasattr(obj, 'ad') and hasattr(obj.ad, "poster"):
-            print("or here")
-            return obj.ad.poster == request.user
+            return obj.ad.poster.user == request.user
         return False
