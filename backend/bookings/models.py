@@ -51,6 +51,12 @@ class CustomerAdBid(models.Model):
         related_name="bid_ads",
         blank=True,
     )
+    vehicle = models.ForeignKey(
+        Vehicle,
+        on_delete=models.CASCADE,
+        related_name="bid_ads",
+        blank=True,
+    )
     cost = models.PositiveIntegerField(default=0)
     description = models.TextField(max_length=1000, default="")
     is_accepted = models.BooleanField(blank=True, null=True)
@@ -97,8 +103,15 @@ class Booking(models.Model):
     customer_ad = models.OneToOneField(
         CustomerAd, on_delete=models.CASCADE, blank=True, null=True
     )
+    driver_bid = models.OneToOneField(
+        DriverAdBid, on_delete=models.CASCADE, blank=True, null=True
+    )
+
     driver_ad = models.OneToOneField(
         DriverAd, on_delete=models.CASCADE, blank=True, null=True
+    )
+    customer_bid = models.OneToOneField(
+        CustomerAdBid, on_delete=models.CASCADE, blank=True, null=True
     )
 
     PENDING = "P"

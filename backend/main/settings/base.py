@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "vehicles.apps.VehicleConfig",
     "notifications.apps.NotificationConfig",
     "bookings.apps.BookingConfig",
+    "admin_panel",
 ]
 
 MIDDLEWARE = [
@@ -154,3 +155,7 @@ MEDIA_ROOT = "mediafiles"
 
 # fcm django config
 FIREBASE_APP = initialize_app()
+
+LOGIN_URL = 'admin:login'
+LOGIN_REDIRECT_URL = 'dashboard'
+LOGOUT_REDIRECT_URL = 'admin:login'

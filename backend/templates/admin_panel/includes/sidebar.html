@@ -1,0 +1,109 @@
+{% load static %}
+<div id="sidebar" class="active">
+    <div class="sidebar-wrapper active">
+        <div class="sidebar-header">
+            <div class="d-flex justify-content-between">
+                <div class="logo">
+                    <a href="{% url 'dashboard' %}"><img src="{% static 'images/logo/logo.png' %}" alt="Logo"
+                                                         srcset=""></a>
+                </div>
+                <div class="toggler">
+                    <a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="sidebar-menu">
+            <ul class="menu">
+                <li class="sidebar-title">Menu</li>
+
+                <li class="sidebar-item {% if request.path == "/" %}active{% endif %} ">
+                    <a href="{% url 'dashboard' %}" class='sidebar-link'>
+                        <i class="bi bi-grid-fill"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+
+                {% url 'drivers_page' as drivers_page_url %}
+                {% url 'customers_page' as customers_page_url %}
+                <li class="sidebar-item has-sub {% if request.path == drivers_page_url or request.path == customers_page_url %}active{% endif %}">
+                    <a href="#" class='sidebar-link'>
+                        <i class="bi bi-stack"></i>
+                        <span>Users</span>
+                    </a>
+                    <ul class="submenu {% if request.path == drivers_page_url or request.path == customers_page_url %}active{% endif %}">
+                        <li class="submenu-item {% if request.path == drivers_page_url %}active{% endif %}">
+                            <a href="{{ drivers_page_url }}">
+                                <i class="bi bi-stack"></i>
+                                <span>Drivers</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item {% if request.path == customers_page_url %}active{% endif %}">
+                            <a href="{{ customers_page_url }}">
+                                <i class="bi bi-stack"></i>
+                                <span>Customers</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                {% url 'vehicles_page' as vehicles_page_url %}
+                <li class="sidebar-item {% if request.path == vehicles_page_url %}active{% endif %} ">
+                    <a href="{{ vehicles_page_url }}" class='sidebar-link'>
+                        <i class="bi bi-grid-fill"></i>
+                        <span>Vehicles</span>
+                    </a>
+                </li>
+
+
+                {% url 'driver_ads_page' as driver_ads_page_url %}
+                {% url 'customer_ads_page' as customer_ads_page_url %}
+                <li class="sidebar-item has-sub {% if request.path == driver_ads_page_url or request.path == customer_ads_page_url %}active{% endif %}">
+                    <a href="#" class='sidebar-link'>
+                        <i class="bi bi-stack"></i>
+                        <span>Ads</span>
+                    </a>
+                    <ul class="submenu {% if request.path == driver_ads_page_url or request.path == customer_ads_page_url %}active{% endif %}">
+                        <li class="submenu-item {% if request.path == driver_ads_page_url %}active{% endif %}">
+                            <a href="{{ driver_ads_page_url }}">
+                                <i class="bi bi-stack"></i>
+                                <span>Driver Ads</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item {% if request.path == customer_ads_page_url %}active{% endif %}">
+                            <a href="{{ customer_ads_page_url }}">
+                                <i class="bi bi-stack"></i>
+                                <span>Customer Ads</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                {% url 'bookings_page' as bookings_page_url %}
+                <li class="sidebar-item {% if request.path == bookings_page_url %}active{% endif %} ">
+                    <a href="{{ bookings_page_url }}" class='sidebar-link'>
+                        <i class="bi bi-grid-fill"></i>
+                        <span>Bookings</span>
+                    </a>
+                </li>
+
+                {% url 'transactions_page' as transactions_page_url %}
+                <li class="sidebar-item {% if request.path == transactions_page_url %}active{% endif %} ">
+                    <a href="{{ transactions_page_url }}" class='sidebar-link'>
+                        <i class="bi bi-grid-fill"></i>
+                        <span>Transactions</span>
+                    </a>
+                </li>
+
+
+                <li class="sidebar-title">Settings</li>
+                <li class="sidebar-item ">
+                    <a href="{% url 'admin:logout' %}" class='sidebar-link'>
+                        <i class="bi bi-grid-fill"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
+    </div>
+</div>

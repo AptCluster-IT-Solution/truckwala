@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block extra_head %}
+    <script type="text/javascript">
+        let TRANSACTIONS_LIST_JSON_URL = '{% url "transactions_list_json" %}';
+        // translations for datatables
+
+        let dt_language = {
+            "emptyTable": "{% trans "No data available in table" %}",
+            "info": "{% trans "Showing _START_ to _END_ of _TOTAL_ entries" %}",
+            "infoEmpty": "{% trans "Showing 0 to 0 of 0 entries" %}",
+            "infoFiltered": "{% trans "(filtered from _MAX_ total entries)" %}",
+            "infoPostFix": "",
+            "thousands": ",",
+            "lengthMenu": "{% trans "Show _MENU_ entries" %}",
+            "loadingRecords": "{% trans "Loading..." %}",
+            "processing": "{% trans "Processing..." %}",
+            "search": "{% trans "Search:" %}",
+            "zeroRecords": "{% trans "No matching records found" %}",
+            "paginate": {
+                "first": "{% trans "First" %}",
+                "last": "{% trans "Last" %}",
+                "next": "{% trans "Next" %}",
+                "previous": "{% trans "Previous" %}"
+            },
+            "aria": {
+                "sortAscending": "{% trans ": activate to sort column ascending" %}",
+                "sortDescending": "{% trans ": activate to sort column descending" %}"
+            }
+        }
+        $(document).ready(function () {
+            $('#transaction-datatable').dataTable({
+                language: dt_language,  // global variable defined in html
+                order: [[0, "desc"]],
+                lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
+                columnDefs: [
+                    {
+                        data: 'id',
+                        orderable: true,
+                        searchable: true,
+                        className: "center",
+                    },
+                    {
+                        data: 'booking',
+                        orderable: true,
+                        searchable: true,
+                        className: "center",
+                    },
+                    {
+                        data: 'amount',
+                        orderable: true,
+                        searchable: true,
+                        className: "center"
+                    },
+                ],
+                searching: true,
+                processing: true,
+                serverSide: true,
+                stateSave: true,
+                ajax: TRANSACTIONS_LIST_JSON_URL
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div id="main">
+        <header class="mb-3">
+            <a href="#" class="burger-btn d-block d-xl-none">
+                <i class="bi bi-justify fs-3"></i>
+            </a>
+        </header>
+
+        <div class="page-heading">
+            <div class="page-title">
+                <div class="row">
+                    <div class="col-12 col-md-6 order-md-1 order-last">
+                        <h3>Transaction</h3>
+                        <p class="text-subtitle text-muted">Control the transaction data here.</p>
+                    </div>
+                    <div class="col-12 col-md-6 order-md-2 order-first">
+                        <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Transaction</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <section class="section">
+                <div class="card">
+                    <div class="card-header">
+                        Transaction List
+                    </div>
+                    <div class="card-body">
+                        <table id="transaction-datatable" class="datatable table table-striped">
+                            <thead>
+                            <th>{% trans "ID" %}</th>
+                            <th>{% trans "Booking" %}</th>
+                            <th>{% trans "Amount" %}</th>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+{% endblock %}

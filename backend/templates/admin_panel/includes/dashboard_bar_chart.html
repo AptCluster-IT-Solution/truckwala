@@ -1,0 +1,40 @@
+{% load static %}
+<script src="{% static 'vendors/apexcharts/apexcharts.js' %}"></script>
+
+<div class="card">
+    <div class="card-header">
+        <h4>{{ title }}</h4>
+    </div>
+    <div class="card-body">
+        <div id="{{ title.split|join:'-' }}-bar-chart"></div>
+    </div>
+</div>
+        <div id="chart-profile-visit"></div>
+
+<script>
+    new ApexCharts(document.getElementById("{{ title.split|join:'-' }}-bar-chart"), {
+        annotations: {
+            position: 'back'
+        },
+        dataLabels: {
+            enabled: false
+        },
+        chart: {
+            type: 'bar',
+            height: 300
+        },
+        fill: {
+            opacity: 1
+        },
+        plotOptions: {},
+        series: [{
+            name: 'sales',
+            data: {{ data | safe }}
+        }],
+        colors: '#435ebe',
+        xaxis: {
+            categories: {{ label | safe }}
+        }
+    }).render();
+
+</script>

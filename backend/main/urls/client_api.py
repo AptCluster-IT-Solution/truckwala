@@ -4,12 +4,18 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from rest_framework.routers import DefaultRouter
 
-from bookings.models import CustomerAd
-from bookings.views import CustomerAdModelViewSet, DriverAdModelViewSet, CustomerAdBidModelViewSet, \
-    DriverAdBidModelViewSet
-from notifications.views import NotificationModelViewSet
-from vehicles.views import VehicleModelViewSet, VehicleCategoryModelViewSet
-from users.views import (
+from bookings.api import (
+    CustomerAdModelViewSet,
+    DriverAdModelViewSet,
+    CustomerAdBidModelViewSet,
+    DriverAdBidModelViewSet,
+)
+from notifications.api import NotificationModelViewSet
+from vehicles.api import (
+    VehicleModelViewSet,
+    VehicleCategoryModelViewSet,
+)
+from users.api import (
     RegisterAPI,
     UserViewset,
     LoginAPI,
