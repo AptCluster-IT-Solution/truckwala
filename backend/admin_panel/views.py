@@ -73,6 +73,18 @@ class Dashboard(StaffUserRequiredMixin, TemplateView):
 class DriversPage(StaffUserRequiredMixin, TemplateView):
     template_name = 'admin_panel/drivers.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return {
+            **context,
+            "users": User.objects.prefetch_related(Prefetch("driver_profile", to_attr="profile"))
+                .filter(
+                driver_profile__isnull=False, driver_profile__is_verified__isnull=True
+            )
+                .distinct()
+                .annotate(user_type=Value("d", output_field=CharField()))
+        }
+
 
 class DriversListJson(StaffUserRequiredMixin, BaseDatatableView):
     model = Driver
@@ -98,6 +110,21 @@ class DriversListJson(StaffUserRequiredMixin, BaseDatatableView):
 
 class CustomersPage(StaffUserRequiredMixin, TemplateView):
     template_name = 'admin_panel/customers.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return {
+            **context,
+            "users": User.objects.prefetch_related(
+                Prefetch("customer_profile", to_attr="profile")
+            )
+                .filter(
+                customer_profile__isnull=False,
+                customer_profile__is_verified__isnull=True,
+            )
+                .distinct()
+                .annotate(user_type=Value("c", output_field=CharField()))
+        }
 
 
 class CustomersListJson(StaffUserRequiredMixin, BaseDatatableView):
@@ -207,19 +234,45 @@ class BookingsPage(StaffUserRequiredMixin, TemplateView):
 
 class BookingsListJson(StaffUserRequiredMixin, BaseDatatableView):
     model = Booking
-    columns = ['id', 'status', 'created', ]
+    columns = ['id', 'driver', 'customer', 'vehicle', 'vehicle_category', 'start_place', 'end_place', 'price', 'status',
+               'created', ]
 
-    # def filter_queryset(self, qs):
-    #     search = self.request.GET.get('search[value]', None)
-    #     if search:
-    #         qs = qs.filter(Q(driver__user__full_name__istartswith=search) | Q(registration_number__istartswith=search))
-    #     return qs
+    def filter_queryset(self, qs):
+        qs = qs.filter(Q(status__in=[Booking.ACCEPTED, Booking.DISPATCHED, Booking.FULFILLED]))
+        search = self.request.GET.get('search[value]', None)
+        if search:
+            qs = qs.filter(Q(driver__user__full_name__istartswith=search) | Q(registration_number__istartswith=search))
+        return qs
 
     def prepare_results(self, qs):
         json_data = []
         for item in qs:
+            details = {
+                'start_place': item.ad.start_place,
+                'end_place': item.ad.end_place,
+            }
+            if item.customer_ad:
+                details['driver'] = item.bid.bidder.user.full_name
+                details['customer'] = item.ad.poster.user.full_name
+                details['vehicle'] = item.bid.vehicle.registration_number
+                details['vehicle_category'] = item.bid.vehicle.category.title
+                details['price'] = item.bid.cost
+            else:
+                details['customer'] = item.bid.bidder.user.full_name
+                details['driver'] = item.ad.poster.user.full_name
+                details['vehicle'] = item.ad.vehicle.registration_number
+                details['vehicle_category'] = item.ad.vehicle.category.title
+                details['price'] = item.ad.cost
+
             json_data.append([
                 escape(item.id),
+                escape(details['driver']),
+                escape(details['customer']),
+                escape(details['vehicle']),
+                escape(details['vehicle_category']),
+                escape(details['start_place']),
+                escape(details['end_place']),
+                escape(details['price']),
                 escape(dict(Booking.STATUS_TYPES).get(item.status)),
                 escape(item.created.strftime("%Y-%m-%d %H:%M")),
             ])

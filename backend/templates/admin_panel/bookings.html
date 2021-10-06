@@ -42,16 +42,52 @@
                         className: "center",
                     },
                     {
-                        data: 'status',
+                        data: 'driver',
                         orderable: true,
                         searchable: true,
                         className: "center",
                     },
                     {
-                        data: 'created',
+                        data: 'customer',
                         orderable: true,
                         searchable: true,
-                        className: "center"
+                        className: "center",
+                    },
+                    {
+                        data: 'vehicle',
+                        orderable: true,
+                        searchable: true,
+                        className: "center",
+                    },
+                    {
+                        data: 'vehicle_category',
+                        orderable: true,
+                        searchable: true,
+                        className: "center",
+                    },
+                    {
+                        data: 'start_place',
+                        orderable: true,
+                        searchable: true,
+                        className: "center",
+                    },
+                    {
+                        data: 'end_place',
+                        orderable: true,
+                        searchable: true,
+                        className: "center",
+                    },
+                    {
+                        data: 'price',
+                        orderable: true,
+                        searchable: true,
+                        className: "center",
+                    },
+                    {
+                        data: 'status',
+                        orderable: true,
+                        searchable: true,
+                        className: "center",
                     },
                 ],
                 searching: true,
@@ -98,8 +134,14 @@
                         <table id="booking-datatable" class="datatable table table-striped">
                             <thead>
                             <th>{% trans "ID" %}</th>
+                            <th>{% trans "Driver" %}</th>
+                            <th>{% trans "Customer" %}</th>
+                            <th>{% trans "Vehicle" %}</th>
+                            <th>{% trans "Vehicle Category" %}</th>
+                            <th>{% trans "Start Place" %}</th>
+                            <th>{% trans "End Place" %}</th>
+                            <th>{% trans "Price" %}</th>
                             <th>{% trans "Status" %}</th>
-                            <th>{% trans "Created" %}</th>
                             </thead>
                             <tbody>
                             </tbody>

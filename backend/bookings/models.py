@@ -103,15 +103,15 @@ class Booking(models.Model):
     customer_ad = models.OneToOneField(
         CustomerAd, on_delete=models.CASCADE, blank=True, null=True
     )
-    driver_bid = models.OneToOneField(
-        DriverAdBid, on_delete=models.CASCADE, blank=True, null=True
+    customer_bid = models.OneToOneField(
+        CustomerAdBid, on_delete=models.CASCADE, blank=True, null=True
     )
 
     driver_ad = models.OneToOneField(
         DriverAd, on_delete=models.CASCADE, blank=True, null=True
     )
-    customer_bid = models.OneToOneField(
-        CustomerAdBid, on_delete=models.CASCADE, blank=True, null=True
+    driver_bid = models.OneToOneField(
+        DriverAdBid, on_delete=models.CASCADE, blank=True, null=True
     )
 
     PENDING = "P"
@@ -130,6 +130,10 @@ class Booking(models.Model):
     @property
     def ad(self):
         return self.customer_ad if self.customer_ad else self.driver_ad
+
+    @property
+    def bid(self):
+        return self.customer_bid if self.customer_bid else self.driver_bid
 
     def __str__(self):
         return f"{str(self.ad)} - {str(self.created)}"
