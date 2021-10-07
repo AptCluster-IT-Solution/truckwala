@@ -8,7 +8,7 @@ from bookings.api import (
     CustomerAdModelViewSet,
     DriverAdModelViewSet,
     CustomerAdBidModelViewSet,
-    DriverAdBidModelViewSet,
+    DriverAdBidModelViewSet, BookingModelViewSet,
 )
 from notifications.api import NotificationModelViewSet
 from vehicles.api import (
@@ -45,7 +45,7 @@ router.register("vehicle-categories", VehicleCategoryModelViewSet)
 # -------------- vehicles app view sets --------------
 
 # -------------- bookings app view sets --------------
-# router.register("bookings", BookingModelViewSet)
+router.register("bookings", BookingModelViewSet)
 router.register("customer-ads", CustomerAdModelViewSet)
 router.register("customer-ad-bids", CustomerAdBidModelViewSet)
 router.register("driver-ads", DriverAdModelViewSet)

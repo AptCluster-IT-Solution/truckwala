@@ -1,4 +1,5 @@
 from django.db import transaction
+from fcm_django.models import FCMDevice
 from knox.models import AuthToken
 from rest_framework import generics, permissions, status
 from rest_framework.decorators import action, api_view
@@ -99,6 +100,15 @@ class LoginAPI(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data
+        fcm_device_data = request.data.pop('fcm_device', None)
+
+        def create_fcm_device(validated_data: {'type': str}):
+            FCMDevice.objects.create(
+
+            )
+
+        if fcm_device_data:
+            create_fcm_device(fcm_device_data)
         return Response(
             {
                 "user": UserSerializer(

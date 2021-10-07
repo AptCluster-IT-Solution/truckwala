@@ -1,11 +1,13 @@
+from django.db.models import Q
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from bookings.models import CustomerAd, DriverAd, CustomerAdBid, DriverAdBid, Booking
+from bookings.models import CustomerAd, DriverAd, CustomerAdBid, DriverAdBid, Booking, Transaction
 from bookings.serializers import CustomerAdSerializer, DriverAdSerializer, CustomerAdBidSerializer, \
-    DriverAdBidSerializer
+    DriverAdBidSerializer, BookingSerializer
 from main.custom.permissions import (
     IsPosterOrReadOnly,
     IsCustomer,
@@ -27,7 +29,6 @@ class CustomerAdModelViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(poster=self.request.user.customer_profile)
-
 
     @action(detail=False, methods=["GET"])
     def me(self, request, *args, **kwargs):
@@ -84,7 +85,8 @@ class CustomerAdBidModelViewSet(viewsets.ModelViewSet):
         ad.save(update_fields=['acceptor'])
 
         ad.booking.status = Booking.ACCEPTED
-        ad.booking.save(update_fields=['status'])
+        ad.booking.customer_bid = bid
+        ad.booking.save(update_fields=['status', 'customer_bid'])
 
         return Response({"bid": "bid accepted"})
 
@@ -166,7 +168,8 @@ class DriverAdBidModelViewSet(viewsets.ModelViewSet):
         ad.save(update_fields=['acceptor'])
 
         ad.booking.status = Booking.ACCEPTED
-        ad.booking.save(update_fields=['status'])
+        ad.booking.driver_bid = bid
+        ad.booking.save(update_fields=['status', 'driver_bid'])
 
         return Response({"bid": "bid accepted"})
 
@@ -177,3 +180,37 @@ class DriverAdBidModelViewSet(viewsets.ModelViewSet):
         bid.save(update_fields=['is_accepted'])
 
         return Response({"bid": "bid rejected"})
+
+
+class BookingModelViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Booking.objects.all()
+    serializer_class = BookingSerializer
+    permission_classes = [IsPosterOrReadOnly, IsAuthenticated]
+
+    @action(detail=False, methods=["GET"])
+    def me(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset()).filter(
+            Q(customer_ad__poster__user=self.request.user) | Q(customer_ad__acceptor__user=self.request.user) |
+            Q(driver_ad__poster__user=self.request.user) | Q(driver_ad__acceptor__user=self.request.user)
+        )
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['PATCH'])
+    def complete(self, request, pk=None):
+        booking = self.get_object()
+        booking.status = Booking.FULFILLED
+        booking.save(update_fields=['status'])
+
+        Transaction.objects.create(
+            booking=booking,
+            amount=booking.bid.cost if hasattr(booking.bid, "cost") else booking.ad.cost
+        )
+
+        return Response({"booking": "booking fulfilled"})
