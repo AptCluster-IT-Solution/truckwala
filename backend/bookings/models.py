@@ -44,6 +44,20 @@ class CustomerAd(Ad):
     def __str__(self):
         return f"{str(self.poster)} - {str(self.created)}"
 
+    def save(self, force_insert=False, force_update=False, *args, **kwargs):
+        if not self.id:
+            Notification.objects.create(
+                notification_type=Notification.CUSTOMER_AD,
+                subject=f"{self.poster.user.full_name} is looking for a transport",
+                message=f"{self.poster.user.full_name} is looking for a transport",
+                entered_by=self.poster.user,
+                content_type=ContentType.objects.get_for_model(self),
+                object_id=self.pk,
+            )
+
+        super().save(force_insert, force_update, *args, **kwargs)
+        Booking.objects.create(customer_ad_id=self.id)
+
 
 class CustomerAdBid(models.Model):
     ad = models.ForeignKey(CustomerAd, related_name='bids', on_delete=models.CASCADE)
@@ -83,6 +97,16 @@ class CustomerAdBid(models.Model):
             else:
                 raise ValidationError(
                     {"bid": f"This request is already {'accepted' if self.is_accepted else 'rejected'}"})
+        else:
+            Notification.objects.create(
+                notification_type=Notification.BID,
+                subject=f"{self.bidder.user.full_name} has requested to accept your ad.",
+                message=f"{self.bidder.user.full_name} has requested to accept your ad.",
+                entered_by=self.bidder.user,
+                created_for=self.ad.poster.user,
+                content_type=ContentType.objects.get_for_model(self),
+                object_id=self.pk,
+            )
 
         super().save(force_insert, force_update, *args, **kwargs)
         self.__is_accepted = self.is_accepted
@@ -110,6 +134,20 @@ class DriverAd(Ad):
 
     def __str__(self):
         return f"{str(self.poster)} - {str(self.created)}"
+
+    def save(self, force_insert=False, force_update=False, *args, **kwargs):
+        if not self.id:
+            Notification.objects.create(
+                notification_type=Notification.DRIVER_AD,
+                subject=f"{self.poster.user.full_name} is looking for cargo to transport",
+                message=f"{self.poster.user.full_name} is looking for cargo to transport",
+                entered_by=self.poster.user,
+                content_type=ContentType.objects.get_for_model(self),
+                object_id=self.pk,
+            )
+
+        super().save(force_insert, force_update, *args, **kwargs)
+        Booking.objects.create(driver_ad_id=self.id)
 
 
 class DriverAdBid(models.Model):
@@ -144,7 +182,16 @@ class DriverAdBid(models.Model):
             else:
                 raise ValidationError(
                     {"bid": f"This request is already {'accepted' if self.is_accepted else 'rejected'}"})
-
+        else:
+            Notification.objects.create(
+                notification_type=Notification.BID,
+                subject=f"{self.bidder.user.full_name} has requested to accept your ad.",
+                message=f"{self.bidder.user.full_name} has requested to accept your ad.",
+                entered_by=self.bidder.user,
+                created_for=self.ad.poster.user,
+                content_type=ContentType.objects.get_for_model(self),
+                object_id=self.pk,
+            )
         super().save(force_insert, force_update, *args, **kwargs)
         self.__is_accepted = self.is_accepted
 
