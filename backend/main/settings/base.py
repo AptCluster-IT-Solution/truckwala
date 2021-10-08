@@ -154,6 +154,24 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = "mediafiles"
 
 # fcm django config
+FIREBASE_KEY = "firebase-admin.json"
+
+FIREBASE_KEY_PATH = BASE_DIR.parent / FIREBASE_KEY
+
+FCM_DJANGO_SETTINGS = {
+    # default: _('FCM Django')
+    "APP_VERBOSE_NAME": "Installed Devices",
+    # Your firebase API KEY
+    "FCM_SERVER_KEY": "AAAAD-P7fAo:APA91bGKPDZ0HTHowX7je-z9M1sHNNgJL3-lD6zlyPo3YYWQ-BdWFRCdY1z-0GAMe3OvQvwXG2z1sh9iZenn1Jy0urwQAaFVw1tu76Z_a73Sd6POKYinbQZLk4VBBSdaPMjqkcB0Gf9t",
+    # true if you want to have only one active device per registered user at a time
+    # default: False
+    "ONE_DEVICE_PER_USER": False,
+    # devices to which notifications cannot be sent,
+    # are deleted upon receiving error response from FCM
+    # default: False
+    "DELETE_INACTIVE_DEVICES": True,
+}
+
 FIREBASE_APP = initialize_app()
 
 LOGIN_URL = 'admin:login'

@@ -113,3 +113,4 @@ media/
 backend/staticfiles
 backend/mediafiles
 **/.env
+**/firebase-admin.json
