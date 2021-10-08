@@ -1,7 +1,9 @@
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from rest_framework.exceptions import ValidationError
 
+from notifications.models import Notification
 from users.models import Customer, Driver
 from vehicles.models import Vehicle
 
@@ -61,6 +63,30 @@ class CustomerAdBid(models.Model):
     description = models.TextField(max_length=1000, default="")
     is_accepted = models.BooleanField(blank=True, null=True)
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.__is_accepted = self.is_accepted
+
+    def save(self, force_insert=False, force_update=False, *args, **kwargs):
+        if self.id:
+            if self.__is_accepted is None:
+                if self.__is_accepted != self.is_accepted and self.is_accepted:
+                    Notification.objects.create(
+                        notification_type=Notification.BID,
+                        subject=f"{self.ad.poster.user.full_name} has accepted your request.",
+                        message=f"{self.ad.poster.user.full_name} has accepted your request.",
+                        entered_by=self.ad.poster.user,
+                        created_for=self.bidder.user,
+                        content_type=ContentType.objects.get_for_model(self),
+                        object_id=self.pk,
+                    )
+            else:
+                raise ValidationError(
+                    {"bid": f"This request is already {'accepted' if self.is_accepted else 'rejected'}"})
+
+        super().save(force_insert, force_update, *args, **kwargs)
+        self.__is_accepted = self.is_accepted
+
 
 class DriverAd(Ad):
     poster = models.ForeignKey(
@@ -97,6 +123,30 @@ class DriverAdBid(models.Model):
     load = models.PositiveIntegerField(default=0)
     description = models.TextField(max_length=1000, default="")
     is_accepted = models.BooleanField(blank=True, null=True)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.__is_accepted = self.is_accepted
+
+    def save(self, force_insert=False, force_update=False, *args, **kwargs):
+        if self.id:
+            if self.__is_accepted is None:
+                if self.__is_accepted != self.is_accepted and self.is_accepted:
+                    Notification.objects.create(
+                        notification_type=Notification.BID,
+                        subject=f"{self.ad.poster.user.full_name} has accepted your request.",
+                        message=f"{self.ad.poster.user.full_name} has accepted your request.",
+                        entered_by=self.ad.poster.user,
+                        created_for=self.bidder.user,
+                        content_type=ContentType.objects.get_for_model(self),
+                        object_id=self.pk,
+                    )
+            else:
+                raise ValidationError(
+                    {"bid": f"This request is already {'accepted' if self.is_accepted else 'rejected'}"})
+
+        super().save(force_insert, force_update, *args, **kwargs)
+        self.__is_accepted = self.is_accepted
 
 
 class Booking(models.Model):
