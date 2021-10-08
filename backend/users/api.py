@@ -89,8 +89,8 @@ class RegisterAPI(generics.GenericAPIView):
 
             verification_request(request, user)
 
-            fcm_device_id = request.data.pop('fcm_device_id', None)
-            fcm_device_type = request.data.pop('fcm_device_type', None)
+            fcm_device_id = request.data.pop('fcm_id', None)
+            fcm_device_type = request.data.pop('device_type', None)
 
             if fcm_device_id and fcm_device_type:
                 create_fcm_device(user, fcm_device_id, fcm_device_type)
@@ -114,8 +114,9 @@ class LoginAPI(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data
-        fcm_device_id = request.data.pop('fcm_device_id', None)
-        fcm_device_type = request.data.pop('fcm_device_type', None)
+
+        fcm_device_id = request.data.pop('fcm_id', None)
+        fcm_device_type = request.data.pop('device_type', None)
 
         if fcm_device_id and fcm_device_type:
             create_fcm_device(user, fcm_device_id, fcm_device_type)
