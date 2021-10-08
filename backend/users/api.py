@@ -22,6 +22,14 @@ from .serializers import (
 )
 
 
+def create_fcm_device(user, fcm_device_id, fcm_device_type):
+    FCMDevice.objects.create(
+        user=user,
+        registration_id=fcm_device_id,
+        type=fcm_device_type,
+    )
+
+
 @api_view(["GET"])
 def is_auth(request):
     if request.user.is_authenticated:
@@ -81,6 +89,12 @@ class RegisterAPI(generics.GenericAPIView):
 
             verification_request(request, user)
 
+            fcm_device_id = request.data.pop('fcm_device_id', None)
+            fcm_device_type = request.data.pop('fcm_device_type', None)
+
+            if fcm_device_id and fcm_device_type:
+                create_fcm_device(user, fcm_device_id, fcm_device_type)
+
             return Response(
                 {
                     "user": UserSerializer(
@@ -100,15 +114,12 @@ class LoginAPI(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data
-        fcm_device_data = request.data.pop('fcm_device', None)
+        fcm_device_id = request.data.pop('fcm_device_id', None)
+        fcm_device_type = request.data.pop('fcm_device_type', None)
 
-        def create_fcm_device(validated_data: {'type': str}):
-            FCMDevice.objects.create(
+        if fcm_device_id and fcm_device_type:
+            create_fcm_device(user, fcm_device_id, fcm_device_type)
 
-            )
-
-        if fcm_device_data:
-            create_fcm_device(fcm_device_data)
         return Response(
             {
                 "user": UserSerializer(
