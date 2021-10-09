@@ -183,7 +183,7 @@ class DriverAdBidModelViewSet(viewsets.ModelViewSet):
 
 
 class BookingModelViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Booking.objects.all()
+    queryset = Booking.objects.filter(status__in=[Booking.ACCEPTED, Booking.FULFILLED])
     serializer_class = BookingSerializer
     permission_classes = [IsPosterOrReadOnly, IsAuthenticated]
     filterset_fields = ['status', ]
