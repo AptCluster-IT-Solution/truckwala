@@ -186,6 +186,7 @@ class BookingModelViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Booking.objects.all()
     serializer_class = BookingSerializer
     permission_classes = [IsPosterOrReadOnly, IsAuthenticated]
+    filterset_fields = ['status', ]
 
     @action(detail=False, methods=["GET"])
     def me(self, request, *args, **kwargs):
