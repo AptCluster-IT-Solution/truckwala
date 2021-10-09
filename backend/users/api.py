@@ -23,6 +23,11 @@ from .serializers import (
 
 
 def create_fcm_device(user, fcm_device_id, fcm_device_type):
+    if type(fcm_device_id) is list:
+        fcm_device_id = fcm_device_id[0]
+    if type(fcm_device_type) is list:
+        fcm_device_type = fcm_device_type[0]
+
     FCMDevice.objects.create(
         user=user,
         registration_id=fcm_device_id,
@@ -117,7 +122,7 @@ class LoginAPI(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data
 
-        request.data._mutable=True
+        request.data._mutable = True
         fcm_device_id = request.data.pop('fcm_id', None)
         fcm_device_type = request.data.pop('device_type', None)
 
