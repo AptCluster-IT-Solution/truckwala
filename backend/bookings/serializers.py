@@ -55,21 +55,28 @@ class DriverAdBidSerializer(serializers.ModelSerializer):
 
 
 class BookingSerializer(serializers.ModelSerializer):
-    driver_ad = DriverAdSerializer()
-    driver_bid = DriverAdBidSerializer()
-    customer_ad = CustomerAdSerializer()
-    customer_bid = CustomerAdBidSerializer()
+    ad = serializers.SerializerMethodField()
     cost = serializers.SerializerMethodField()
+    vehicle = serializers.SerializerMethodField()
+
+    @staticmethod
+    def get_ad(obj):
+        if obj.driver_ad:
+            return DriverAdSerializer(obj.ad).data
+        else:
+            return CustomerAdSerializer(obj.ad).data
 
     @staticmethod
     def get_cost(obj):
         return obj.cost
 
+    @staticmethod
+    def get_vehicle(obj):
+        return VehicleSerializer(obj.vehicle).data
+
     class Meta:
         model = Booking
-        fields = ['id', 'driver_ad', 'driver_bid', 'customer_ad', "customer_bid", 'status'
-                  # 'vehicle', 'cost', 'status', 'start_place', 'end_place'
-            , "cost"]
+        fields = ['id', 'ad', 'status', "cost", "vehicle"]
 
 
 class BookingCompleteSerializer(serializers.ModelSerializer):
