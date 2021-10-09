@@ -94,13 +94,13 @@ class RegisterAPI(generics.GenericAPIView):
 
             verification_request(request, user)
 
-            request.data._mutable = True
+            # request.data._mutable = True
             fcm_device_id = request.data.pop('fcm_id', None)
             fcm_device_type = request.data.pop('device_type', None)
 
             if fcm_device_id and fcm_device_type:
                 create_fcm_device(user, fcm_device_id, fcm_device_type)
-            request.data._mutable = False
+            # request.data._mutable = False
 
             return Response(
                 {
@@ -122,13 +122,15 @@ class LoginAPI(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data
 
-        request.data._mutable = True
+        if hasattr(request.data, "_mutable"):
+            request.data._mutable = True
         fcm_device_id = request.data.pop('fcm_id', None)
         fcm_device_type = request.data.pop('device_type', None)
 
         if fcm_device_id and fcm_device_type:
             create_fcm_device(user, fcm_device_id, fcm_device_type)
-        request.data._mutable = False
+        if hasattr(request.data, "_mutable"):
+            request.data._mutable = False
 
         return Response(
             {
