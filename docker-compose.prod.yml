@@ -11,10 +11,7 @@ services:
 
   backend:
     image: 869809771819.dkr.ecr.ap-south-1.amazonaws.com/truck-booking
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    command: gunicorn main.wsgi:application --bind 0.0.0.0:8000
+    command: gunicorn main.wsgi:application --bind 0.0.0.0:8000 --access-logfile gunicorn.log --error-logfile gunicornerr.log
     volumes:
       - ./backend:/usr/src/app
     ports:
@@ -25,6 +22,7 @@ services:
       - ./backend/.env
     environment:
       - DEBUG=0
+      - GOOGLE_APPLICATION_CREDENTIALS=/usr/src/app/firebase-admin.json
 
 
   nginx:

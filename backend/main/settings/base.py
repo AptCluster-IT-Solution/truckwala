@@ -156,7 +156,9 @@ MEDIA_ROOT = "mediafiles"
 # fcm django config
 FIREBASE_KEY = "firebase-admin.json"
 
-FIREBASE_KEY_PATH = BASE_DIR.parent / FIREBASE_KEY
+FIREBASE_KEY_PATH = BASE_DIR / FIREBASE_KEY
+
+FIREBASE_APP = initialize_app()
 
 FCM_DJANGO_SETTINGS = {
     # default: _('FCM Django')
@@ -172,7 +174,6 @@ FCM_DJANGO_SETTINGS = {
     "DELETE_INACTIVE_DEVICES": True,
 }
 
-FIREBASE_APP = initialize_app()
 
 LOGIN_URL = 'admin:login'
 LOGIN_REDIRECT_URL = 'dashboard'
