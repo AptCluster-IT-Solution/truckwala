@@ -16,18 +16,3 @@ def delete_notification_on_sender_delete(**kwargs):
     Notification.objects.filter(
         object_id=instance.pk, content_type=instance_ct.id
     ).delete()
-
-
-@receiver(post_save, sender=Notification)
-def send_notification(instance, **kwargs):
-    user_device = FCMDevice.objects.all()
-
-    if instance.created_for:
-        user_device = FCMDevice.objects.filter(user=instance.created_for)
-
-    if instance.notification_type == Notification.CUSTOMER_AD:
-        user_device = FCMDevice.objects.filter(
-            user__driver_profile__isnull=False
-        ).distinct()
-
-    user_device.send_message(f"{instance.subject}", f"{instance.message}")
