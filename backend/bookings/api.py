@@ -7,7 +7,7 @@ from rest_framework.response import Response
 
 from bookings.models import CustomerAd, DriverAd, CustomerAdBid, DriverAdBid, Booking, Transaction
 from bookings.serializers import CustomerAdSerializer, DriverAdSerializer, CustomerAdBidSerializer, \
-    DriverAdBidSerializer, BookingSerializer
+    DriverAdBidSerializer, BookingSerializer, BookingCompleteSerializer
 from main.custom.permissions import (
     IsPosterOrReadOnly,
     IsCustomer,
@@ -206,8 +206,9 @@ class BookingModelViewSet(viewsets.ReadOnlyModelViewSet):
     @action(detail=True, methods=['PATCH'])
     def complete(self, request, pk=None):
         booking = self.get_object()
-        booking.status = Booking.FULFILLED
-        booking.save(update_fields=['status'])
+        serializer = BookingCompleteSerializer(instance=booking, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
 
         Transaction.objects.create(
             booking=booking,

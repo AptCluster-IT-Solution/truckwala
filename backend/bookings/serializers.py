@@ -24,10 +24,8 @@ class CustomerAdBidSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomerAdBid
-        fields = "__all__"
-
-    def create(self, validated_data):
-        return super().create(validated_data)
+        # fields = "__all__"
+        exclude = ['is_accepted']
 
 
 class DriverAdSerializer(serializers.ModelSerializer):
@@ -52,10 +50,23 @@ class DriverAdBidSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DriverAdBid
-        fields = "__all__"
+        # fields = "__all__"
+        exclude = ['is_accepted']
 
 
 class BookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking
         fields = "__all__"
+
+
+class BookingCompleteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Booking
+        fields = ['id', 'invoice_image']
+
+    def update(self, instance, validated_data):
+        instance.invoice_image = validated_data.get('invoice_image')
+        instance.status = Booking.FULFILLED
+        instance.save()
+        return instance

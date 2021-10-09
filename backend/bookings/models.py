@@ -1,3 +1,5 @@
+import os
+
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
@@ -199,6 +201,10 @@ class DriverAdBid(models.Model):
         self.__is_accepted = self.is_accepted
 
 
+def get_invoice_image_path(_, filename):
+    return os.path.join("images/invoices/", filename)
+
+
 class Booking(models.Model):
     customer_ad = models.OneToOneField(
         CustomerAd, on_delete=models.CASCADE, blank=True, null=True
@@ -225,6 +231,7 @@ class Booking(models.Model):
         (FULFILLED, "Fulfilled"),
     )
     status = models.CharField(max_length=1, choices=STATUS_TYPES, default=PENDING)
+    invoice_image = models.ImageField(upload_to=get_invoice_image_path, blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
 
     @property
