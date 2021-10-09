@@ -45,7 +45,8 @@ class CustomerAd(Ad):
         return f"{str(self.poster)} - {str(self.created)}"
 
     def save(self, force_insert=False, force_update=False, *args, **kwargs):
-        if not self.id:
+        super().save(force_insert, force_update, *args, **kwargs)
+        if self._state.adding is True:
             Notification.objects.create(
                 notification_type=Notification.CUSTOMER_AD,
                 subject=f"{self.poster.user.full_name} is looking for a transport",
@@ -54,9 +55,7 @@ class CustomerAd(Ad):
                 content_type=ContentType.objects.get_for_model(self),
                 object_id=self.pk,
             )
-
-        super().save(force_insert, force_update, *args, **kwargs)
-        Booking.objects.create(customer_ad_id=self.id)
+            Booking.objects.create(customer_ad_id=self.id)
 
 
 class CustomerAdBid(models.Model):
@@ -82,7 +81,8 @@ class CustomerAdBid(models.Model):
         self.__is_accepted = self.is_accepted
 
     def save(self, force_insert=False, force_update=False, *args, **kwargs):
-        if self.id:
+        super().save(force_insert, force_update, *args, **kwargs)
+        if self._state.adding is False:
             if self.__is_accepted is None:
                 if self.__is_accepted != self.is_accepted and self.is_accepted:
                     Notification.objects.create(
@@ -108,7 +108,6 @@ class CustomerAdBid(models.Model):
                 object_id=self.pk,
             )
 
-        super().save(force_insert, force_update, *args, **kwargs)
         self.__is_accepted = self.is_accepted
 
 
@@ -136,7 +135,8 @@ class DriverAd(Ad):
         return f"{str(self.poster)} - {str(self.created)}"
 
     def save(self, force_insert=False, force_update=False, *args, **kwargs):
-        if not self.id:
+        super().save(force_insert, force_update, *args, **kwargs)
+        if self._state.adding is True:
             Notification.objects.create(
                 notification_type=Notification.DRIVER_AD,
                 subject=f"{self.poster.user.full_name} is looking for cargo to transport",
@@ -146,8 +146,7 @@ class DriverAd(Ad):
                 object_id=self.pk,
             )
 
-        super().save(force_insert, force_update, *args, **kwargs)
-        Booking.objects.create(driver_ad_id=self.id)
+            Booking.objects.create(driver_ad_id=self.id)
 
 
 class DriverAdBid(models.Model):
@@ -167,7 +166,8 @@ class DriverAdBid(models.Model):
         self.__is_accepted = self.is_accepted
 
     def save(self, force_insert=False, force_update=False, *args, **kwargs):
-        if self.id:
+        super().save(force_insert, force_update, *args, **kwargs)
+        if self._state.adding is False:
             if self.__is_accepted is None:
                 if self.__is_accepted != self.is_accepted and self.is_accepted:
                     Notification.objects.create(
@@ -192,7 +192,6 @@ class DriverAdBid(models.Model):
                 content_type=ContentType.objects.get_for_model(self),
                 object_id=self.pk,
             )
-        super().save(force_insert, force_update, *args, **kwargs)
         self.__is_accepted = self.is_accepted
 
 
