@@ -242,6 +242,10 @@ class Booking(models.Model):
     def bid(self):
         return self.customer_bid if self.customer_bid else self.driver_bid
 
+    @property
+    def cost(self):
+        return self.customer_bid.cost if self.customer_bid else self.ad.cost
+
     def __str__(self):
         return f"{str(self.ad)} - {str(self.created)}"
 
