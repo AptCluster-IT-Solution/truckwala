@@ -56,16 +56,18 @@ class Notification(models.Model):
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         super().save(force_insert=False, force_update=False, using=None, update_fields=None)
 
+        user_device = FCMDevice.objects.all()
+
         if self.created_for:
-            user_device = FCMDevice.objects.filter(user=self.created_for)
+            user_device = user_device.filter(user=self.created_for)
 
         if self.notification_type == Notification.CUSTOMER_AD:
-            user_device = FCMDevice.objects.filter(
+            user_device = user_device.filter(
                 user__driver_profile__isnull=False
             ).distinct()
 
         if self.notification_type == Notification.DRIVER_AD:
-            user_device = FCMDevice.objects.filter(
+            user_device = user_device.filter(
                 user__customer_profile__isnull=False
             ).distinct()
 
