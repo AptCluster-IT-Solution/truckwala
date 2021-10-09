@@ -59,20 +59,18 @@ class BookingSerializer(serializers.ModelSerializer):
     cost = serializers.SerializerMethodField()
     vehicle = serializers.SerializerMethodField()
 
-    @staticmethod
-    def get_ad(obj):
+    def get_ad(self, obj):
         if obj.driver_ad:
-            return DriverAdSerializer(obj.ad).data
+            return DriverAdSerializer(obj.ad, context=self.context).data
         else:
-            return CustomerAdSerializer(obj.ad).data
+            return CustomerAdSerializer(obj.ad, context=self.context).data
 
     @staticmethod
     def get_cost(obj):
         return obj.cost
 
-    @staticmethod
-    def get_vehicle(obj):
-        return VehicleSerializer(obj.vehicle).data
+    def get_vehicle(self, obj):
+        return VehicleSerializer(obj.vehicle, context=self.context).data
 
     class Meta:
         model = Booking
