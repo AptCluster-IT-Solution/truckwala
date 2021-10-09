@@ -45,8 +45,9 @@ class CustomerAd(Ad):
         return f"{str(self.poster)} - {str(self.created)}"
 
     def save(self, force_insert=False, force_update=False, *args, **kwargs):
+        _is_adding = self._state.adding
         super().save(force_insert, force_update, *args, **kwargs)
-        if self._state.adding is True:
+        if _is_adding:
             Notification.objects.create(
                 notification_type=Notification.CUSTOMER_AD,
                 subject=f"{self.poster.user.full_name} is looking for a transport",
@@ -81,8 +82,9 @@ class CustomerAdBid(models.Model):
         self.__is_accepted = self.is_accepted
 
     def save(self, force_insert=False, force_update=False, *args, **kwargs):
+        _is_adding = self._state.adding
         super().save(force_insert, force_update, *args, **kwargs)
-        if self._state.adding is False:
+        if _is_adding is False:
             if self.__is_accepted is None:
                 if self.__is_accepted != self.is_accepted and self.is_accepted:
                     Notification.objects.create(
@@ -135,8 +137,9 @@ class DriverAd(Ad):
         return f"{str(self.poster)} - {str(self.created)}"
 
     def save(self, force_insert=False, force_update=False, *args, **kwargs):
+        _is_adding = self._state.adding
         super().save(force_insert, force_update, *args, **kwargs)
-        if self._state.adding is True:
+        if _is_adding:
             Notification.objects.create(
                 notification_type=Notification.DRIVER_AD,
                 subject=f"{self.poster.user.full_name} is looking for cargo to transport",
@@ -166,8 +169,9 @@ class DriverAdBid(models.Model):
         self.__is_accepted = self.is_accepted
 
     def save(self, force_insert=False, force_update=False, *args, **kwargs):
+        _is_adding = self._state.adding
         super().save(force_insert, force_update, *args, **kwargs)
-        if self._state.adding is False:
+        if _is_adding is False:
             if self.__is_accepted is None:
                 if self.__is_accepted != self.is_accepted and self.is_accepted:
                     Notification.objects.create(
