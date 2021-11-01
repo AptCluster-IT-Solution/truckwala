@@ -1,3 +1,4 @@
+from django.apps import apps
 from django.db import transaction
 from fcm_django.models import FCMDevice
 from knox.models import AuthToken
@@ -8,6 +9,7 @@ from rest_framework.parsers import MultiPartParser, FileUploadParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from bookings.serializers import TransactionSerializer
 from main.custom.permissions import IsDriver, IsCustomer
 from main.custom.viewsets import ContextModelViewSet
 from .models import Customer, Driver, User
@@ -180,6 +182,16 @@ class DriverViewset(ContextModelViewSet):
 
     def get_object(self):
         return self.request.user
+
+    @action(detail=False)
+    def transactions(self, request, *args, **kwargs):
+        qs = apps.get_model("bookings", "Transaction").objects.filter(driver__user=self.request.user)
+        serializer = TransactionSerializer(qs, many=True)
+        return Response({
+            "paid_amount":self.request.user.driver_profile.paid_amount,
+            "due_amount":self.request.user.driver_profile.due_amount,
+            "transactions": serializer.data
+        })
 
 
 class CustomerViewset(ContextModelViewSet):

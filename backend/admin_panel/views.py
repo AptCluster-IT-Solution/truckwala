@@ -103,7 +103,7 @@ def driver_payment(request):
 
 class DriversListJson(StaffUserRequiredMixin, BaseDatatableView):
     model = Driver
-    columns = ['id', 'full_name', 'phone_number', 'email', 'date_joined', 'due_amount']
+    columns = ['id', 'user__full_name', 'user__phone_number', 'user__email', 'created', 'due_amount']
 
     def filter_queryset(self, qs):
         qs = qs.filter(is_verified=True)
@@ -154,7 +154,7 @@ class CustomersPage(StaffUserRequiredMixin, TemplateView):
 
 class CustomersListJson(StaffUserRequiredMixin, BaseDatatableView):
     model = Customer
-    columns = ['id', 'full_name', 'phone_number', 'email', 'date_joined']
+    columns = ['id', 'user__full_name', 'user__phone_number', 'user__email', 'created']
 
     def filter_queryset(self, qs):
         qs = qs.filter(is_verified=True)

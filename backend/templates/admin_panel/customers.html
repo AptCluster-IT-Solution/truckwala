@@ -42,27 +42,27 @@
                         className: "center",
                     },
                     {
-                        data: 'full_name',
+                        data: 'user__full_name',
                         orderable: true,
                         searchable: true,
                         className: "center",
                     },
                     {
-                        data: 'phone_number',
+                        data: 'user__phone_number',
                         orderable: true,
                         searchable: true,
                         className: "center"
                     },
                     {
-                        data: 'email',
+                        data: 'user__email',
                         orderable: true,
                         searchable: true,
                         className: "center"
                     },
                     {
-                        data: 'date_joined',
+                        data: 'created',
                         orderable: true,
-                        searchable: true,
+                        searchable: false,
                         className: "center"
                     },
                 ],
@@ -125,7 +125,6 @@
                             <th>{% trans "Phone Number" %}</th>
                             <th>{% trans "E-mail" %}</th>
                             <th>{% trans "Date Joined" %}</th>
-                            <th>{% trans "Reload" %}</th>
                             </thead>
                             <tbody>
                             </tbody>

@@ -42,37 +42,38 @@
                         className: "center",
                     },
                     {
-                        data: 'full_name',
+                        data: 'user__full_name',
                         orderable: true,
                         searchable: true,
                         className: "center",
                     },
                     {
-                        data: 'phone_number',
+                        data: 'user__phone_number',
                         orderable: true,
                         searchable: true,
                         className: "center"
                     },
                     {
-                        data: 'email',
+                        data: 'user__email',
                         orderable: true,
                         searchable: true,
                         className: "center"
                     },
                     {
-                        data: 'date_joined',
+                        data: 'created',
                         orderable: true,
                         searchable: false,
                         className: "center"
                     },
                     {
                         data: 'due_amount',
-                        orderable: true,
+                        orderable: false,
                         searchable: false,
                         className: "center"
                     },
                     {
                         targets: -1,
+                        orderable: false,
                         data: null,
                         defaultContent: "<button class='btn btn-outline-success'>Payment</button>"
                     },
