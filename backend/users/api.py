@@ -76,6 +76,7 @@ def verification_request(request, user=None):
         return 1
     if role == "D":
         raise ValidationError({"documents": "documents is required"})
+    return 1
 
 
 class RegisterAPI(generics.GenericAPIView):
