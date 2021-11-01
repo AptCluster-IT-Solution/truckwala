@@ -1,7 +1,11 @@
 import os
+
+from django.apps import apps
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models, transaction
+from django.db.models import Sum, F, Value
+from django.db.models.functions import Coalesce
 
 
 class UserManager(BaseUserManager):
@@ -76,6 +80,32 @@ class Driver(models.Model):
 
     def __str__(self):
         return self.user.full_name
+
+    @property
+    def paid_amount(self):
+        return apps.get_model("bookings", "Transaction").objects.filter(
+            driver_id=self.pk, booking__isnull=True
+        ).aggregate(paid_amount=Coalesce(Sum('amount'), Value(0)))["paid_amount"]
+
+    @property
+    def due_amount(self):
+        # ads by customer commission + ads by driver commission - total paid till now
+        return \
+            apps.get_model("bookings", "Booking").objects.filter(
+                customer_bid__bidder__id=self.id
+            ).aggregate(
+                commission=Coalesce(
+                    Sum(F('customer_bid__vehicle__category__commission') * F('customer_bid__cost') / 100),
+                    Value(0))
+            )['commission'] + \
+            apps.get_model("bookings", "Booking").objects.filter(
+                driver_bid__ad__acceptor__id=self.id
+            ).aggregate(
+                commission=Coalesce(
+                    Sum(F('driver_bid__ad__vehicle__category__commission') * F('driver_bid__ad__cost') / 100),
+                    Value(0))
+            )['commission'] - \
+            self.paid_amount
 
 
 class Customer(models.Model):

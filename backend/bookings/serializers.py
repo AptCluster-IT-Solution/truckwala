@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from bookings.models import CustomerAd, DriverAd, CustomerAdBid, DriverAdBid, Booking
+from bookings.models import CustomerAd, DriverAd, CustomerAdBid, DriverAdBid, Booking, Transaction
 from users.serializers import UserSerializer, CustomerSerializer, DriverSerializer
 from vehicles.serializers import VehicleSerializer
 
@@ -87,3 +87,12 @@ class BookingCompleteSerializer(serializers.ModelSerializer):
         instance.status = Booking.FULFILLED
         instance.save()
         return instance
+
+
+class TransactionSerializer(serializers.ModelSerializer):
+    customer = serializers.StringRelatedField(source="booking.customer")
+    driver = serializers.StringRelatedField()
+
+    class Meta:
+        model = Transaction
+        fields = ['id', 'customer', 'driver', 'amount', 'created']

@@ -243,17 +243,50 @@ class Booking(models.Model):
         return self.customer_bid if self.customer_bid else self.driver_bid
 
     @property
+    def driver(self):
+        return self.customer_bid.bidder if self.customer_bid else self.driver_bid.ad.acceptor
+
+    @property
+    def customer(self):
+        return self.customer_ad.poster if self.customer_ad else self.driver_ad.poster
+
+    @property
     def cost(self):
-        return self.customer_bid.cost if self.customer_bid else self.ad.cost
+        return self.bid.cost if hasattr(self.bid, "cost") else self.ad.cost
 
     @property
     def vehicle(self):
         return self.customer_bid.vehicle if self.customer_bid else self.ad.vehicle
 
+    @property
+    def commission(self):
+        return self.vehicle.category.commission * self.cost
+
     def __str__(self):
         return f"{str(self.ad)} - {str(self.created)}"
 
+    def save(self, **kwargs):
+        just_completed = False
+        if self.status == self.FULFILLED:
+            try:
+                if Booking.objects.get(pk=self.pk).status != self.FULFILLED:
+                    just_completed = True
+            except Booking.DoesNotExist:
+                pass
+        super().save(**kwargs)
+        if just_completed:
+            Transaction.objects.update_or_create(
+                booking_id=self.pk,
+                driver_id=self.driver.pk,
+                defaults={
+                    "amount": self.cost
+                }
+            )
+
 
 class Transaction(models.Model):
-    booking = models.ForeignKey(Booking, related_name='transactions', on_delete=models.CASCADE)
-    amount = models.PositiveIntegerField()
+    booking = models.OneToOneField(Booking, related_name='transactions', on_delete=models.CASCADE, blank=True,
+                                   null=True)
+    driver = models.ForeignKey(Driver, related_name='transactions', on_delete=models.CASCADE)
+    amount = models.PositiveIntegerField(default=0)
+    created = models.DateTimeField(auto_now_add=True)

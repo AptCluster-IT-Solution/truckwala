@@ -15,12 +15,17 @@ urlpatterns = [
     path('my/datatable/data/', login_required(OrderListJson.as_view()), name='order_list_json'),
 
     path('drivers/', admin_views.DriversPage.as_view(), name="drivers_page"),
+    path('drivers/payment/', admin_views.driver_payment, name="drivers_payment"),
     path('drivers_list_data/', admin_views.DriversListJson.as_view(), name="drivers_list_json"),
     path('customers/', admin_views.CustomersPage.as_view(), name="customers_page"),
     path('customers_list_data/', admin_views.CustomersListJson.as_view(), name="customers_list_json"),
 
     path('vehicles/', admin_views.VehiclesPage.as_view(), name="vehicles_page"),
     path('vehicles_list_data/', admin_views.VehiclesListJson.as_view(), name="vehicles_list_json"),
+    path('vehicle-categories/', admin_views.VehicleCategoriesPage.as_view(), name="vehicle_categories_page"),
+    path('vehicle-categories/<int:pk>', admin_views.VehicleCategoriesPage.as_view(), name="vehicle_categories_update"),
+    path('vehicle_categories_list_data/', admin_views.VehicleCategoriesListJson.as_view(),
+         name="vehicle_categories_list_json"),
 
     path('driver-ads/', admin_views.DriverAdsPage.as_view(), name="driver_ads_page"),
     path('driver_ads_list_data/', admin_views.DriverAdsListJson.as_view(), name="driver_ads_list_json"),

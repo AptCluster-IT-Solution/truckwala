@@ -3,9 +3,7 @@
 
 {% block extra_head %}
     <script type="text/javascript">
-        let CUSTOMERS_LIST_JSON_URL = '{% url "customers_list_json" %}';
         // translations for datatables
-
         let dt_language = {
             "emptyTable": "{% trans "No data available in table" %}",
             "info": "{% trans "Showing _START_ to _END_ of _TOTAL_ entries" %}",
@@ -30,7 +28,7 @@
             }
         }
         $(document).ready(function () {
-            let table = $('#customer-datatable').DataTable({
+            let table = $('#vehicle-categories-datatable').DataTable({
                 language: dt_language,  // global variable defined in html
                 order: [[0, "desc"]],
                 lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
@@ -42,35 +40,31 @@
                         className: "center",
                     },
                     {
-                        data: 'full_name',
+                        data: 'title',
                         orderable: true,
                         searchable: true,
                         className: "center",
                     },
                     {
-                        data: 'phone_number',
+                        data: 'commission',
                         orderable: true,
                         searchable: true,
                         className: "center"
                     },
                     {
-                        data: 'email',
-                        orderable: true,
-                        searchable: true,
-                        className: "center"
-                    },
-                    {
-                        data: 'date_joined',
-                        orderable: true,
-                        searchable: true,
-                        className: "center"
+                        targets: -1,
+                        data: null,
+                        defaultContent: "<button class='btn btn-outline-primary'>Update!</button>"
                     },
                 ],
                 searching: true,
                 processing: true,
                 serverSide: true,
                 stateSave: true,
-                ajax: CUSTOMERS_LIST_JSON_URL
+                ajax: '{% url "vehicle_categories_list_json" %}',
+            });
+            $('#vehicle-categories-datatable tbody').on('click', 'button.btn-outline-primary', function () {
+                window.location.href = window.location.href + table.row($(this).parents('tr')).data()[0]
             });
         });
     </script>
@@ -88,44 +82,32 @@
             <div class="page-title">
                 <div class="row">
                     <div class="col-12 col-md-6 order-md-1 order-last">
-                        <h3>Customers</h3>
-                        <p class="text-subtitle text-muted">Control the customer data here.</p>
+                        <h3>Vehicles</h3>
+                        <p class="text-subtitle text-muted">Control the vehicle data here.</p>
                     </div>
                     <div class="col-12 col-md-6 order-md-2 order-first">
-                        <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <nav aria-label="breadcrumb" class="col breadcrumb-header float-start float-lg-end">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Customers</li>
+                                <li class="breadcrumb-item active" aria-current="page">Vehicles</li>
                             </ol>
+                            {% include "admin_panel/includes/modal_form.html" with form=form model="Vehicle Category" %}
                         </nav>
                     </div>
                 </div>
             </div>
             <section class="section">
-                {% if users %}
-                    <div class="card">
-                        <div class="card-header">
-                            Customer Verification List
-                        </div>
-                        <div class="card-body">
-                            {% include "admin_panel/includes/user_verification.html" %}
-                        </div>
-                    </div>
-                {% endif %}
-
                 <div class="card">
                     <div class="card-header">
-                        Verified Customers List
+                        Vehicles List
                     </div>
                     <div class="card-body">
-                        <table id="customer-datatable" class="datatable table table-striped">
+                        <table id="vehicle-categories-datatable" class="datatable table table-striped">
                             <thead>
                             <th>{% trans "ID" %}</th>
-                            <th>{% trans "Full Name" %}</th>
-                            <th>{% trans "Phone Number" %}</th>
-                            <th>{% trans "E-mail" %}</th>
-                            <th>{% trans "Date Joined" %}</th>
-                            <th>{% trans "Reload" %}</th>
+                            <th>{% trans "Title" %}</th>
+                            <th>{% trans "Commission" %}</th>
+                            <th>{% trans "Update" %}</th>
                             </thead>
                             <tbody>
                             </tbody>

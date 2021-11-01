@@ -2,12 +2,13 @@ from django.db.models import Q
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
 
 from bookings.models import CustomerAd, DriverAd, CustomerAdBid, DriverAdBid, Booking, Transaction
 from bookings.serializers import CustomerAdSerializer, DriverAdSerializer, CustomerAdBidSerializer, \
-    DriverAdBidSerializer, BookingSerializer, BookingCompleteSerializer
+    DriverAdBidSerializer, BookingSerializer, BookingCompleteSerializer, TransactionSerializer
 from main.custom.permissions import (
     IsPosterOrReadOnly,
     IsCustomer,
@@ -210,9 +211,14 @@ class BookingModelViewSet(viewsets.ReadOnlyModelViewSet):
         if serializer.is_valid():
             serializer.save()
 
-        Transaction.objects.create(
-            booking=booking,
-            amount=booking.bid.cost if hasattr(booking.bid, "cost") else booking.ad.cost
-        )
-
         return Response({"booking": "booking fulfilled"})
+
+
+class TransactionModelViewSet(ModelViewSet):
+    queryset = Transaction.objects.all()
+    serializer_class = TransactionSerializer
+    permission_classes = [ActionBasedPermission]
+    action_permissions = {
+        IsAdminUser: ["accept", "reject", "update", "partial_update", "destroy", "list", "retrieve", "me"],
+        IsDriver: ["list"],
+    }

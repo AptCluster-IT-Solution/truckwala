@@ -1,19 +1,23 @@
 from datetime import timedelta
 from itertools import chain
 
+from django.db import transaction
 from django.db.models import CharField, Value, Q
 from django.db.models import Prefetch
 from django.db.models.aggregates import Count
+from django.shortcuts import redirect
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import escape
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, FormView
 from django_datatables_view.base_datatable_view import BaseDatatableView
 
+from admin_panel.forms import VehicleCategoryModelForm, TransactionModelForm
 from bookings.models import CustomerAd, DriverAd, Booking, Transaction
 from main.custom.permissions import StaffUserRequiredMixin
 from main.helpers.weekdays import weekdays
 from users.models import User, Driver, Customer
-from vehicles.models import Vehicle
+from vehicles.models import Vehicle, VehicleCategory
 
 
 class Dashboard(StaffUserRequiredMixin, TemplateView):
@@ -86,9 +90,20 @@ class DriversPage(StaffUserRequiredMixin, TemplateView):
         }
 
 
+def driver_payment(request):
+    try:
+        with transaction.atomic():
+            driver_id = request.POST.get('driver_id')
+            amount = request.POST.get('amount')
+            Transaction.objects.create(driver_id=driver_id, amount=amount)
+    except Exception as _:
+        pass
+    return redirect('drivers_page')
+
+
 class DriversListJson(StaffUserRequiredMixin, BaseDatatableView):
     model = Driver
-    columns = ['id', 'full_name', 'phone_number', 'email', 'date_joined']
+    columns = ['id', 'full_name', 'phone_number', 'email', 'date_joined', 'due_amount']
 
     def filter_queryset(self, qs):
         qs = qs.filter(is_verified=True)
@@ -113,6 +128,7 @@ class DriversListJson(StaffUserRequiredMixin, BaseDatatableView):
                 item.user.phone_number,
                 item.user.email,
                 item.user.date_joined.strftime("%Y-%m-%d %H:%M:%S"),
+                item.due_amount,
             ])
         return json_data
 
@@ -158,6 +174,47 @@ class CustomersListJson(StaffUserRequiredMixin, BaseDatatableView):
                 escape(item.user.phone_number),
                 escape(item.user.email),
                 escape(item.user.date_joined.strftime("%Y-%m-%d %H:%M:%S")),
+            ])
+        return json_data
+
+
+class VehicleCategoriesPage(StaffUserRequiredMixin, FormView):
+    template_name = 'admin_panel/vehicle_categories.html'
+    form_class = VehicleCategoryModelForm
+
+    def get_success_url(self):
+        return reverse('vehicle_categories_page')
+
+    def get_form(self, form_class=None):
+        form_class = form_class if form_class else self.form_class
+        try:
+            instance = VehicleCategory.objects.get(pk=self.kwargs.get("pk"))
+            return form_class(instance=instance, **self.get_form_kwargs())
+        except VehicleCategory.DoesNotExist:
+            return form_class(**self.get_form_kwargs())
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
+
+
+class VehicleCategoriesListJson(StaffUserRequiredMixin, BaseDatatableView):
+    model = VehicleCategory
+    columns = ['id', 'title', 'commission']
+
+    def filter_queryset(self, qs):
+        search = self.request.GET.get('search[value]', None)
+        if search:
+            qs = qs.filter(Q(title__istartswith=search))
+        return qs
+
+    def prepare_results(self, qs):
+        json_data = []
+        for item in qs:
+            json_data.append([
+                escape(item.id),
+                escape(item.title),
+                escape(item.commission),
             ])
         return json_data
 
@@ -324,20 +381,16 @@ class TransactionsPage(StaffUserRequiredMixin, TemplateView):
 
 class TransactionsListJson(StaffUserRequiredMixin, BaseDatatableView):
     model = Transaction
-    columns = ['id', 'booking', 'amount', ]
-
-    # def filter_queryset(self, qs):
-    #     search = self.request.GET.get('search[value]', None)
-    #     if search:
-    #         qs = qs.filter(Q(driver__user__full_name__istartswith=search) | Q(registration_number__istartswith=search))
-    #     return qs
+    columns = ['id', 'driver', 'customer', 'amount', 'created']
 
     def prepare_results(self, qs):
         json_data = []
         for item in qs:
             json_data.append([
                 escape(item.id),
-                escape(item.booking.id),
+                escape(item.driver.user.full_name),
+                escape(item.booking.customer.user.full_name) if item.booking else None,
                 escape(item.amount),
+                escape(item.created.strftime("%Y-%m-%d %H:%M")),
             ])
         return json_data

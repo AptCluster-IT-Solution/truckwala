@@ -1,0 +1,39 @@
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    Add New {{ model }}
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                {% if form.instance.pk != None %}
+                    {% with form_title="Update "|add:model %}
+                        {% include "admin_panel/includes/form.html" with form=form from_modal=True form_title=form_title %}
+                    {% endwith %}
+                {% else %}
+                    {% with form_title="Add New "|add:model %}
+                        {% include "admin_panel/includes/form.html" with form=form from_modal=True form_title=form_title %}
+                    {% endwith %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% load static %}
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+<script>
+    let options = {"a":1}
+    {% if form.instance.pk != None %}
+        options["backdrop"] = "static"
+    {% endif %}
+    {% if form.errors or form.instance.pk != None %}
+        {
+            let modal = new bootstrap.Modal(document.getElementById('exampleModal'), options);
+            modal.show()
+        }
+    {% endif %}
+</script>

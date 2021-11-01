@@ -30,7 +30,7 @@
             }
         }
         $(document).ready(function () {
-            $('#driver-datatable').dataTable({
+            let table = $('#driver-datatable').DataTable({
                 language: dt_language,  // global variable defined in html
                 order: [[0, "desc"]],
                 lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
@@ -62,8 +62,19 @@
                     {
                         data: 'date_joined',
                         orderable: true,
-                        searchable: true,
+                        searchable: false,
                         className: "center"
+                    },
+                    {
+                        data: 'due_amount',
+                        orderable: true,
+                        searchable: false,
+                        className: "center"
+                    },
+                    {
+                        targets: -1,
+                        data: null,
+                        defaultContent: "<button class='btn btn-outline-success'>Payment</button>"
                     },
                 ],
                 searching: true,
@@ -71,6 +82,11 @@
                 serverSide: true,
                 stateSave: true,
                 ajax: DRIVERS_LIST_JSON_URL,
+            });
+            $('#driver-datatable tbody').on('click', 'button.btn-outline-success', function () {
+                {#window.location.href = window.location.href+"/"+table.row( $(this).parents('tr') ).data()[0]#}
+                document.getElementById("driver_id").value = table.row($(this).parents('tr')).data()[0]
+                new bootstrap.Modal(document.getElementById('accountModal'), {}).show()
             });
         });
     </script>
@@ -103,14 +119,14 @@
             </div>
             <section class="section">
                 {% if users %}
-                <div class="card">
-                    <div class="card-header">
-                        Drivers Verification List
+                    <div class="card">
+                        <div class="card-header">
+                            Drivers Verification List
+                        </div>
+                        <div class="card-body">
+                            {% include "admin_panel/includes/user_verification.html" %}
+                        </div>
                     </div>
-                    <div class="card-body">
-                        {% include "admin_panel/includes/user_verification.html" %}
-                    </div>
-                </div>
                 {% endif %}
 
                 <div class="card">
@@ -125,6 +141,8 @@
                             <th>{% trans "Phone Number" %}</th>
                             <th>{% trans "E-mail" %}</th>
                             <th>{% trans "Date Joined" %}</th>
+                            <th>{% trans "Due Amount" %}</th>
+                            <th>{% trans "Pay Due" %}</th>
                             </thead>
                             <tbody>
                             </tbody>
@@ -133,6 +151,53 @@
                 </div>
             </section>
         </div>
+        <div class="modal fade" id="accountModal" tabindex="-1" aria-labelledby="accountModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        {% block account_content %}
+                            <button id="closeaccountmodal" type="button" class="btn-close float-end"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            <h5 class="mt-2">Commission Payment</h5>
+                            <hr/>
+                            <form class="row g-3" hx-post="{{ request.path }}payment/" hx-include=".accounts-input"
+                                  hx-target="#agency-account">
+                                {% csrf_token %}
+                                <div class="col-auto">
+                                    <label for="driver_id" class="form-label visually-hidden">ID</label>
+                                    <input type="text" name="driver_id" id="driver_id"
+                                           class="accounts-input form-control visually-hidden" placeholder="id">
+
+                                    <label for="amount" class="form-label">Amount</label>
+                                    <input type="number" name="amount" id="amount" class="accounts-input form-control"
+                                           required placeholder="Paid Amount">
+                                </div>
+                                <div class="col-auto">
+                                    <button id="amount_submit" type="submit" class="btn btn-primary mb-3"
+                                            onclick="closeModal()">Make
+                                        Payment
+                                    </button>
+                                </div>
+                            </form>
+                            <div id="agency-account"></div>
+                        {% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
+    {% load static %}
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script>
+
+        function closeModal() {
+            document.getElementById("closeaccountmodal").click()
+            {#let modal = new bootstrap.Modal(document.getElementById('accountModal'), {});#}
+            {#modal.toggle();#}
+        }
+
+    </script>
 
 {% endblock %}

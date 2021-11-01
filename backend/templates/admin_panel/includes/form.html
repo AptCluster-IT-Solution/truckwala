@@ -1,0 +1,31 @@
+{% load static crispy_forms_tags %}
+<div class="card">
+    {% if form_title %}
+        <div class="card-header">
+            <h4 class="card-title">{{ form_title }}
+                {% if from_modal and not form.instance %}
+                    <button
+                            type="button"
+                            class="btn-close float-end"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">
+                    </button>
+                {% endif %}
+            </h4>
+        </div>
+    {% endif %}
+    <div class="card-content">
+        <div class="card-body">
+            <form
+                    class="form form-horizontal"
+                    method="post"
+                    action="{{ request.path }}"
+                    enctype="multipart/form-data"
+                    novalidate
+            >
+                {% csrf_token %}
+                {% crispy form %}
+            </form>
+        </div>
+    </div>
+</div>

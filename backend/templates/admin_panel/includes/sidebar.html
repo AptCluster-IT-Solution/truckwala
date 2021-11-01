@@ -56,6 +56,14 @@
                     </a>
                 </li>
 
+                {% url 'vehicle_categories_page' as vehicle_categories_page_url %}
+                <li class="sidebar-item {% if request.path == vehicle_categories_page_url %}active{% endif %} ">
+                    <a href="{{ vehicle_categories_page_url }}" class='sidebar-link'>
+                        <i class="bi bi-grid-fill"></i>
+                        <span>Vehicle Categories</span>
+                    </a>
+                </li>
+
 
                 {% url 'driver_ads_page' as driver_ads_page_url %}
                 {% url 'customer_ads_page' as customer_ads_page_url %}

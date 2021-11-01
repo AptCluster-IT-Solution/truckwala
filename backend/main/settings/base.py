@@ -46,12 +46,15 @@ INSTALLED_APPS = [
     "fcm_django",
     "drf_yasg",
     "knox",
+    'crispy_forms',
     "users.apps.UserConfig",
     "vehicles.apps.VehicleConfig",
     "notifications.apps.NotificationConfig",
     "bookings.apps.BookingConfig",
     "admin_panel",
 ]
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 MIDDLEWARE = [
     "django_hosts.middleware.HostsRequestMiddleware",
@@ -173,7 +176,6 @@ FCM_DJANGO_SETTINGS = {
     # default: False
     "DELETE_INACTIVE_DEVICES": False,
 }
-
 
 LOGIN_URL = 'admin:login'
 LOGIN_REDIRECT_URL = 'dashboard'

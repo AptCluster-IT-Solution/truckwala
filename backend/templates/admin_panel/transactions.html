@@ -3,9 +3,7 @@
 
 {% block extra_head %}
     <script type="text/javascript">
-        let TRANSACTIONS_LIST_JSON_URL = '{% url "transactions_list_json" %}';
         // translations for datatables
-
         let dt_language = {
             "emptyTable": "{% trans "No data available in table" %}",
             "info": "{% trans "Showing _START_ to _END_ of _TOTAL_ entries" %}",
@@ -42,15 +40,27 @@
                         className: "center",
                     },
                     {
-                        data: 'booking',
+                        data: 'driver',
                         orderable: true,
-                        searchable: true,
+                        searchable: false,
+                        className: "center",
+                    },
+                    {
+                        data: 'customer',
+                        orderable: true,
+                        searchable: false,
                         className: "center",
                     },
                     {
                         data: 'amount',
                         orderable: true,
-                        searchable: true,
+                        searchable: false,
+                        className: "center"
+                    },
+                    {
+                        data: 'created',
+                        orderable: true,
+                        searchable: false,
                         className: "center"
                     },
                 ],
@@ -58,7 +68,7 @@
                 processing: true,
                 serverSide: true,
                 stateSave: true,
-                ajax: TRANSACTIONS_LIST_JSON_URL
+                ajax: '{% url "transactions_list_json" %}'
             });
         });
     </script>
@@ -98,8 +108,10 @@
                         <table id="transaction-datatable" class="datatable table table-striped">
                             <thead>
                             <th>{% trans "ID" %}</th>
-                            <th>{% trans "Booking" %}</th>
+                            <th>{% trans "Driver" %}</th>
+                            <th>{% trans "Customer" %}</th>
                             <th>{% trans "Amount" %}</th>
+                            <th>{% trans "Created" %}</th>
                             </thead>
                             <tbody>
                             </tbody>
