@@ -62,7 +62,7 @@ def verification_request(request, user=None):
         instance.is_verified = None
         instance.save(update_fields=["is_verified"])
 
-    documents = request.FILES.getlist("documents")
+    documents = request.FILES.getlist("documents", [])
 
     if len(documents):
         for file in documents:
@@ -96,13 +96,15 @@ class RegisterAPI(generics.GenericAPIView):
 
             verification_request(request, user)
 
-            # request.data._mutable = True
+            if hasattr(request.data, "_mutable"):
+                request.data._mutable = True
             fcm_device_id = request.data.pop('fcm_id', None)
             fcm_device_type = request.data.pop('device_type', None)
 
             if fcm_device_id and fcm_device_type:
                 create_fcm_device(user, fcm_device_id, fcm_device_type)
-            # request.data._mutable = False
+            if hasattr(request.data, "_mutable"):
+                request.data._mutable = False
 
             return Response(
                 {
