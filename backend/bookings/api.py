@@ -1,6 +1,6 @@
 from django.db.models import Q
 from rest_framework import viewsets
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
@@ -203,6 +203,27 @@ class BookingModelViewSet(viewsets.ReadOnlyModelViewSet):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+    @action(detail=False, methods=["GET"])
+    def place_search(self, request, *args, **kwargs):
+        q = request.GET.get("q")
+
+        places = {
+            *list(Booking.objects.filter(
+                customer_ad__start_place__icontains=q
+            ).values_list("customer_ad__start_place", flat=True)),
+            *list(Booking.objects.filter(
+                customer_ad__end_place__icontains=q
+            ).values_list("customer_ad__end_place", flat=True)),
+            *list(Booking.objects.filter(
+                driver_ad__start_place__icontains=q
+            ).values_list("driver_ad__start_place", flat=True)),
+            *list(Booking.objects.filter(
+                driver_ad__end_place__icontains=q
+            ).values_list("driver_ad__end_place", flat=True))
+        }
+
+        return Response({"results": places})
 
     @action(detail=True, methods=['PATCH'])
     def complete(self, request, pk=None):
