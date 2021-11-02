@@ -12,6 +12,7 @@ from rest_framework.response import Response
 from bookings.serializers import TransactionSerializer
 from main.custom.permissions import IsDriver, IsCustomer
 from main.custom.viewsets import ContextModelViewSet
+from vehicles.serializers import VehicleSerializer
 from .models import Customer, Driver, User
 from .serializers import (
     UserSerializer,
@@ -100,6 +101,15 @@ class RegisterAPI(generics.GenericAPIView):
 
             if hasattr(request.data, "_mutable"):
                 request.data._mutable = True
+
+            vehicle = request.data.pop('vehicle', None)
+            if vehicle:
+                serializer = VehicleSerializer(data=vehicle)
+                if serializer.is_valid():
+                    serializer.save(driver=user.driver_profile)
+                else:
+                    raise ValidationError(serializer.errors)
+
             fcm_device_id = request.data.pop('fcm_id', None)
             fcm_device_type = request.data.pop('device_type', None)
 
@@ -188,8 +198,8 @@ class DriverViewset(ContextModelViewSet):
         qs = apps.get_model("bookings", "Transaction").objects.filter(driver__user=self.request.user)
         serializer = TransactionSerializer(qs, many=True)
         return Response({
-            "paid_amount":self.request.user.driver_profile.paid_amount,
-            "due_amount":self.request.user.driver_profile.due_amount,
+            "paid_amount": self.request.user.driver_profile.paid_amount,
+            "due_amount": self.request.user.driver_profile.due_amount,
             "transactions": serializer.data
         })
 
