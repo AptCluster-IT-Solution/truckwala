@@ -15,6 +15,12 @@ class VehicleModelViewSet(viewsets.ModelViewSet):
         IsDriver: ["create"],
     }
 
+    def get_queryset(self):
+        user = self.request.user
+        if user.driver_profile:
+            return Vehicle.objects.filter(driver_profile=user.driver_profile)
+        return Vehicle.objects.all()
+
     def perform_create(self, serializer):
         serializer.save(driver=self.request.user.driver_profile)
 
