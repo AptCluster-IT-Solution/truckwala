@@ -54,7 +54,7 @@ class User(AbstractUser):
     objects = UserManager()
 
     def __str__(self):
-        return self.full_name
+        return str(self.full_name)
 
     class Meta:
         verbose_name = "User"
@@ -79,7 +79,7 @@ class Driver(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.user.full_name
+        return str(self.user.full_name)
 
     @property
     def paid_amount(self):
@@ -116,7 +116,7 @@ class Customer(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.user.full_name
+        return str(self.user.full_name)
 
 
 def get_user_document_path(_, filename):
@@ -130,7 +130,7 @@ class DriverDocument(models.Model):
     image = models.ImageField(upload_to=get_user_document_path)
 
     def __str__(self):
-        return self.driver
+        return str(self.driver)
 
 
 class CustomerDocument(models.Model):
@@ -140,4 +140,4 @@ class CustomerDocument(models.Model):
     image = models.ImageField(upload_to=get_user_document_path)
 
     def __str__(self):
-        return self.customer
+        return str(self.customer)
