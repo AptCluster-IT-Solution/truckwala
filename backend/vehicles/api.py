@@ -17,7 +17,7 @@ class VehicleModelViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        if user.driver_profile:
+        if hasattr(user, "driver_profile"):
             return Vehicle.objects.filter(driver=user.driver_profile)
         return Vehicle.objects.all()
 
