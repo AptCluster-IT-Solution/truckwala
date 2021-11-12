@@ -43,6 +43,7 @@ class IsCustomer(permissions.BasePermission):
             elif hasattr(request.user, "customer_profile"):
                 if request.user.customer_profile.is_verified:
                     is_permitted = True
+                is_permitted = True
 
         return is_permitted
 
