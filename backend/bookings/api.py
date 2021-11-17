@@ -47,7 +47,7 @@ class CustomerAdModelViewSet(viewsets.ModelViewSet):
     def bid(self, request, pk=None):
         ad = self.get_object()
         serializer = CustomerAdBidSerializer(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             serializer.save(ad_id=ad.id, bidder_id=request.user.driver_profile.id)
             return Response(serializer.data)
         else:
@@ -229,10 +229,11 @@ class BookingModelViewSet(viewsets.ReadOnlyModelViewSet):
     def complete(self, request, pk=None):
         booking = self.get_object()
         serializer = BookingCompleteSerializer(instance=booking, data=request.data, partial=True)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
-
-        return Response({"booking": "booking fulfilled"})
+            return Response({"booking": "booking fulfilled"})
+        else:
+            raise ValidationError(serializer.errors)
 
 
 class TransactionModelViewSet(ModelViewSet):
