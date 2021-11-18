@@ -8,6 +8,7 @@ from users.models import Driver
 class VehicleCategory(models.Model):
     title = models.CharField(max_length=255)
     commission = models.PositiveSmallIntegerField()
+    image = models.ImageField(upload_to="categories/", null=True, blank=True)
 
     def __str__(self):
         return str(self.title)

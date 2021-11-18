@@ -12,6 +12,7 @@ class VehicleCategoryModelForm(forms.ModelForm):
     helper.layout = Layout(
         "title",
         "commission",
+        "image",
         FormActions(
             Submit('save', 'Save'),
         )
