@@ -242,5 +242,8 @@ class TransactionModelViewSet(ModelViewSet):
     permission_classes = [ActionBasedPermission]
     action_permissions = {
         IsAdminUser: ["accept", "reject", "update", "partial_update", "destroy", "list", "retrieve", "me"],
-        IsDriver: ["list"],
+        IsDriver: ["list", "retrieve"],
     }
+
+    def get_queryset(self):
+        return Transaction.objects.filter(driver__user=self.request.user)
