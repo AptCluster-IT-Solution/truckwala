@@ -67,6 +67,18 @@ class CustomerAdBidModelViewSet(viewsets.ModelViewSet):
             return CustomerAdBid.objects.filter(bidder__user=self.request.user)
         return CustomerAdBid.objects.none()
 
+    @action(detail=False, methods=["GET"])
+    def me(self, request, *args, **kwargs):
+        queryset = CustomerAdBid.objects.filter(ad__poster__user=self.request.user)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
     @action(detail=True, methods=['PATCH'])
     def accept(self, request, pk=None):
         bid = self.get_object()
@@ -141,6 +153,19 @@ class DriverAdBidModelViewSet(viewsets.ModelViewSet):
         if self.request.user.is_authenticated:
             return DriverAdBid.objects.filter(bidder__user=self.request.user)
         return DriverAdBid.objects.none()
+
+
+    @action(detail=False, methods=["GET"])
+    def me(self, request, *args, **kwargs):
+        queryset = DriverAdBid.objects.filter(ad__poster__user=self.request.user)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
     @action(detail=True, methods=['PATCH'])
     def accept(self, request, pk=None):
