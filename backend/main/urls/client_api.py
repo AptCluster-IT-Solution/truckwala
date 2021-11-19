@@ -40,17 +40,17 @@ router.register("customers", CustomerViewset)
 # -------------- auth app view sets --------------
 
 # -------------- vehicles app view sets --------------
-router.register("vehicles", VehicleModelViewSet)
-router.register("vehicle-categories", VehicleCategoryModelViewSet)
+router.register("vehicles", VehicleModelViewSet, basename="Vehicle")
+router.register("vehicle-categories", VehicleCategoryModelViewSet, basename="VehicleCategory")
 # -------------- vehicles app view sets --------------
 
 # -------------- bookings app view sets --------------
-router.register("bookings", BookingModelViewSet)
-router.register("customer-ads", CustomerAdModelViewSet)
-router.register("customer-ad-bids", CustomerAdBidModelViewSet)
-router.register("driver-ads", DriverAdModelViewSet)
-router.register("driver-ad-bids", DriverAdBidModelViewSet)
-router.register("transactions", TransactionModelViewSet)
+router.register("bookings", BookingModelViewSet, basename="Booking")
+router.register("customer-ads", CustomerAdModelViewSet, basename="CustomerAd")
+router.register("customer-ad-bids", CustomerAdBidModelViewSet, basename="CustomerAdBid")
+router.register("driver-ads", DriverAdModelViewSet, basename="DriverAd")
+router.register("driver-ad-bids", DriverAdBidModelViewSet, basename="DriverAdBid")
+router.register("transactions", TransactionModelViewSet, basename="Transaction")
 # -------------- bookings app view sets --------------
 
 # -------------- notifications app view sets --------------
