@@ -6,8 +6,17 @@ from vehicles.serializers import VehicleSerializer
 
 
 class CustomerAdSerializer(serializers.ModelSerializer):
+    class BidSerializer(serializers.ModelSerializer):
+        bidder = UserSerializer(source="bidder.user", read_only=True)
+        vehicle = VehicleSerializer(read_only=True)
+
+        class Meta:
+            model = CustomerAdBid
+            fields = "__all__"
+
     poster = UserSerializer(source="poster.user", required=False)
     acceptor = serializers.StringRelatedField(required=False)
+    bids = BidSerializer(read_only=True, many=True)
 
     class Meta:
         model = CustomerAd
@@ -15,7 +24,15 @@ class CustomerAdSerializer(serializers.ModelSerializer):
 
 
 class CustomerAdBidSerializer(serializers.ModelSerializer):
-    ad = CustomerAdSerializer(read_only=True)
+    class AdSerializer(serializers.ModelSerializer):
+        poster = UserSerializer(source="poster.user", required=False)
+        acceptor = serializers.StringRelatedField(required=False)
+
+        class Meta:
+            model = CustomerAd
+            fields = "__all__"
+
+    ad = AdSerializer(read_only=True)
     ad_id = serializers.CharField(write_only=True, required=False)
     bidder = UserSerializer(source="bidder.user", read_only=True)
     bidder_id = serializers.CharField(write_only=True, required=False)
@@ -24,15 +41,22 @@ class CustomerAdBidSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomerAdBid
-        # fields = "__all__"
-        exclude = ['is_accepted']
+        fields = "__all__"
 
 
 class DriverAdSerializer(serializers.ModelSerializer):
+    class BidSerializer(serializers.ModelSerializer):
+        bidder = UserSerializer(source="bidder.user", read_only=True)
+
+        class Meta:
+            model = DriverAdBid
+            fields = "__all__"
+
     poster = UserSerializer(source="poster.user", required=False)
     acceptor = serializers.StringRelatedField(required=False)
     vehicle = VehicleSerializer(read_only=True)
     vehicle_id = serializers.CharField(write_only=True)
+    bids = BidSerializer(read_only=True, many=True)
 
     class Meta:
         model = DriverAd
@@ -43,15 +67,24 @@ class DriverAdSerializer(serializers.ModelSerializer):
 
 
 class DriverAdBidSerializer(serializers.ModelSerializer):
-    ad = DriverAdSerializer(required=False)
+    class AdSerializer(serializers.ModelSerializer):
+        poster = UserSerializer(source="poster.user", required=False)
+        acceptor = serializers.StringRelatedField(required=False)
+        vehicle = VehicleSerializer(read_only=True)
+        vehicle_id = serializers.CharField(write_only=True)
+
+        class Meta:
+            model = DriverAd
+            fields = "__all__"
+
+    ad = AdSerializer(required=False)
     ad_id = serializers.CharField(write_only=True, required=False)
     bidder = UserSerializer(source="bidder.user", required=False)
     bidder_id = serializers.CharField(write_only=True, required=False)
 
     class Meta:
         model = DriverAdBid
-        # fields = "__all__"
-        exclude = ['is_accepted']
+        fields = "__all__"
 
 
 class BookingSerializer(serializers.ModelSerializer):
