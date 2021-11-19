@@ -8,7 +8,6 @@ from vehicles.serializers import VehicleSerializer, VehicleCategorySerializer
 
 class VehicleModelViewSet(viewsets.ModelViewSet):
     serializer_class = VehicleSerializer
-    queryset = Vehicle.objects.all()
     permission_classes = [ActionBasedPermission]
     action_permissions = {
         IsPosterOrReadOnly: ["update", "partial_update", "destroy", "list", "retrieve"],
@@ -16,7 +15,9 @@ class VehicleModelViewSet(viewsets.ModelViewSet):
     }
 
     def get_queryset(self):
-        return Vehicle.objects.filter(driver__user=self.request.user)
+        if self.request.user.is_authenticated():
+            return Vehicle.objects.filter(driver__user=self.request.user)
+        return Vehicle.objects.none()
 
     def perform_create(self, serializer):
         serializer.save(driver=self.request.user.driver_profile)

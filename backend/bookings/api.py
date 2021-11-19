@@ -63,7 +63,9 @@ class CustomerAdBidModelViewSet(viewsets.ModelViewSet):
     }
 
     def get_queryset(self):
-        return CustomerAdBid.objects.filter(bidder__user=self.request.user)
+        if self.request.user.is_authenticated():
+            return CustomerAdBid.objects.filter(bidder__user=self.request.user)
+        return CustomerAdBid.objects.none()
 
     @action(detail=True, methods=['PATCH'])
     def accept(self, request, pk=None):
@@ -136,7 +138,9 @@ class DriverAdBidModelViewSet(viewsets.ModelViewSet):
     }
 
     def get_queryset(self):
-        return DriverAdBid.objects.filter(bidder__user=self.request.user)
+        if self.request.user.is_authenticated():
+            return DriverAdBid.objects.filter(bidder__user=self.request.user)
+        return DriverAdBid.objects.none()
 
     @action(detail=True, methods=['PATCH'])
     def accept(self, request, pk=None):
@@ -225,4 +229,6 @@ class TransactionModelViewSet(ModelViewSet):
     }
 
     def get_queryset(self):
-        return Transaction.objects.filter(driver__user=self.request.user)
+        if self.request.user.is_authenticated():
+            return Transaction.objects.filter(driver__user=self.request.user)
+        return Transaction.objects.none()
