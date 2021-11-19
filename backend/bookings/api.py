@@ -224,8 +224,8 @@ class TransactionModelViewSet(ModelViewSet):
     serializer_class = TransactionSerializer
     permission_classes = [ActionBasedPermission]
     action_permissions = {
-        IsAdminUser: ["accept", "reject", "update", "partial_update", "destroy", "list", "retrieve", "me"],
         IsDriver: ["list", "retrieve"],
+        IsAdminUser: ["accept", "reject", "update", "partial_update", "destroy", "list", "retrieve", "me"],
     }
 
     def get_queryset(self):
