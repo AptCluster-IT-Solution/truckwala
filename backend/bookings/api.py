@@ -55,7 +55,6 @@ class CustomerAdModelViewSet(viewsets.ModelViewSet):
 
 
 class CustomerAdBidModelViewSet(viewsets.ModelViewSet):
-    queryset = CustomerAdBid.objects.all()
     serializer_class = CustomerAdBidSerializer
     permission_classes = [ActionBasedPermission]
     action_permissions = {
@@ -63,17 +62,8 @@ class CustomerAdBidModelViewSet(viewsets.ModelViewSet):
         IsDriver: ["create"],
     }
 
-    @action(detail=False, methods=["GET"])
-    def me(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset()).filter(bidder__user=self.request.user)
-
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+    def get_queryset(self):
+        return CustomerAdBid.objects.filter(bidder__user=self.request.user)
 
     @action(detail=True, methods=['PATCH'])
     def accept(self, request, pk=None):
@@ -138,7 +128,6 @@ class DriverAdModelViewSet(viewsets.ModelViewSet):
 
 
 class DriverAdBidModelViewSet(viewsets.ModelViewSet):
-    queryset = DriverAdBid.objects.all()
     serializer_class = DriverAdBidSerializer
     permission_classes = [ActionBasedPermission]
     action_permissions = {
@@ -146,17 +135,8 @@ class DriverAdBidModelViewSet(viewsets.ModelViewSet):
         IsCustomer: ["create"],
     }
 
-    @action(detail=False, methods=["GET"])
-    def me(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset()).filter(bidder__user=self.request.user)
-
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+    def get_queryset(self):
+        return DriverAdBid.objects.filter(bidder__user=self.request.user)
 
     @action(detail=True, methods=['PATCH'])
     def accept(self, request, pk=None):
@@ -237,7 +217,6 @@ class BookingModelViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class TransactionModelViewSet(ModelViewSet):
-    queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
     permission_classes = [ActionBasedPermission]
     action_permissions = {
