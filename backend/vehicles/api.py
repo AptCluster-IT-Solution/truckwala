@@ -16,10 +16,7 @@ class VehicleModelViewSet(viewsets.ModelViewSet):
     }
 
     def get_queryset(self):
-        user = self.request.user
-        if hasattr(user, "driver_profile"):
-            return Vehicle.objects.filter(driver=user.driver_profile)
-        return Vehicle.objects.all()
+        return Vehicle.objects.filter(driver__user=self.request.user)
 
     def perform_create(self, serializer):
         serializer.save(driver=self.request.user.driver_profile)
