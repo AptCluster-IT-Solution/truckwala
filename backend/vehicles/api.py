@@ -15,7 +15,7 @@ class VehicleModelViewSet(viewsets.ModelViewSet):
     }
 
     def get_queryset(self):
-        if self.request.user.is_authenticated():
+        if self.request.user.is_authenticated:
             return Vehicle.objects.filter(driver__user=self.request.user)
         return Vehicle.objects.none()
 
