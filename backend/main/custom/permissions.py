@@ -60,8 +60,6 @@ class IsDriver(permissions.BasePermission):
                 is_permitted = True
             elif hasattr(request.user, "driver_profile"):
                 is_permitted = True
-                if request.user.driver_profile.is_verified:
-                    is_permitted = True
 
         return is_permitted
 
