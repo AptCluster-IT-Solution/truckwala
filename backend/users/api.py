@@ -4,7 +4,7 @@ from fcm_django.models import FCMDevice
 from knox.models import AuthToken
 from rest_framework import generics, permissions, status
 from rest_framework.decorators import action, api_view
-from rest_framework.exceptions import ValidationError, PermissionDenied
+from rest_framework.exceptions import ValidationError, PermissionDenied, NotFound
 from rest_framework.generics import get_object_or_404
 from rest_framework.parsers import MultiPartParser, FileUploadParser
 from rest_framework.permissions import IsAuthenticated
@@ -166,6 +166,13 @@ class UserViewset(ContextModelViewSet):
 
     def get_object(self):
         return self.request.user
+
+    @action(detail=False, methods=["post"], permission_classes=[permissions.AllowAny])
+    def check_for_id(self, request):
+        try:
+            return Response({"id": User.objects.get(phone_number=request.data.get('phone_number', None)).id})
+        except User.DoesNotExist:
+            raise NotFound({"msg": "No phone number found."})
 
     @action(detail=True, methods=["post"], permission_classes=[permissions.AllowAny])
     def set_password(self, request, pk=None):
