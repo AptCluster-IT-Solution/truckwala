@@ -38,6 +38,7 @@ class CustomerAdBidSerializer(serializers.ModelSerializer):
     bidder_id = serializers.CharField(write_only=True, required=False)
     vehicle = VehicleSerializer(read_only=True)
     vehicle_id = serializers.CharField(write_only=True)
+    is_accepted = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = CustomerAdBid
@@ -81,6 +82,7 @@ class DriverAdBidSerializer(serializers.ModelSerializer):
     ad_id = serializers.CharField(write_only=True, required=False)
     bidder = UserSerializer(source="bidder.user", required=False)
     bidder_id = serializers.CharField(write_only=True, required=False)
+    is_accepted = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = DriverAdBid
