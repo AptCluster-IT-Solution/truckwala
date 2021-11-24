@@ -64,6 +64,8 @@ class CustomerAdBidModelViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
+            if self.action in ['accept', 'reject']:
+                return CustomerAdBid.objects.filter(ad__poster__user=self.request.user)
             return CustomerAdBid.objects.filter(bidder__user=self.request.user)
         return CustomerAdBid.objects.none()
 
@@ -151,9 +153,10 @@ class DriverAdBidModelViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
+            if self.action in ['accept', 'reject']:
+                return DriverAdBid.objects.filter(ad__poster__user=self.request.user)
             return DriverAdBid.objects.filter(bidder__user=self.request.user)
         return DriverAdBid.objects.none()
-
 
     @action(detail=False, methods=["GET"])
     def me(self, request, *args, **kwargs):
