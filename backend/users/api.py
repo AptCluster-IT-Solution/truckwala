@@ -4,7 +4,8 @@ from fcm_django.models import FCMDevice
 from knox.models import AuthToken
 from rest_framework import generics, permissions, status
 from rest_framework.decorators import action, api_view
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError, PermissionDenied
+from rest_framework.generics import get_object_or_404
 from rest_framework.parsers import MultiPartParser, FileUploadParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -166,14 +167,20 @@ class UserViewset(ContextModelViewSet):
     def get_object(self):
         return self.request.user
 
-    @action(detail=True, methods=["post"])
+    @action(detail=True, methods=["post"], permission_classes=[permissions.AllowAny])
     def set_password(self, request, pk=None):
-        user = self.get_object()
+        user = get_object_or_404(User, id=pk)
+        if request.user.is_authenticated:
+            if not user == request.user:
+                raise PermissionDenied({"msg": "You can not set password for someone else."})
         serializer = PasswordSerializer(data=request.data)
         if serializer.is_valid():
-            user.set_password(serializer.data["password"])
+            if serializer.data.get("old_password"):
+                if not user.check_password(serializer.data.get("old_password")):
+                    raise ValidationError({"msg": "Invalid password."})
+            user.set_password(serializer.data["new_password"])
             user.save()
-            return Response({"status": "password set"})
+            return Response({"msg": "password set"})
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

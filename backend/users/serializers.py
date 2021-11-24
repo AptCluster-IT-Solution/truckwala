@@ -13,11 +13,12 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 class PasswordSerializer(serializers.ModelSerializer):
-    password = serializers.CharField()
+    old_password = serializers.CharField(required=False)
+    new_password = serializers.CharField()
 
     class Meta:
         model = User
-        fields = ("password",)
+        fields = ("old_password", "new_password",)
 
 
 class LoginSerializer(serializers.Serializer):
