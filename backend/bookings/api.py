@@ -22,9 +22,9 @@ class CustomerAdModelViewSet(viewsets.ModelViewSet):
     serializer_class = CustomerAdSerializer
     permission_classes = [ActionBasedPermission]
     action_permissions = {
-        IsPosterOrReadOnly: ["update", "partial_update", "destroy", "list", "retrieve", "me"],
         IsCustomer: ["create"],
         IsDriver: ["bid"],
+        IsPosterOrReadOnly: ["update", "partial_update", "destroy", "list", "retrieve", "me"],
     }
     filterset_fields = ['start_place', 'end_place']
 
@@ -58,8 +58,8 @@ class CustomerAdBidModelViewSet(viewsets.ModelViewSet):
     serializer_class = CustomerAdBidSerializer
     permission_classes = [ActionBasedPermission]
     action_permissions = {
-        IsPosterOrReadOnly: ["accept", "reject", "update", "partial_update", "destroy", "list", "retrieve", "me"],
         IsDriver: ["create"],
+        IsPosterOrReadOnly: ["accept", "reject", "update", "partial_update", "destroy", "list", "retrieve", "me"],
     }
 
     def get_queryset(self):
@@ -112,8 +112,8 @@ class DriverAdModelViewSet(viewsets.ModelViewSet):
     permission_classes = [ActionBasedPermission]
     action_permissions = {
         IsDriver: ["create"],
-        IsPosterOrReadOnly: ["update", "partial_update", "destroy", "list", "retrieve", "me"],
         IsCustomer: ["bid"],
+        IsPosterOrReadOnly: ["update", "partial_update", "destroy", "list", "retrieve", "me"],
     }
     filterset_fields = ['start_place', 'end_place', 'vehicle__category']
 
@@ -147,8 +147,8 @@ class DriverAdBidModelViewSet(viewsets.ModelViewSet):
     serializer_class = DriverAdBidSerializer
     permission_classes = [ActionBasedPermission]
     action_permissions = {
-        IsPosterOrReadOnly: ["accept", "reject", "update", "partial_update", "destroy", "list", "retrieve", "me"],
         IsCustomer: ["create"],
+        IsPosterOrReadOnly: ["accept", "reject", "update", "partial_update", "destroy", "list", "retrieve", "me"],
     }
 
     def get_queryset(self):
