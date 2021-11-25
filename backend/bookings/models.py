@@ -20,7 +20,10 @@ class Ad(models.Model):
     end_time = models.DateTimeField(blank=True, null=True)
 
     cost = models.PositiveIntegerField(default=0)
+
+    product_type = models.CharField(max_length=255, null=True, blank=True)
     quantity = models.PositiveIntegerField(default=0)
+    unit = models.CharField(max_length=255, null=True, blank=True)
 
     created = models.DateTimeField(auto_now_add=True)
 
