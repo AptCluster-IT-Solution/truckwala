@@ -58,7 +58,7 @@ class CustomerAdModelViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["patch"])
     def bid(self, request, pk=None):
         ad = self.get_object()
-        serializer = CustomerAdBidSerializer(data=request.data)
+        serializer = CustomerAdBidSerializer(data=request.data, context=self.get_serializer_context())
         if serializer.is_valid(raise_exception=True):
             serializer.save(ad_id=ad.id, bidder_id=request.user.driver_profile.id)
             return Response(serializer.data)

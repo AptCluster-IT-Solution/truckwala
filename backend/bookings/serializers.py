@@ -1,5 +1,7 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from rest_framework import serializers
+from rest_framework.exceptions import PermissionDenied
 
 from bookings.models import CustomerAd, DriverAd, CustomerAdBid, DriverAdBid, Booking, Transaction
 from users.serializers import UserSerializer, CustomerSerializer, DriverSerializer
@@ -62,12 +64,22 @@ class CustomerAdBidSerializer(serializers.ModelSerializer):
     bidder = UserSerializer(source="bidder.user", read_only=True)
     bidder_id = serializers.CharField(write_only=True, required=False)
     vehicle = VehicleSerializer(read_only=True)
-    vehicle_id = serializers.CharField(write_only=True)
+    vehicle_id = serializers.CharField(write_only=True, required=False)
     is_accepted = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = CustomerAdBid
         fields = "__all__"
+
+    def create(self, validated_data):
+        if validated_data.get("vehicle_id") is None:
+            try:
+                validated_data["vehicle_id"] = self.context.get("request").user.driver_profile.vehicles.filter(
+                    category=CustomerAd.objects.get(id=validated_data.get("ad_id")).vehicle_category
+                ).first().id
+            except (ObjectDoesNotExist, AttributeError) as e:
+                raise PermissionDenied({"msg": "You dont have a vehicle of required category."})
+        return super().create(validated_data)
 
 
 class DriverAdSerializer(serializers.ModelSerializer):
