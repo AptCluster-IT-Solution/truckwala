@@ -1,4 +1,5 @@
 from django.db.models import Q
+from django.utils import timezone
 from rest_framework import viewsets
 from rest_framework.decorators import action, api_view
 from rest_framework.exceptions import ValidationError
@@ -8,13 +9,15 @@ from rest_framework.viewsets import ModelViewSet
 
 from bookings.models import CustomerAd, DriverAd, CustomerAdBid, DriverAdBid, Booking, Transaction
 from bookings.serializers import CustomerAdSerializer, DriverAdSerializer, CustomerAdBidSerializer, \
-    DriverAdBidSerializer, BookingSerializer, BookingCompleteSerializer, TransactionSerializer
+    DriverAdBidSerializer, BookingSerializer, BookingCompleteSerializer, TransactionSerializer, \
+    VehicleCategoryWithAdsSerializer
 from main.custom.permissions import (
     IsPosterOrReadOnly,
     IsCustomer,
     ActionBasedPermission,
     IsDriver,
 )
+from vehicles.models import VehicleCategory
 
 
 class CustomerAdModelViewSet(viewsets.ModelViewSet):
@@ -23,7 +26,7 @@ class CustomerAdModelViewSet(viewsets.ModelViewSet):
     permission_classes = [ActionBasedPermission]
     action_permissions = {
         IsCustomer: ["create"],
-        IsDriver: ["bid"],
+        IsDriver: ["bid", "for_me"],
         IsPosterOrReadOnly: ["update", "partial_update", "destroy", "list", "retrieve", "me"],
     }
     filterset_fields = ['start_place', 'end_place']
@@ -41,6 +44,15 @@ class CustomerAdModelViewSet(viewsets.ModelViewSet):
             return self.get_paginated_response(serializer.data)
 
         serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=["GET"], url_path="for-me")
+    def for_me(self, request, *args, **kwargs):
+        queryset = VehicleCategory.objects.filter(
+            vehicles__driver__user=request.user,
+            customer_ads__start_time__gte=timezone.now()
+        )
+        serializer = VehicleCategoryWithAdsSerializer(queryset, many=True)
         return Response(serializer.data)
 
     @action(detail=True, methods=["patch"])

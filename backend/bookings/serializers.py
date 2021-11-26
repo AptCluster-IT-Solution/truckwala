@@ -1,7 +1,9 @@
+from django.utils import timezone
 from rest_framework import serializers
 
 from bookings.models import CustomerAd, DriverAd, CustomerAdBid, DriverAdBid, Booking, Transaction
 from users.serializers import UserSerializer, CustomerSerializer, DriverSerializer
+from vehicles.models import VehicleCategory
 from vehicles.serializers import VehicleSerializer
 
 
@@ -20,6 +22,29 @@ class CustomerAdSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomerAd
+        fields = "__all__"
+
+
+class VehicleCategoryWithAdsSerializer(serializers.ModelSerializer):
+    class CustomerAdSerializer(serializers.ModelSerializer):
+        poster = UserSerializer(source="poster.user", required=False)
+        acceptor = serializers.StringRelatedField(required=False)
+
+        class Meta:
+            model = CustomerAd
+            fields = "__all__"
+
+    ads = serializers.SerializerMethodField()
+
+    @staticmethod
+    def get_ads(obj):
+        return CustomerAdSerializer(
+            obj.customer_ads.filter(start_time__gte=timezone.now()),
+            many=True, read_only=True
+        ).data
+
+    class Meta:
+        model = VehicleCategory
         fields = "__all__"
 
 

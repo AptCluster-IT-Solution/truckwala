@@ -7,7 +7,7 @@ from rest_framework.exceptions import ValidationError
 
 from notifications.models import Notification
 from users.models import Customer, Driver
-from vehicles.models import Vehicle
+from vehicles.models import Vehicle, VehicleCategory
 
 
 class Ad(models.Model):
@@ -44,6 +44,13 @@ class CustomerAd(Ad):
         related_name="accepted_ads",
         blank=True,
         null=True,
+    )
+    vehicle_category = models.ForeignKey(
+        VehicleCategory,
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        related_name="customer_ads",
     )
 
     def __str__(self):
