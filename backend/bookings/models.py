@@ -101,13 +101,24 @@ class CustomerAdBid(models.Model):
                 if self.__is_accepted != self.is_accepted and self.is_accepted:
                     Notification.objects.create(
                         notification_type=Notification.BID,
-                        subject=f"{self.ad.poster.user.full_name} has accepted your request.",
-                        message=f"{self.ad.poster.user.full_name} has accepted your request.",
+                        subject=f"{self.ad.poster.user.full_name} ({self.ad.poster.user.phone_number}) has accepted your request.",
+                        message=f"{self.ad.poster.user.full_name}  ({self.ad.poster.user.phone_number}) has accepted your request.",
+                        message=f"{self.ad.poster.user.full_name}has accepted your request.",
                         entered_by=self.ad.poster.user,
                         created_for=self.bidder.user,
                         content_type=ContentType.objects.get_for_model(self),
                         object_id=self.pk,
                     )
+                    Notification.objects.create(
+                        notification_type=Notification.BID,
+                        subject=f"You have accepted {self.bidder.user.full_name}'s ({self.bidder.user.phone_number})' request.",
+                        message=f"You have accepted {self.bidder.user.full_name}'s ({self.bidder.user.phone_number})' request.",
+                        entered_by=self.bidder.user,
+                        created_for=self.ad.poster.user,
+                        content_type=ContentType.objects.get_for_model(self),
+                        object_id=self.pk,
+                    )
+                     
             else:
                 raise ValidationError(
                     {"bid": f"This request is already {'accepted' if self.is_accepted else 'rejected'}"})
@@ -188,10 +199,20 @@ class DriverAdBid(models.Model):
                 if self.__is_accepted != self.is_accepted and self.is_accepted:
                     Notification.objects.create(
                         notification_type=Notification.BID,
-                        subject=f"{self.ad.poster.user.full_name} has accepted your request.",
-                        message=f"{self.ad.poster.user.full_name} has accepted your request.",
+                        subject=f"{self.ad.poster.user.full_name} ({self.ad.poster.user.phone_number}) has accepted your request.",
+                        message=f"{self.ad.poster.user.full_name}  ({self.ad.poster.user.phone_number}) has accepted your request.",
+                        message=f"{self.ad.poster.user.full_name}has accepted your request.",
                         entered_by=self.ad.poster.user,
                         created_for=self.bidder.user,
+                        content_type=ContentType.objects.get_for_model(self),
+                        object_id=self.pk,
+                    )
+                    Notification.objects.create(
+                        notification_type=Notification.BID,
+                        subject=f"You have accepted {self.bidder.user.full_name}'s ({self.bidder.user.phone_number})' request.",
+                        message=f"You have accepted {self.bidder.user.full_name}'s ({self.bidder.user.phone_number})' request.",
+                        entered_by=self.bidder.user,
+                        created_for=self.ad.poster.user,
                         content_type=ContentType.objects.get_for_model(self),
                         object_id=self.pk,
                     )
