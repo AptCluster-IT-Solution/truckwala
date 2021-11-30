@@ -3,12 +3,13 @@ version: "3"
 services:
   db:
     image: postgres
-    env_file:
-      - ./db/.env
     volumes:
       - ./db/data:/var/lib/postgres/data
-#    ports:
-#      - "5432:5432"
+    environment:
+      - POSTGRES_DB=truckbooking
+      - POSTGRES_USER=truckbooking
+      - POSTGRES_PASSWORD=truckbooking
+      - PORT=5432
 
 
   backend:

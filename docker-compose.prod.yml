@@ -1,14 +1,6 @@
 version: "3"
 
 services:
-  db:
-    image: postgres
-    env_file:
-      - ./db/.env
-    volumes:
-      - ./db/data:/var/lib/postgres/data
-
-
   backend:
     image: 869809771819.dkr.ecr.ap-south-1.amazonaws.com/truck-booking
     command: gunicorn main.wsgi:application --bind 0.0.0.0:8000 --access-logfile gunicorn.log --error-logfile gunicornerr.log
@@ -16,8 +8,6 @@ services:
       - ./backend:/usr/src/app
     ports:
       - "8000:8000"
-    depends_on:
-      - db
     env_file:
       - ./backend/.env
     environment:
@@ -37,6 +27,3 @@ services:
       # - ./client/dist:/var/www/client # maps frontend build inside web
     depends_on:
       - backend
-
-volumes:
-  db:

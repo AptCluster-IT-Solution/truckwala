@@ -36,12 +36,12 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
 
       - uses: actions/checkout@v2
-      - name: Build and push immage to ECR
+      - name: Build and push image to ECR
         env:
           ECR_WEB_IMAGE: ${{ secrets.ECR_WEB_IMAGE }}
           SSH_USER: ${{ secrets.SSH_USER }}
         run: |
-          echo $(ls app)
+          touch backend/.env
           docker-compose build
           docker-compose push
 
