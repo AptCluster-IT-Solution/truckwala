@@ -136,20 +136,20 @@ class DriversListJson(StaffUserRequiredMixin, BaseDatatableView):
 class CustomersPage(StaffUserRequiredMixin, TemplateView):
     template_name = 'admin_panel/customers.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return {
-            **context,
-            "users": User.objects.prefetch_related(
-                Prefetch("customer_profile", to_attr="profile")
-            )
-                .filter(
-                customer_profile__isnull=False,
-                customer_profile__is_verified__isnull=True,
-            )
-                .distinct()
-                .annotate(user_type=Value("c", output_field=CharField()))
-        }
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     return {
+    #         **context,
+    #         "users": User.objects.prefetch_related(
+    #             Prefetch("customer_profile", to_attr="profile")
+    #         )
+    #             .filter(
+    #             customer_profile__isnull=False,
+    #             customer_profile__is_verified__isnull=True,
+    #         )
+    #             .distinct()
+    #             .annotate(user_type=Value("c", output_field=CharField()))
+    #     }
 
 
 class CustomersListJson(StaffUserRequiredMixin, BaseDatatableView):
@@ -157,7 +157,7 @@ class CustomersListJson(StaffUserRequiredMixin, BaseDatatableView):
     columns = ['id', 'user__full_name', 'user__phone_number', 'user__email', 'created']
 
     def filter_queryset(self, qs):
-        qs = qs.filter(is_verified=True)
+        # qs = qs.filter(is_verified=True)
         search = self.request.GET.get('search[value]', None)
         if search:
             qs = qs.filter(Q(user__full_name__istartswith=search) |
