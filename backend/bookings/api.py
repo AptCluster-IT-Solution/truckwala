@@ -249,7 +249,7 @@ class BookingModelViewSet(viewsets.ReadOnlyModelViewSet):
 
         return Response({"results": places})
 
-    @action(detail=True, methods=['PATCH'])
+    @action(detail=True, methods=['POST'])
     def complete(self, request, pk=None):
         booking = self.get_object()
         serializer = BookingCompleteSerializer(instance=booking, data=request.data, partial=True)
