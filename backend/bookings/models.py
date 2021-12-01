@@ -117,7 +117,7 @@ class CustomerAdBid(models.Model):
                         content_type=ContentType.objects.get_for_model(self),
                         object_id=self.pk,
                     )
-                     
+
             else:
                 raise ValidationError(
                     {"bid": f"This request is already {'accepted' if self.is_accepted else 'rejected'}"})
@@ -273,11 +273,11 @@ class Booking(models.Model):
 
     @property
     def driver(self):
-        return self.customer_bid.bidder if self.customer_bid else self.driver_bid.ad.acceptor
+        return self.customer_bid.bidder if self.customer_bid else self.driver_bid.ad.poster
 
     @property
     def customer(self):
-        return self.customer_ad.poster if self.customer_ad else self.driver_ad.poster
+        return self.customer_bid.ad.poster if self.customer_bid else self.driver_bid.bidder
 
     @property
     def cost(self):
