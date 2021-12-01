@@ -392,6 +392,17 @@ class TransactionsListJson(StaffUserRequiredMixin, BaseDatatableView):
     model = Transaction
     columns = ['id', 'driver', 'customer', 'amount', 'created']
 
+    def filter_queryset(self, qs):
+        search = self.request.GET.get('search[value]', None)
+        if search:
+            qs = qs.filter(
+                Q(driver__user__full_name__istartswith=search) |
+                Q(booking__customer_ad__poster__user__full_name__istartswith=search) |
+                Q(booking__driver_bid__bidder__user__full_name__istartswith=search)
+            )
+
+        return qs
+
     def prepare_results(self, qs):
         json_data = []
         for item in qs:
