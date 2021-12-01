@@ -2,6 +2,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from rest_framework import permissions
 from rest_framework.permissions import AllowAny
 
+from bookings.models import Booking
+
 
 class StaffUserRequiredMixin(LoginRequiredMixin):
     """Verify that the current user is authenticated and is super user."""
@@ -79,6 +81,8 @@ class IsPosterOrReadOnly(permissions.BasePermission):
         # Instance must have an attribute named `owner`.
         if hasattr(obj, 'poster'):
             return obj.poster.user == request.user
+        elif hasattr(obj, 'status') and hasattr(obj, 'driver'):
+            return obj.status in [Booking.ACCEPTED, Booking.DISPATCHED] and obj.driver.user == request.user
         elif hasattr(obj, 'ad') and hasattr(obj.ad, "poster"):
             return obj.ad.poster.user == request.user
         return False
