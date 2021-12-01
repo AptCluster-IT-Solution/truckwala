@@ -330,14 +330,23 @@ class BookingsPage(StaffUserRequiredMixin, TemplateView):
 
 class BookingsListJson(StaffUserRequiredMixin, BaseDatatableView):
     model = Booking
-    columns = ['id', 'created', 'driver', 'customer', 'vehicle', 'vehicle_category', 'start_place', 'end_place', 'price', 'status',
+    columns = ['id', 'driver', 'customer', 'vehicle', 'vehicle_category', 'start_place', 'end_place', 'price', 'status',
                'created', ]
 
     def filter_queryset(self, qs):
         qs = qs.filter(Q(status__in=[Booking.ACCEPTED, Booking.DISPATCHED, Booking.FULFILLED]))
         search = self.request.GET.get('search[value]', None)
         if search:
-            qs = qs.filter(Q(driver__user__full_name__istartswith=search) | Q(registration_number__istartswith=search))
+            qs = qs.filter(
+                Q(customer_ad__poster__user__full_name__istartswith=search) |
+                Q(driver_ad__poster__user__full_name__istartswith=search) |
+                Q(customer_bid__bidder__user__full_name__istartswith=search) |
+                Q(driver_bid__bidder__user__full_name__istartswith=search) |
+
+                Q(customer_bid__vehicle__registration_number__istartswith=search) |
+                Q(driver_ad__vehicle__registration_number__istartswith=search)
+            )
+
         return qs
 
     def prepare_results(self, qs):
@@ -362,7 +371,6 @@ class BookingsListJson(StaffUserRequiredMixin, BaseDatatableView):
 
             json_data.append([
                 escape(item.id),
-                escape(item.created),
                 escape(details['driver']),
                 escape(details['customer']),
                 escape(details['vehicle']),
