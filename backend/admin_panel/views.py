@@ -330,7 +330,7 @@ class BookingsPage(StaffUserRequiredMixin, TemplateView):
 
 class BookingsListJson(StaffUserRequiredMixin, BaseDatatableView):
     model = Booking
-    columns = ['id', 'driver', 'customer', 'vehicle', 'vehicle_category', 'start_place', 'end_place', 'price', 'status',
+    columns = ['id', 'created', 'driver', 'customer', 'vehicle', 'vehicle_category', 'start_place', 'end_place', 'price', 'status',
                'created', ]
 
     def filter_queryset(self, qs):
@@ -362,6 +362,7 @@ class BookingsListJson(StaffUserRequiredMixin, BaseDatatableView):
 
             json_data.append([
                 escape(item.id),
+                escape(item.created),
                 escape(details['driver']),
                 escape(details['customer']),
                 escape(details['vehicle']),

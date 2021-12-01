@@ -42,6 +42,12 @@
                         className: "center",
                     },
                     {
+                        data: 'created',
+                        orderable: true,
+                        searchable: true,
+                        className: "center",
+                    },
+                    {
                         data: 'driver',
                         orderable: true,
                         searchable: true,
@@ -134,6 +140,7 @@
                         <table id="booking-datatable" class="datatable table table-striped">
                             <thead>
                             <th>{% trans "ID" %}</th>
+                            <th>{% trans "Date" %}</th>
                             <th>{% trans "Driver" %}</th>
                             <th>{% trans "Customer" %}</th>
                             <th>{% trans "Vehicle" %}</th>
