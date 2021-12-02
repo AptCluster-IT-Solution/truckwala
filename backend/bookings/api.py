@@ -29,7 +29,7 @@ class CustomerAdModelViewSet(viewsets.ModelViewSet):
         IsDriver: ["bid", "for_me"],
         IsPosterOrReadOnly: ["update", "partial_update", "destroy", "list", "retrieve", "me"],
     }
-    filterset_fields = ['start_place', 'end_place']
+    filterset_fields = ['start_place', 'end_place', 'vehicle_category']
 
     def perform_create(self, serializer):
         serializer.save(poster=self.request.user.customer_profile)
