@@ -26,13 +26,20 @@
                 </li>
 
                 {% url 'drivers_page' as drivers_page_url %}
+                {% url 'unverified_drivers_page' as unverified_drivers_page_url %}
                 {% url 'customers_page' as customers_page_url %}
                 <li class="sidebar-item has-sub {% if request.path == drivers_page_url or request.path == customers_page_url %}active{% endif %}">
                     <a href="#" class='sidebar-link'>
                         <i class="bi bi-stack"></i>
                         <span>Users</span>
                     </a>
-                    <ul class="submenu {% if request.path == drivers_page_url or request.path == customers_page_url %}active{% endif %}">
+                    <ul class="submenu {% if request.path == drivers_page_url or request.path == customers_page_url or request.path == unverified_drivers_page_url %}active{% endif %}">
+                        <li class="submenu-item {% if request.path == unverified_drivers_page_url %}active{% endif %}">
+                            <a href="{{ unverified_drivers_page_url }}">
+                                <i class="bi bi-stack"></i>
+                                <span>Unverified Drivers</span>
+                            </a>
+                        </li>
                         <li class="submenu-item {% if request.path == drivers_page_url %}active{% endif %}">
                             <a href="{{ drivers_page_url }}">
                                 <i class="bi bi-stack"></i>

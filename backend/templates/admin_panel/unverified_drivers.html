@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block extra_head %}
+    <script type="text/javascript">
+        let dt_language = {
+            "emptyTable": "{% trans "No data available in table" %}",
+            "info": "{% trans "Showing _START_ to _END_ of _TOTAL_ entries" %}",
+            "infoEmpty": "{% trans "Showing 0 to 0 of 0 entries" %}",
+            "infoFiltered": "{% trans "(filtered from _MAX_ total entries)" %}",
+            "infoPostFix": "",
+            "thousands": ",",
+            "lengthMenu": "{% trans "Show _MENU_ entries" %}",
+            "loadingRecords": "{% trans "Loading..." %}",
+            "processing": "{% trans "Processing..." %}",
+            "search": "{% trans "Search:" %}",
+            "zeroRecords": "{% trans "No matching records found" %}",
+            "paginate": {
+                "first": "{% trans "First" %}",
+                "last": "{% trans "Last" %}",
+                "next": "{% trans "Next" %}",
+                "previous": "{% trans "Previous" %}"
+            },
+            "aria": {
+                "sortAscending": "{% trans ": activate to sort column ascending" %}",
+                "sortDescending": "{% trans ": activate to sort column descending" %}"
+            }
+        }
+        $(document).ready(function () {
+            let table = $('#unverified-driver-datatable').DataTable({
+                language: dt_language,  // global variable defined in html
+                order: [[0, "desc"]],
+                lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
+                columnDefs: [
+                    {
+                        data: 'id',
+                        orderable: true,
+                        searchable: true,
+                        className: "center",
+                    },
+                    {
+                        data: 'user__full_name',
+                        orderable: true,
+                        searchable: true,
+                        className: "center",
+                    },
+                    {
+                        data: 'user__phone_number',
+                        orderable: true,
+                        searchable: true,
+                        className: "center"
+                    },
+                    {
+                        data: 'user__email',
+                        orderable: true,
+                        searchable: true,
+                        className: "center"
+                    },
+                    {
+                        data: 'created',
+                        orderable: true,
+                        searchable: false,
+                        className: "center"
+                    },
+                    {
+                        targets: -2,
+                        orderable: false,
+                        data: "documents",
+                        render: function (url, type, full) {
+                            return `
+                    <td><!-- Button trigger modal -->
+                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
+                                data-bs-target="#documentsModal${full[0]}">
+                            View Documents
+                        </button>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="documentsModal${full[0]}" tabindex="-1"
+                             aria-labelledby="exampleModalLabel"
+                             aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">${full[1]}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div id="carouselExampleIndicators" class="carousel slide"
+                                             data-bs-ride="carousel">
+                                            <div class="carousel-indicators">
+                                                ${full[6].map((doc, i) => (
+                                                    `<button type="button" data-bs-target="#carouselExampleIndicators"
+                                                            data-bs-slide-to="${i}"
+                                                            ${i === 0 && `class="active"
+                                                            aria-current="true"`}
+                                                            aria-label="Slide ${i + 1}"></button>
+                                                    `))}
+                                            </div>
+                                            <div class="carousel-inner">
+                                                ${full[6].map((doc, i) => (`
+                                                    <div class="carousel-item ${i === 0 && "active"}">
+                                                        <img src="${doc}"
+                                                             class="d-block w-100" alt="...">
+                                                    </div>
+                                                `))}
+                                            </div>
+                                            <button class="carousel-control-prev" type="button"
+                                                    data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                <span class="visually-hidden">Previous</span>
+                                            </button>
+                                            <button class="carousel-control-next" type="button"
+                                                    data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                <span class="visually-hidden">Next</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
+                                        </button>
+                                        <a
+                                                class="btn btn-primary"
+                                                href="{% url 'verification' %}?user_type=d&user_id=${full[0]}&response=1"
+                                        >
+                                            Accept</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                  `
+                        }
+                    },
+                    {
+                        targets: -1,
+                        orderable: false,
+                        data: null,
+                        defaultContent: "<button class='ms-1 btn btn-outline-success'>Accept</button><button class='ms-1 btn btn-outline-danger'>Reject</button>"
+                    },
+                ],
+                searching: true,
+                processing: true,
+                serverSide: true,
+                stateSave: true,
+                ajax: '{% url "unverified_drivers_list_json" %}',
+            });
+            const tbody = $('#unverified-driver-datatable tbody')
+
+            tbody.on('click', 'button.btn-outline-success', function () {
+                let id = table.row($(this).parents('tr')).data()[0]
+                window.location.href = `{% url 'verification' %}?user_type=d&user_id=${id}&response=1`
+            });
+            tbody.on('click', 'button.btn-outline-danger', function () {
+                let id = table.row($(this).parents('tr')).data()[0]
+                window.location.href = `{% url 'verification' %}?user_type=d&user_id=${id}&response=0`
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div id="main">
+        <header class="mb-3">
+            <a href="#" class="burger-btn d-block d-xl-none">
+                <i class="bi bi-justify fs-3"></i>
+            </a>
+        </header>
+
+        <div class="page-heading">
+            <div class="page-title">
+                <div class="row">
+                    <div class="col-12 col-md-6 order-md-1 order-last">
+                        <h3>Drivers</h3>
+                        <p class="text-subtitle text-muted">Control the drivers data here.</p>
+                    </div>
+                    <div class="col-12 col-md-6 order-md-2 order-first">
+                        <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Drivers</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <section class="section">
+                <div class="card">
+                    <div class="card-header">
+                        Unverified Drivers List
+                    </div>
+                    <div class="card-body">
+                        <table id="unverified-driver-datatable" class="datatable table table-striped">
+                            <thead>
+                            <th>{% trans "ID" %}</th>
+                            <th>{% trans "Full Name" %}</th>
+                            <th>{% trans "Phone Number" %}</th>
+                            <th>{% trans "E-mail" %}</th>
+                            <th>{% trans "Date Joined" %}</th>
+                            <th>{% trans "Verification" %}</th>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div class="modal fade" id="accountModal" tabindex="-1" aria-labelledby="accountModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        {% block account_content %}
+                            <button id="closeaccountmodal" type="button" class="btn-close float-end"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            <h5 class="mt-2">Commission Payment</h5>
+                            <hr/>
+                            <form class="row g-3" hx-post="{{ request.path }}payment/" hx-include=".accounts-input"
+                                  hx-target="#agency-account">
+                                {% csrf_token %}
+                                <div class="col-auto">
+                                    <label for="driver_id" class="form-label visually-hidden">ID</label>
+                                    <input type="text" name="driver_id" id="driver_id"
+                                           class="accounts-input form-control visually-hidden" placeholder="id">
+
+                                    <label for="amount" class="form-label">Amount</label>
+                                    <input type="number" name="amount" id="amount" class="accounts-input form-control"
+                                           required placeholder="Paid Amount">
+                                </div>
+                                <div class="col-auto">
+                                    <button id="amount_submit" type="submit" class="btn btn-primary mb-3"
+                                            onclick="closeModal()">Make
+                                        Payment
+                                    </button>
+                                </div>
+                            </form>
+                            <div id="agency-account"></div>
+                        {% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% load static %}
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script>
+
+        function closeModal() {
+            document.getElementById("closeaccountmodal").click()
+            {#let modal = new bootstrap.Modal(document.getElementById('accountModal'), {});#}
+            {#modal.toggle();#}
+        }
+
+    </script>
+
+{% endblock %}

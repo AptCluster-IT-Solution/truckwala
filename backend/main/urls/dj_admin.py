@@ -14,6 +14,8 @@ urlpatterns = [
     path("verification/", users_views.handle_user_verification, name="verification"),
     path('my/datatable/data/', login_required(OrderListJson.as_view()), name='order_list_json'),
 
+    path('unverified-drivers/', admin_views.UnverifiedDriversPage.as_view(), name="unverified_drivers_page"),
+    path('unverified_drivers_list_data/', admin_views.UnverifiedDriversListJson.as_view(), name="unverified_drivers_list_json"),
     path('drivers/', admin_views.DriversPage.as_view(), name="drivers_page"),
     path('drivers/payment/', admin_views.driver_payment, name="drivers_payment"),
     path('drivers_list_data/', admin_views.DriversListJson.as_view(), name="drivers_list_json"),

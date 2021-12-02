@@ -99,7 +99,7 @@ class Driver(models.Model):
                     Value(0))
             )['commission'] + \
             apps.get_model("bookings", "Booking").objects.filter(
-                driver_bid__ad__acceptor__id=self.id
+                driver_bid__ad__poster__id=self.id
             ).aggregate(
                 commission=Coalesce(
                     Sum(F('driver_bid__ad__vehicle__category__commission') * F('driver_bid__ad__cost') / 100),

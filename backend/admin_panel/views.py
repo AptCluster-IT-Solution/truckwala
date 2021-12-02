@@ -77,17 +77,9 @@ class Dashboard(StaffUserRequiredMixin, TemplateView):
 class DriversPage(StaffUserRequiredMixin, TemplateView):
     template_name = 'admin_panel/drivers.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return {
-            **context,
-            "users": User.objects.prefetch_related(Prefetch("driver_profile", to_attr="profile"))
-                .filter(
-                driver_profile__isnull=False, driver_profile__is_verified__isnull=True
-            )
-                .distinct()
-                .annotate(user_type=Value("d", output_field=CharField()))
-        }
+
+class UnverifiedDriversPage(StaffUserRequiredMixin, TemplateView):
+    template_name = 'admin_panel/unverified_drivers.html'
 
 
 def driver_payment(request):
@@ -103,10 +95,12 @@ def driver_payment(request):
 
 class DriversListJson(StaffUserRequiredMixin, BaseDatatableView):
     model = Driver
-    columns = ['id', 'user__full_name', 'user__phone_number', 'user__email', 'created', 'due_amount']
+    columns = ['id', 'user__full_name', 'user__phone_number', 'user__email', 'created', 'due_amount', 'documents']
+
+    def get_initial_queryset(self):
+        return Driver.objects.filter(is_verified=True)
 
     def filter_queryset(self, qs):
-        qs = qs.filter(is_verified=True)
         search = self.request.GET.get('search[value]', None)
         if search:
             qs = qs.filter(Q(user__full_name__istartswith=search) |
@@ -129,8 +123,14 @@ class DriversListJson(StaffUserRequiredMixin, BaseDatatableView):
                 item.user.email,
                 item.user.date_joined.strftime("%Y-%m-%d %H:%M:%S"),
                 item.due_amount,
+                list(item.documents.all().values_list("image", flat=True))
             ])
         return json_data
+
+
+class UnverifiedDriversListJson(DriversListJson):
+    def get_initial_queryset(self):
+        return Driver.objects.filter(is_verified__isnull=True)
 
 
 class CustomersPage(StaffUserRequiredMixin, TemplateView):
