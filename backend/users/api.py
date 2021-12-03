@@ -22,7 +22,7 @@ from .serializers import (
     PasswordSerializer,
     DriverSerializer,
     CustomerSerializer,
-    DocumentUploadSerializer,
+    DocumentUploadSerializer, ChangePasswordSerializer,
 )
 
 
@@ -180,7 +180,7 @@ class UserViewset(ContextModelViewSet):
         if request.user.is_authenticated:
             if not user == request.user:
                 raise PermissionDenied({"msg": "You can not set password for someone else."})
-        serializer = PasswordSerializer(data=request.data)
+        serializer = ChangePasswordSerializer(data=request.data)
         if serializer.is_valid():
             if serializer.data.get("old_password"):
                 if not user.check_password(serializer.data.get("old_password")):
