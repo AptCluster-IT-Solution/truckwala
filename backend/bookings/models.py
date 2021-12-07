@@ -3,6 +3,8 @@ import os
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.db.models import F
+from django.utils import timezone
 from rest_framework.exceptions import ValidationError
 
 from notifications.models import Notification
@@ -295,21 +297,46 @@ class Booking(models.Model):
         return f"{str(self.ad)} - {str(self.created)}"
 
     def save(self, **kwargs):
-        just_completed = False
-        if self.status == self.FULFILLED:
+        _is_adding = self._state.adding
+        _just_completed = False
+
+        try:
+            if Booking.objects.get(pk=self.pk).status == Booking.FULFILLED:
+                self.status = Booking.FULFILLED
+        except Booking.DoesNotExist:
+            pass
+
+        if self.status == Booking.FULFILLED:
             try:
-                if Booking.objects.get(pk=self.pk).status != self.FULFILLED:
-                    just_completed = True
+                if Booking.objects.get(pk=self.pk).status != Booking.FULFILLED:
+                    _just_completed = True
             except Booking.DoesNotExist:
                 pass
         super().save(**kwargs)
-        if just_completed:
+        if _is_adding:
+            Transaction.objects.get_or_create(
+                booking_id=self.pk,
+                driver_id=self.driver.pk,
+                defaults={
+                    "amount": self.cost,
+                    "is_completed": False,
+                }
+            )
+        if _just_completed:
             Transaction.objects.update_or_create(
                 booking_id=self.pk,
                 driver_id=self.driver.pk,
                 defaults={
-                    "amount": self.cost
+                    "amount": self.cost,
+                    "is_completed": True,
                 }
+            )
+            Transaction.objects.filter(
+                booking_id=None,
+                driver_id=self.driver.pk,
+                is_completed=False,
+            ).update(
+                amount=F('amount') + (self.vehicle.category.commission * self.cost)
             )
 
 
@@ -318,4 +345,9 @@ class Transaction(models.Model):
                                    null=True)
     driver = models.ForeignKey(Driver, related_name='transactions', on_delete=models.CASCADE)
     amount = models.PositiveIntegerField(default=0)
-    created = models.DateTimeField(auto_now_add=True)
+    date = models.DateTimeField(default=timezone.now)
+    is_completed = models.BooleanField(default=False, blank=True)
+
+    def save(self, *args, **kwargs):
+        self.date = timezone.now()
+        super().save(*args, **kwargs)

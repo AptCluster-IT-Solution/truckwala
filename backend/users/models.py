@@ -78,6 +78,19 @@ class Driver(models.Model):
     is_verified = models.BooleanField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
 
+    def save(self, *args, **kwargs):
+        _is_adding = self._state.adding
+        super().save(*args, **kwargs)
+        if _is_adding:
+            apps.get_model("bookings", "Transaction").objects.get_or_create(
+                booking_id=None,
+                driver_id=self.id,
+                is_completed=False,
+                defaults={
+                    "amount": 0
+                }
+            )
+
     def __str__(self):
         return str(self.user.full_name)
 
