@@ -384,13 +384,16 @@ class BookingsListJson(StaffUserRequiredMixin, BaseDatatableView):
         return json_data
 
 
-class TransactionsPage(StaffUserRequiredMixin, TemplateView):
-    template_name = 'admin_panel/transactions.html'
+class CustomerToDriverTransactionsPage(StaffUserRequiredMixin, TemplateView):
+    template_name = 'admin_panel/customer_transactions.html'
 
 
-class TransactionsListJson(StaffUserRequiredMixin, BaseDatatableView):
+class CustomerToDriverTransactionsListJson(StaffUserRequiredMixin, BaseDatatableView):
     model = Transaction
-    columns = ['id', 'driver', 'customer', 'amount', 'created']
+    columns = ['id', 'driver', 'customer', 'amount', 'is_completed', 'created']
+
+    def get_initial_queryset(self):
+        return Transaction.objects.filter(booking__isnull=False)
 
     def filter_queryset(self, qs):
         search = self.request.GET.get('search[value]', None)
@@ -411,6 +414,30 @@ class TransactionsListJson(StaffUserRequiredMixin, BaseDatatableView):
                 escape(item.driver.user.full_name),
                 escape(item.booking.customer.user.full_name) if item.booking else None,
                 escape(item.amount),
-                escape(item.created.strftime("%Y-%m-%d %H:%M")),
+                escape(item.is_completed),
+                escape(item.date.strftime("%Y-%m-%d %H:%M")),
+            ])
+        return json_data
+
+
+class DriverToAdminTransactionsPage(StaffUserRequiredMixin, TemplateView):
+    template_name = 'admin_panel/driver_transactions.html'
+
+
+class DriverToAdminTransactionsListJson(CustomerToDriverTransactionsListJson):
+    columns = ['id', 'driver', 'amount', 'is_completed', 'created']
+
+    def get_initial_queryset(self):
+        return Transaction.objects.filter(booking__isnull=True)
+
+    def prepare_results(self, qs):
+        json_data = []
+        for item in qs:
+            json_data.append([
+                escape(item.id),
+                escape(item.driver.user.full_name),
+                escape(item.amount),
+                escape(item.is_completed),
+                escape(item.date.strftime("%Y-%m-%d %H:%M")),
             ])
         return json_data

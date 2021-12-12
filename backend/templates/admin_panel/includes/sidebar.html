@@ -111,6 +111,29 @@
                     </a>
                 </li>
 
+                {% url 'customer_to_driver_transactions_page' as customer_to_driver_transactions_page_url %}
+                {% url 'driver_to_admin_transactions_page' as driver_to_admin_transactions_page_url %}
+                <li class="sidebar-item has-sub {% if request.path == customer_to_driver_transactions_page_url or request.path == driver_to_admin_transactions_page_url %}active{% endif %}">
+                    <a href="#" class='sidebar-link'>
+                        <i class="bi bi-stack"></i>
+                        <span>Transactions</span>
+                    </a>
+                    <ul class="submenu {% if request.path == customer_to_driver_transactions_page_url or request.path == driver_to_admin_transactions_page_url %}active{% endif %}">
+                        <li class="submenu-item {% if request.path == customer_to_driver_transactions_page_url %}active{% endif %}">
+                            <a href="{{ customer_to_driver_transactions_page_url }}">
+                                <i class="bi bi-stack"></i>
+                                <span>Customer</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item {% if request.path == driver_to_admin_transactions_page_url %}active{% endif %}">
+                            <a href="{{ driver_to_admin_transactions_page_url }}">
+                                <i class="bi bi-stack"></i>
+                                <span>Driver</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
 
                 <li class="sidebar-title">Settings</li>
                 <li class="sidebar-item ">

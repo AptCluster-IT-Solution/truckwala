@@ -15,7 +15,8 @@ urlpatterns = [
     path('my/datatable/data/', login_required(OrderListJson.as_view()), name='order_list_json'),
 
     path('unverified-drivers/', admin_views.UnverifiedDriversPage.as_view(), name="unverified_drivers_page"),
-    path('unverified_drivers_list_data/', admin_views.UnverifiedDriversListJson.as_view(), name="unverified_drivers_list_json"),
+    path('unverified_drivers_list_data/', admin_views.UnverifiedDriversListJson.as_view(),
+         name="unverified_drivers_list_json"),
     path('drivers/', admin_views.DriversPage.as_view(), name="drivers_page"),
     path('drivers/payment/', admin_views.driver_payment, name="drivers_payment"),
     path('drivers_list_data/', admin_views.DriversListJson.as_view(), name="drivers_list_json"),
@@ -36,8 +37,14 @@ urlpatterns = [
 
     path('bookings/', admin_views.BookingsPage.as_view(), name="bookings_page"),
     path('bookings_list_data/', admin_views.BookingsListJson.as_view(), name="bookings_list_json"),
-    path('transactions/', admin_views.TransactionsPage.as_view(), name="transactions_page"),
-    path('transactions_list_data/', admin_views.TransactionsListJson.as_view(), name="transactions_list_json"),
+    path('customer-transactions/', admin_views.CustomerToDriverTransactionsPage.as_view(),
+         name="customer_to_driver_transactions_page"),
+    path('customer_transactions_list_data/', admin_views.CustomerToDriverTransactionsListJson.as_view(),
+         name="customer_to_driver_transactions_list_json"),
+    path('driver-transactions/', admin_views.DriverToAdminTransactionsPage.as_view(),
+         name="driver_to_admin_transactions_page"),
+    path('driver_transactions_list_data/', admin_views.DriverToAdminTransactionsListJson.as_view(),
+         name="driver_to_admin_transactions_list_json"),
 
     path("", admin_views.Dashboard.as_view(), name="dashboard"),
     path("", admin.site.urls),
