@@ -72,10 +72,15 @@
                         className: "center"
                     },
                     {
-                        targets: -1,
+                        targets: -2,
                         orderable: false,
                         data: null,
                         defaultContent: "<button class='btn btn-outline-success'>Payment</button>"
+                    },
+                    {
+                        targets: -1,
+                        data: null,
+                        defaultContent: "<button class='btn btn-outline-danger delete-btn'>Delete!</button>"
                     },
                 ],
                 searching: true,
@@ -89,6 +94,11 @@
                 document.getElementById("driver_id").value = table.row($(this).parents('tr')).data()[0]
                 new bootstrap.Modal(document.getElementById('accountModal'), {}).show()
             });
+            $('#driver-datatable tbody').on( 'click', 'button.delete-btn', function () {
+                if (confirm("Confirm delete?")) {
+                    window.location.href = window.location.href + table.row($(this).parents('tr')).data()[0] + "/delete/"
+                }
+            } );
         });
     </script>
 {% endblock %}
@@ -144,6 +154,7 @@
                             <th>{% trans "Date Joined" %}</th>
                             <th>{% trans "Due Amount" %}</th>
                             <th>{% trans "Pay Due" %}</th>
+                            <th>{% trans "" %}</th>
                             </thead>
                             <tbody>
                             </tbody>

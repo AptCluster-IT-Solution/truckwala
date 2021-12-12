@@ -78,6 +78,11 @@ class DriversPage(StaffUserRequiredMixin, TemplateView):
     template_name = 'admin_panel/drivers.html'
 
 
+def driver_delete(request, pk=None):
+    User.objects.filter(driver_profile__pk=pk).delete()
+    return redirect('drivers_page')
+
+
 class UnverifiedDriversPage(StaffUserRequiredMixin, TemplateView):
     template_name = 'admin_panel/unverified_drivers.html'
 
@@ -131,6 +136,11 @@ class DriversListJson(StaffUserRequiredMixin, BaseDatatableView):
 class UnverifiedDriversListJson(DriversListJson):
     def get_initial_queryset(self):
         return Driver.objects.filter(is_verified__isnull=True)
+
+
+def customer_delete(request, pk=None):
+    User.objects.filter(customer_profile__pk=pk).delete()
+    return redirect('customers_page')
 
 
 class CustomersPage(StaffUserRequiredMixin, TemplateView):

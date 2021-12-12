@@ -19,8 +19,10 @@ urlpatterns = [
          name="unverified_drivers_list_json"),
     path('drivers/', admin_views.DriversPage.as_view(), name="drivers_page"),
     path('drivers/payment/', admin_views.driver_payment, name="drivers_payment"),
+    path('drivers/<int:pk>/delete/', admin_views.driver_delete, name="driver_delete"),
     path('drivers_list_data/', admin_views.DriversListJson.as_view(), name="drivers_list_json"),
     path('customers/', admin_views.CustomersPage.as_view(), name="customers_page"),
+    path('customers/<int:pk>/delete/', admin_views.customer_delete, name="customer_delete"),
     path('customers_list_data/', admin_views.CustomersListJson.as_view(), name="customers_list_json"),
 
     path('vehicles/', admin_views.VehiclesPage.as_view(), name="vehicles_page"),

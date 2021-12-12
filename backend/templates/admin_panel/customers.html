@@ -65,6 +65,11 @@
                         searchable: false,
                         className: "center"
                     },
+                    {
+                        targets: -1,
+                        data: null,
+                        defaultContent: "<button class='btn btn-outline-danger delete-btn'>Delete!</button>"
+                    },
                 ],
                 searching: true,
                 processing: true,
@@ -72,6 +77,11 @@
                 stateSave: true,
                 ajax: CUSTOMERS_LIST_JSON_URL
             });
+            $('#customer-datatable tbody').on( 'click', 'button.delete-btn', function () {
+                if (confirm("Confirm delete?")) {
+                    window.location.href = window.location.href + table.row($(this).parents('tr')).data()[0] + "/delete/"
+                }
+            } );
         });
     </script>
 {% endblock %}
@@ -125,6 +135,7 @@
                             <th>{% trans "Phone Number" %}</th>
                             <th>{% trans "E-mail" %}</th>
                             <th>{% trans "Date Joined" %}</th>
+                            <th>{% trans "" %}</th>
                             </thead>
                             <tbody>
                             </tbody>
