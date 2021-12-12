@@ -72,6 +72,77 @@
                         className: "center"
                     },
                     {
+                        targets: -3,
+                        orderable: false,
+                        data: "documents",
+                        render: function (url, type, full) {
+                            return `
+                    <td><!-- Button trigger modal -->
+                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
+                                data-bs-target="#documentsModal${full[0]}">
+                            View Documents
+                        </button>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="documentsModal${full[0]}" tabindex="-1"
+                             aria-labelledby="exampleModalLabel"
+                             aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">${full[1]}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div id="carouselExampleIndicators" class="carousel slide"
+                                             data-bs-ride="carousel">
+                                            <div class="carousel-indicators">
+                                                ${full[6].map((doc, i) => (
+                                `<button type="button" data-bs-target="#carouselExampleIndicators"
+                                                            data-bs-slide-to="${i}"
+                                                            ${i === 0 && `class="active"
+                                                            aria-current="true"`}
+                                                            aria-label="Slide ${i + 1}"></button>
+                                                    `))}
+                                            </div>
+                                            <div class="carousel-inner">
+                                                ${full[6].map((doc, i) => (`
+                                                    <div class="carousel-item ${i === 0 && "active"}">
+                                                        <img src="/media/${doc}"
+                                                             class="d-block w-100" alt="...">
+                                                    </div>
+                                                `))}
+                                            </div>
+                                            <button class="carousel-control-prev" type="button"
+                                                    data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                <span class="visually-hidden">Previous</span>
+                                            </button>
+                                            <button class="carousel-control-next" type="button"
+                                                    data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                <span class="visually-hidden">Next</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
+                                        </button>
+                                        <a
+                                                class="btn btn-primary"
+                                                href="{% url 'verification' %}?user_type=d&user_id=${full[0]}&response=1"
+                                        >
+                                            Accept</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                  `
+                        }
+                    },
+                    {
                         targets: -2,
                         orderable: false,
                         data: null,
@@ -94,11 +165,11 @@
                 document.getElementById("driver_id").value = table.row($(this).parents('tr')).data()[0]
                 new bootstrap.Modal(document.getElementById('accountModal'), {}).show()
             });
-            $('#driver-datatable tbody').on( 'click', 'button.delete-btn', function () {
+            $('#driver-datatable tbody').on('click', 'button.delete-btn', function () {
                 if (confirm("Confirm delete?")) {
                     window.location.href = window.location.href + table.row($(this).parents('tr')).data()[0] + "/delete/"
                 }
-            } );
+            });
         });
     </script>
 {% endblock %}
@@ -153,6 +224,7 @@
                             <th>{% trans "E-mail" %}</th>
                             <th>{% trans "Date Joined" %}</th>
                             <th>{% trans "Due Amount" %}</th>
+                            <th>{% trans "Documents" %}</th>
                             <th>{% trans "Pay Due" %}</th>
                             <th>{% trans "" %}</th>
                             </thead>
