@@ -87,7 +87,7 @@ def driver_payment(request):
         with transaction.atomic():
             driver_id = request.POST.get('driver_id')
             amount = request.POST.get('amount')
-            Transaction.objects.create(driver_id=driver_id, amount=amount)
+            Transaction.objects.create(driver_id=driver_id, amount=amount, is_completed=True)
     except Exception as _:
         pass
     return redirect('drivers_page')
