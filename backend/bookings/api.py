@@ -31,6 +31,11 @@ class CustomerAdModelViewSet(viewsets.ModelViewSet):
     }
     filterset_fields = ['start_place', 'end_place', 'vehicle_category']
 
+    def get_queryset(self):
+        if self.action in ['list']:
+            return CustomerAd.objects.exclude(bids__isaccepted=True)
+        return CustomerAd.objects.all()
+
     def perform_create(self, serializer):
         serializer.save(poster=self.request.user.customer_profile)
 
@@ -81,6 +86,9 @@ class CustomerAdBidModelViewSet(viewsets.ModelViewSet):
             return CustomerAdBid.objects.filter(bidder__user=self.request.user)
         return CustomerAdBid.objects.none()
 
+    def perform_create(self, serializer):
+        serializer.save(is_accepted=True)
+
     @action(detail=False, methods=["GET"])
     def me(self, request, *args, **kwargs):
         queryset = CustomerAdBid.objects.filter(ad__poster__user=self.request.user)
@@ -129,6 +137,11 @@ class DriverAdModelViewSet(viewsets.ModelViewSet):
     }
     filterset_fields = ['start_place', 'end_place', 'vehicle__category']
 
+    def get_queryset(self):
+        if self.action in ['list']:
+            return DriverAd.objects.exclude(bids__isaccepted=True)
+        return DriverAd.objects.all()
+
     def perform_create(self, serializer):
         serializer.save(poster=self.request.user.driver_profile)
 
@@ -169,6 +182,9 @@ class DriverAdBidModelViewSet(viewsets.ModelViewSet):
                 return DriverAdBid.objects.filter(ad__poster__user=self.request.user)
             return DriverAdBid.objects.filter(bidder__user=self.request.user)
         return DriverAdBid.objects.none()
+
+    def perform_create(self, serializer):
+        serializer.save(is_accepted=True)
 
     @action(detail=False, methods=["GET"])
     def me(self, request, *args, **kwargs):
