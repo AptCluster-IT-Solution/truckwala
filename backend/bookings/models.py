@@ -1,11 +1,9 @@
 import os
 
-from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import F
 from django.utils import timezone
-from rest_framework.exceptions import ValidationError
 
 from notifications.models import Notification
 from users.models import Customer, Driver
@@ -91,50 +89,30 @@ class CustomerAdBid(models.Model):
     description = models.TextField(max_length=1000, default="")
     is_accepted = models.BooleanField(blank=True, null=True)
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.__is_accepted = self.is_accepted
-
     def save(self, force_insert=False, force_update=False, *args, **kwargs):
         _is_adding = self._state.adding
         super().save(force_insert, force_update, *args, **kwargs)
-        if _is_adding is False:
-            if self.__is_accepted is None:
-                if self.__is_accepted != self.is_accepted and self.is_accepted:
-                    Notification.objects.create(
-                        notification_type=Notification.BID,
-                        subject=f"{self.ad.poster.user.full_name} ({self.ad.poster.user.phone_number}) has accepted your request.",
-                        message=f"{self.ad.poster.user.full_name}  ({self.ad.poster.user.phone_number}) has accepted your request.",
-                        entered_by=self.ad.poster.user,
-                        created_for=self.bidder.user,
-                        content_type=ContentType.objects.get_for_model(self),
-                        object_id=self.pk,
-                    )
-                    Notification.objects.create(
-                        notification_type=Notification.BID,
-                        subject=f"You have accepted {self.bidder.user.full_name}'s ({self.bidder.user.phone_number})' request.",
-                        message=f"You have accepted {self.bidder.user.full_name}'s ({self.bidder.user.phone_number})' request.",
-                        entered_by=self.bidder.user,
-                        created_for=self.ad.poster.user,
-                        content_type=ContentType.objects.get_for_model(self),
-                        object_id=self.pk,
-                    )
 
-            else:
-                raise ValidationError(
-                    {"bid": f"This request is already {'accepted' if self.is_accepted else 'rejected'}"})
-        else:
+        if _is_adding and self.is_accepted:
+            Booking.objects.filter(customer_ad=self.ad).update(customer_bid_id=self.id)
             Notification.objects.create(
                 notification_type=Notification.BID,
-                subject=f"{self.bidder.user.full_name} has requested to accept your ad.",
-                message=f"{self.bidder.user.full_name} has requested to accept your ad.",
+                subject=f"{self.ad.poster.user.full_name} ({self.ad.poster.user.phone_number}) has accepted your request.",
+                message=f"{self.ad.poster.user.full_name}  ({self.ad.poster.user.phone_number}) has accepted your request.",
                 entered_by=self.bidder.user,
                 created_for=self.ad.poster.user,
                 content_type=ContentType.objects.get_for_model(self),
                 object_id=self.pk,
             )
-
-        self.__is_accepted = self.is_accepted
+            Notification.objects.create(
+                notification_type=Notification.BID,
+                subject=f"You have accepted {self.bidder.user.full_name}'s ({self.bidder.user.phone_number})' request.",
+                message=f"You have accepted {self.bidder.user.full_name}'s ({self.bidder.user.phone_number})' request.",
+                entered_by=self.ad.poster.user,
+                created_for=self.bidder.user,
+                content_type=ContentType.objects.get_for_model(self),
+                object_id=self.pk,
+            )
 
 
 class DriverAd(Ad):
@@ -188,48 +166,31 @@ class DriverAdBid(models.Model):
     description = models.TextField(max_length=1000, default="")
     is_accepted = models.BooleanField(blank=True, null=True)
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.__is_accepted = self.is_accepted
-
     def save(self, force_insert=False, force_update=False, *args, **kwargs):
         _is_adding = self._state.adding
         super().save(force_insert, force_update, *args, **kwargs)
-        if _is_adding is False:
-            if self.__is_accepted is None:
-                if self.__is_accepted != self.is_accepted and self.is_accepted:
-                    Notification.objects.create(
-                        notification_type=Notification.BID,
-                        subject=f"{self.ad.poster.user.full_name} ({self.ad.poster.user.phone_number}) has accepted your request.",
-                        message=f"{self.ad.poster.user.full_name}  ({self.ad.poster.user.phone_number}) has accepted your request.",
-                        entered_by=self.ad.poster.user,
-                        created_for=self.bidder.user,
-                        content_type=ContentType.objects.get_for_model(self),
-                        object_id=self.pk,
-                    )
-                    Notification.objects.create(
-                        notification_type=Notification.BID,
-                        subject=f"You have accepted {self.bidder.user.full_name}'s ({self.bidder.user.phone_number})' request.",
-                        message=f"You have accepted {self.bidder.user.full_name}'s ({self.bidder.user.phone_number})' request.",
-                        entered_by=self.bidder.user,
-                        created_for=self.ad.poster.user,
-                        content_type=ContentType.objects.get_for_model(self),
-                        object_id=self.pk,
-                    )
-            else:
-                raise ValidationError(
-                    {"bid": f"This request is already {'accepted' if self.is_accepted else 'rejected'}"})
-        else:
+
+        if _is_adding and self.is_accepted:
+            Booking.objects.filter(driver_ad=self.ad).update(driver_bid_id=self.id)
+
             Notification.objects.create(
                 notification_type=Notification.BID,
-                subject=f"{self.bidder.user.full_name} has requested to accept your ad.",
-                message=f"{self.bidder.user.full_name} has requested to accept your ad.",
+                subject=f"{self.ad.poster.user.full_name} ({self.ad.poster.user.phone_number}) has accepted your request.",
+                message=f"{self.ad.poster.user.full_name}  ({self.ad.poster.user.phone_number}) has accepted your request.",
                 entered_by=self.bidder.user,
                 created_for=self.ad.poster.user,
                 content_type=ContentType.objects.get_for_model(self),
                 object_id=self.pk,
             )
-        self.__is_accepted = self.is_accepted
+            Notification.objects.create(
+                notification_type=Notification.BID,
+                subject=f"You have accepted {self.bidder.user.full_name}'s ({self.bidder.user.phone_number})' request.",
+                message=f"You have accepted {self.bidder.user.full_name}'s ({self.bidder.user.phone_number})' request.",
+                entered_by=self.ad.poster.user,
+                created_for=self.bidder.user,
+                content_type=ContentType.objects.get_for_model(self),
+                object_id=self.pk,
+            )
 
 
 def get_invoice_image_path(_, filename):
