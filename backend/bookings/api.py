@@ -36,7 +36,11 @@ class CustomerAdModelViewSet(viewsets.ModelViewSet):
         if self.action in ['list']:
             qs = CustomerAd.objects.exclude(bids__is_accepted=True)
             if hasattr(self.request.user, "driver_profile"):
-                qs = qs.filter(vehicle_category=self.request.user.driver_profile.vehicle.category)
+                try:
+                    category = self.request.user.driver_profile.vehicles.first().category
+                except ObjectDoesNotExist:
+                    category = None
+                qs = qs.filter(vehicle_category=category)
             return qs
         return CustomerAd.objects.all()
 
