@@ -87,7 +87,7 @@ class CustomerAdBid(models.Model):
     )
     cost = models.PositiveIntegerField(default=0)
     description = models.TextField(max_length=1000, default="")
-    is_accepted = models.BooleanField(blank=True, null=True)
+    is_accepted = models.BooleanField(blank=True, null=True, default=True)
 
     def save(self, force_insert=False, force_update=False, *args, **kwargs):
         _is_adding = self._state.adding
@@ -164,7 +164,7 @@ class DriverAdBid(models.Model):
     )
     load = models.PositiveIntegerField(default=0)
     description = models.TextField(max_length=1000, default="")
-    is_accepted = models.BooleanField(blank=True, null=True)
+    is_accepted = models.BooleanField(blank=True, null=True, default=True)
 
     def save(self, force_insert=False, force_update=False, *args, **kwargs):
         _is_adding = self._state.adding
