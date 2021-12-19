@@ -52,7 +52,7 @@ class CustomerAdModelViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     @action(detail=False, methods=["GET"], url_path="for-me")
-    def for_me(self, request, *args, **kwargs:
+    def for_me(self, request, *args, **kwargs):
         queryset = VehicleCategory.objects.filter(
             vehicles__driver__user=request.user,
             customer_ads__start_time__gte=timezone.now()
