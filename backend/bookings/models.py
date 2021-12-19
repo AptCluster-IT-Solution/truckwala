@@ -290,7 +290,7 @@ class Booking(models.Model):
         if _is_adding:
             Transaction.objects.get_or_create(
                 booking_id=self.pk,
-                driver_id=self.driver.pk,
+                driver=self.driver,
                 defaults={
                     "amount": self.cost,
                     "is_completed": False,
@@ -317,7 +317,7 @@ class Booking(models.Model):
 class Transaction(models.Model):
     booking = models.OneToOneField(Booking, related_name='transactions', on_delete=models.CASCADE, blank=True,
                                    null=True)
-    driver = models.ForeignKey(Driver, related_name='transactions', on_delete=models.CASCADE)
+    driver = models.ForeignKey(Driver, related_name='transactions', on_delete=models.CASCADE, null=True, blank=True)
     amount = models.PositiveIntegerField(default=0)
     date = models.DateTimeField(default=timezone.now)
     is_completed = models.BooleanField(default=False, blank=True)
