@@ -236,11 +236,19 @@ class Booking(models.Model):
 
     @property
     def driver(self):
-        return self.customer_bid.bidder if self.customer_bid else self.driver_bid.ad.poster
+        if self.driver_ad:
+            return self.driver_ad.poster
+        elif self.customer_bid:
+            return self.customer_bid.bidder
+        return None
 
     @property
     def customer(self):
-        return self.customer_bid.ad.poster if self.customer_bid else self.driver_bid.bidder
+        if self.customer_ad:
+            return self.customer_ad.poster
+        elif self.driver_bid:
+            return self.driver_bid.bidder
+        return None
 
     @property
     def cost(self):
