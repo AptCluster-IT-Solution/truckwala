@@ -4,6 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import F
 from django.utils import timezone
+from rest_framework.exceptions import ValidationError
 
 from notifications.models import Notification
 from users.models import Customer, Driver
@@ -91,6 +92,8 @@ class CustomerAdBid(models.Model):
 
     def save(self, force_insert=False, force_update=False, *args, **kwargs):
         _is_adding = self._state.adding
+        if _is_adding and self.ad.bids.filter(is_accepted=True).exists():
+            raise ValidationError({"msg": "this ad is already accepted."})
         super().save(force_insert, force_update, *args, **kwargs)
 
         if _is_adding and self.is_accepted:
@@ -168,6 +171,8 @@ class DriverAdBid(models.Model):
 
     def save(self, force_insert=False, force_update=False, *args, **kwargs):
         _is_adding = self._state.adding
+        if _is_adding and self.ad.bids.filter(is_accepted=True).exists():
+            raise ValidationError({"msg": "this ad is already accepted."})
         super().save(force_insert, force_update, *args, **kwargs)
 
         if _is_adding and self.is_accepted:
