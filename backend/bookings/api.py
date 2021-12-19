@@ -33,7 +33,10 @@ class CustomerAdModelViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         if self.action in ['list']:
-            return CustomerAd.objects.exclude(bids__is_accepted=True)
+            qs = CustomerAd.objects.exclude(bids__is_accepted=True)
+            if hasattr(self.request.user, "driver_profile"):
+                qs = qs.filter(vehicle_category=self.request.user.driver_profile.vehicle.category)
+            return qs
         return CustomerAd.objects.all()
 
     def perform_create(self, serializer):
