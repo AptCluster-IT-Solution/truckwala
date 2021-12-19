@@ -33,7 +33,7 @@ class CustomerAdModelViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         if self.action in ['list']:
-            return CustomerAd.objects.exclude(bids__isaccepted=True)
+            return CustomerAd.objects.exclude(bids__is_accepted=True)
         return CustomerAd.objects.all()
 
     def perform_create(self, serializer):
@@ -52,7 +52,7 @@ class CustomerAdModelViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     @action(detail=False, methods=["GET"], url_path="for-me")
-    def for_me(self, request, *args, **kwargs):
+    def for_me(self, request, *args, **kwargs:
         queryset = VehicleCategory.objects.filter(
             vehicles__driver__user=request.user,
             customer_ads__start_time__gte=timezone.now()
@@ -139,7 +139,7 @@ class DriverAdModelViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         if self.action in ['list']:
-            return DriverAd.objects.exclude(bids__isaccepted=True)
+            return DriverAd.objects.exclude(bids__is_accepted=True)
         return DriverAd.objects.all()
 
     def perform_create(self, serializer):
