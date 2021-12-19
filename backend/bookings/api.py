@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.utils import timezone
 from rest_framework import viewsets
@@ -146,7 +147,15 @@ class DriverAdModelViewSet(viewsets.ModelViewSet):
         return DriverAd.objects.all()
 
     def perform_create(self, serializer):
-        serializer.save(poster=self.request.user.driver_profile)
+        try:
+            vehicle = self.request.user.driver_profile.vehicles.first()
+        except ObjectDoesNotExist:
+            vehicle = None
+
+        serializer.save(
+            poster=self.request.user.driver_profile,
+            vehicle=vehicle
+        )
 
     @action(detail=False, methods=["GET"])
     def me(self, request, *args, **kwargs):

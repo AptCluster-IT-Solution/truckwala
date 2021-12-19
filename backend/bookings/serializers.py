@@ -93,7 +93,7 @@ class DriverAdSerializer(serializers.ModelSerializer):
     poster = UserSerializer(source="poster.user", required=False)
     acceptor = serializers.StringRelatedField(required=False)
     vehicle = VehicleSerializer(read_only=True)
-    vehicle_id = serializers.CharField(write_only=True)
+    vehicle_id = serializers.CharField(write_only=True, required=False)
     bids = BidSerializer(read_only=True, many=True)
 
     class Meta:
