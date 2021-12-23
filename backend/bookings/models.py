@@ -100,22 +100,22 @@ class CustomerAdBid(models.Model):
             Booking.objects.filter(customer_ad=self.ad).update(customer_bid_id=self.id)
             Notification.objects.create(
                 notification_type=Notification.BID,
-                subject=f"{self.ad.poster.user.full_name} ({self.ad.poster.user.phone_number}) has accepted your request.",
-                message=f"{self.ad.poster.user.full_name}  ({self.ad.poster.user.phone_number}) has accepted your request.",
+                subject=f"Order Accepted.",
+                message=f"Your order from '{self.ad.start_place}' to '{self.ad.end_place}' has been confirmed. {self.ad.poster.user.full_name}  ({self.ad.poster.user.phone_number}) will contact you immediately.",
                 entered_by=self.bidder.user,
                 created_for=self.ad.poster.user,
                 content_type=ContentType.objects.get_for_model(self),
                 object_id=self.pk,
             )
-            Notification.objects.create(
-                notification_type=Notification.BID,
-                subject=f"You have accepted {self.bidder.user.full_name}'s ({self.bidder.user.phone_number})' request.",
-                message=f"You have accepted {self.bidder.user.full_name}'s ({self.bidder.user.phone_number})' request.",
-                entered_by=self.ad.poster.user,
-                created_for=self.bidder.user,
-                content_type=ContentType.objects.get_for_model(self),
-                object_id=self.pk,
-            )
+            # Notification.objects.create(
+            #     notification_type=Notification.BID,
+            #     subject=f"You have accepted {self.bidder.user.full_name}'s ({self.bidder.user.phone_number})' request.",
+            #     message=f"You have accepted {self.bidder.user.full_name}'s ({self.bidder.user.phone_number})' request.",
+            #     entered_by=self.ad.poster.user,
+            #     created_for=self.bidder.user,
+            #     content_type=ContentType.objects.get_for_model(self),
+            #     object_id=self.pk,
+            # )
 
 
 class DriverAd(Ad):
@@ -180,22 +180,22 @@ class DriverAdBid(models.Model):
 
             Notification.objects.create(
                 notification_type=Notification.BID,
-                subject=f"{self.ad.poster.user.full_name} ({self.ad.poster.user.phone_number}) has accepted your request.",
-                message=f"{self.ad.poster.user.full_name}  ({self.ad.poster.user.phone_number}) has accepted your request.",
+                subject=f"Order Accepted",
+                message=f"Your order has been confirmed, please contact {self.ad.poster.user.full_name}  ({self.ad.poster.user.phone_number}) for further process.",
                 entered_by=self.bidder.user,
                 created_for=self.ad.poster.user,
                 content_type=ContentType.objects.get_for_model(self),
                 object_id=self.pk,
             )
-            Notification.objects.create(
-                notification_type=Notification.BID,
-                subject=f"You have accepted {self.bidder.user.full_name}'s ({self.bidder.user.phone_number})' request.",
-                message=f"You have accepted {self.bidder.user.full_name}'s ({self.bidder.user.phone_number})' request.",
-                entered_by=self.ad.poster.user,
-                created_for=self.bidder.user,
-                content_type=ContentType.objects.get_for_model(self),
-                object_id=self.pk,
-            )
+            # Notification.objects.create(
+            #     notification_type=Notification.BID,
+            #     subject=f"You have accepted {self.bidder.user.full_name}'s ({self.bidder.user.phone_number})' request.",
+            #     message=f"You have accepted {self.bidder.user.full_name}'s ({self.bidder.user.phone_number})' request.",
+            #     entered_by=self.ad.poster.user,
+            #     created_for=self.bidder.user,
+            #     content_type=ContentType.objects.get_for_model(self),
+            #     object_id=self.pk,
+            # )
 
 
 def get_invoice_image_path(_, filename):
