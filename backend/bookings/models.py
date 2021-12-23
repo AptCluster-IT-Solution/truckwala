@@ -292,8 +292,8 @@ class Booking(models.Model):
         if _is_adding:
             Transaction.objects.get_or_create(
                 booking_id=self.pk,
-                driver=self.driver,
                 defaults={
+                    "driver": self.driver,
                     "amount": self.cost,
                     "is_completed": False,
                 }
@@ -301,8 +301,8 @@ class Booking(models.Model):
         if _just_completed:
             Transaction.objects.update_or_create(
                 booking_id=self.pk,
-                driver_id=self.driver.pk,
                 defaults={
+                    "driver": self.driver,
                     "amount": self.cost,
                     "is_completed": True,
                 }
