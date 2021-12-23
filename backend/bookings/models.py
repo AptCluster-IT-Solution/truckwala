@@ -97,6 +97,7 @@ class CustomerAdBid(models.Model):
         super().save(force_insert, force_update, *args, **kwargs)
 
         if _is_adding and self.is_accepted:
+            CustomerAd.objects.filter(id=self.ad.id).update(acceptor=self.bidder)
             Booking.objects.filter(customer_ad=self.ad).update(customer_bid_id=self.id)
             Notification.objects.create(
                 notification_type=Notification.BID,
@@ -176,6 +177,7 @@ class DriverAdBid(models.Model):
         super().save(force_insert, force_update, *args, **kwargs)
 
         if _is_adding and self.is_accepted:
+            DriverAd.objects.filter(id=self.ad.id).update(acceptor=self.bidder)
             Booking.objects.filter(driver_ad=self.ad).update(driver_bid_id=self.id)
 
             Notification.objects.create(
