@@ -312,6 +312,14 @@ class Booking(models.Model):
             ).update(
                 amount=F('amount') + (self.vehicle.category.commission * self.cost)
             )
+            Notification.objects.create(
+                notification_type=Notification.BOOKING,
+                subject=f"Order Completed",
+                message=f"{self.ad.poster.user.full_name}  ({self.ad.poster.user.phone_number}) has delivered goods in drop off location. Please provide ratings and feedback.",
+                created_for=self.customer.user,
+                content_type=ContentType.objects.get_for_model(self),
+                object_id=self.pk,
+            )
 
 
 class Transaction(models.Model):

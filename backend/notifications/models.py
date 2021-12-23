@@ -13,12 +13,14 @@ class Notification(models.Model):
     DRIVER_AD = "D"
     BID = "B"
     AD_ACCEPTED = "A"
+    BOOKING = "K"
     GLOBAL = "G"
     NOTIFICATION_TYPES = (
         (CUSTOMER_AD, "New Customer Ad"),
         (DRIVER_AD, "New Driver Ad"),
         (AD_ACCEPTED, "Ad Accepted"),
         (BID, "Bid Added"),
+        (BOOKING, "Booking"),
         (GLOBAL, "Global System-wide "),
     )
     notification_type = models.CharField(max_length=1, choices=NOTIFICATION_TYPES)
