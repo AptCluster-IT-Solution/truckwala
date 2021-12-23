@@ -146,7 +146,7 @@ class BookingSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Booking
-        fields = ['id', 'ad', 'status', "cost", "vehicle"]
+        fields = ['id', 'ad', 'status', "cost", "vehicle", "invoice_image"]
 
 
 class BookingCompleteSerializer(serializers.ModelSerializer):
