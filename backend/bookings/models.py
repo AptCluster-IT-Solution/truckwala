@@ -98,7 +98,7 @@ class CustomerAdBid(models.Model):
 
         if _is_adding and self.is_accepted:
             CustomerAd.objects.filter(id=self.ad.id).update(acceptor=self.bidder)
-            Booking.objects.filter(customer_ad=self.ad).update(customer_bid_id=self.id)
+            Booking.objects.filter(customer_ad=self.ad).update(customer_bid_id=self.id, status=Booking.ACCEPTED)
             Notification.objects.create(
                 notification_type=Notification.BID,
                 subject=f"Order Accepted.",
@@ -178,7 +178,7 @@ class DriverAdBid(models.Model):
 
         if _is_adding and self.is_accepted:
             DriverAd.objects.filter(id=self.ad.id).update(acceptor=self.bidder)
-            Booking.objects.filter(driver_ad=self.ad).update(driver_bid_id=self.id)
+            Booking.objects.filter(driver_ad=self.ad).update(driver_bid_id=self.id, status=Booking.ACCEPTED)
 
             Notification.objects.create(
                 notification_type=Notification.BID,
