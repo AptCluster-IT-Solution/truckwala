@@ -4,6 +4,7 @@ services:
   backend:
     image: 869809771819.dkr.ecr.ap-south-1.amazonaws.com/truck-booking
     command: gunicorn main.wsgi:application --bind 0.0.0.0:8000 --access-logfile gunicorn.log --error-logfile gunicornerr.log
+    restart: unless-stopped
     volumes:
       - ./backend:/usr/src/app
     ports:
@@ -13,17 +14,48 @@ services:
     environment:
       - DEBUG=0
       - GOOGLE_APPLICATION_CREDENTIALS=/usr/src/app/firebase-admin.json
-
+    networks:
+      - app-network
 
   nginx:
     image: nginx:latest
     ports:
       - "80:80"
       - "443:443"
+    restart: unless-stopped
     volumes:
       - ./web/nginx-proxy.prod.conf:/etc/nginx/conf.d/default.conf
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
       - ./backend/staticfiles:/staticfiles
       - ./backend/mediafiles:/mediafiles
       # - ./client/dist:/var/www/client # maps frontend build inside web
     depends_on:
       - backend
+    networks:
+      - app-network
+
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+      - web-root:/var/www/certbot
+    depends_on:
+      - nginx
+    command: certonly --server https://acme-v02.api.letsencrypt.org/directory --manual --preferred-challenges dns -d ${DOMAIN:-example.com} -d *.${DOMAIN:-example.com}
+
+volumes:
+  certbot-etc:
+  certbot-var:
+  web-root:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/${USER:-ubuntu}/${REPO_NAME:-app}/
+      o: bind
+
+networks:
+  app-network:
+    driver: bridge
+    
