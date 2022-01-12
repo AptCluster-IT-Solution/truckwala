@@ -34,6 +34,8 @@ services:
       - backend
     networks:
       - app-network
+    environment:
+      - DOMAIN=${DOMAIN:-example.com}
 
   certbot:
     image: certbot/certbot:latest
@@ -44,6 +46,8 @@ services:
     depends_on:
       - nginx
     command: certonly --server https://acme-v02.api.letsencrypt.org/directory --manual --preferred-challenges dns -d ${DOMAIN:-example.com} -d *.${DOMAIN:-example.com}
+    environment:
+      - DOMAIN=${DOMAIN:-example.com}
 
 volumes:
   certbot-etc:
@@ -58,4 +62,3 @@ volumes:
 networks:
   app-network:
     driver: bridge
-    
