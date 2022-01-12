@@ -46,3 +46,6 @@ login-backend:
 
 db-shell:
 	docker-compose -f docker-compose.yml exec db psql -Upostgres
+
+install-ssl: 
+	docker-compose -f docker-compose.prod.yml run --rm certbot certonly --server https://acme-v02.api.letsencrypt.org/directory --manual --preferred-challenges dns -d $(c) -d *.$(c)
