@@ -4,7 +4,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied
 
 from bookings.models import CustomerAd, DriverAd, CustomerAdBid, DriverAdBid, Booking, Transaction
-from users.serializers import UserSerializer, CustomerSerializer, DriverSerializer
+from users.serializers import UserSerializer
 from vehicles.models import VehicleCategory
 from vehicles.serializers import VehicleSerializer
 
@@ -167,4 +167,4 @@ class TransactionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Transaction
-        fields = ['id', 'customer', 'driver', 'amount', 'created']
+        fields = ['id', 'customer', 'driver', 'amount']
