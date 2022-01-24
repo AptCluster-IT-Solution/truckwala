@@ -164,7 +164,8 @@ class BookingCompleteSerializer(serializers.ModelSerializer):
 class TransactionSerializer(serializers.ModelSerializer):
     customer = serializers.StringRelatedField(source="booking.customer")
     driver = serializers.StringRelatedField()
+    booking = BookingSerializer(read_only=True)
 
     class Meta:
         model = Transaction
-        fields = ['id', 'customer', 'driver', 'amount']
+        fields = ['id', 'customer', 'driver', 'amount', 'booking']
