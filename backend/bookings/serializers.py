@@ -2,6 +2,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.reverse import reverse
 
 from bookings.models import CustomerAd, DriverAd, CustomerAdBid, DriverAdBid, Booking, Transaction
 from users.serializers import UserSerializer
@@ -130,6 +131,10 @@ class BookingSerializer(serializers.ModelSerializer):
     ad = serializers.SerializerMethodField()
     cost = serializers.SerializerMethodField()
     vehicle = serializers.SerializerMethodField()
+    invoice = serializers.SerializerMethodField(read_only=True)
+
+    def get_invoice(self, obj):
+        return reverse(f"Booking-invoice", args=(obj.id,), request=self.context.get("request"))
 
     def get_ad(self, obj):
         if obj.driver_ad:
@@ -146,7 +151,7 @@ class BookingSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Booking
-        fields = ['id', 'ad', 'status', "cost", "vehicle", "invoice_image"]
+        fields = ['id', 'ad', 'status', "cost", "vehicle", "invoice_image", "invoice"]
 
 
 class BookingCompleteSerializer(serializers.ModelSerializer):
