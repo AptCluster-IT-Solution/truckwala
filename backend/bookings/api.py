@@ -153,6 +153,9 @@ class DriverAdModelViewSet(viewsets.ModelViewSet):
         return DriverAd.objects.all()
 
     def perform_create(self, serializer):
+        if DriverAd.objects.filter(poster__user=self.request.user, acceptor__isnull=True).count():
+            raise ValidationError({"msg": "Unaccepted Ad already exists"})
+
         try:
             vehicle = self.request.user.driver_profile.vehicles.first()
         except ObjectDoesNotExist:
