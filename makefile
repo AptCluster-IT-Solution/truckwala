@@ -1,4 +1,4 @@
-include .env
+#include .env
 export DOMAIN
 
 makemigrations:
@@ -52,3 +52,10 @@ db-shell:
 
 install-ssl: 
 	docker-compose -f docker-compose.prod.yml run --rm certbot certonly --server https://acme-v02.api.letsencrypt.org/directory --manual --preferred-challenges dns -d $$DOMAIN -d *.$$DOMAIN
+
+pyinstall: ## install a poetry package
+	@echo "init install package"
+	@docker-compose -f docker-compose.yml run --rm backend poetry add $(c)
+	@make build
+	@make restart
+	@echo "complete install package"

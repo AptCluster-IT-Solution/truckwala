@@ -1,8 +1,9 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
+from django.http import HttpResponse
 from django.utils import timezone
 from rest_framework import viewsets
-from rest_framework.decorators import action, api_view
+from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
@@ -18,6 +19,7 @@ from main.custom.permissions import (
     ActionBasedPermission,
     IsDriver,
 )
+from main.custom.utils import render_to_pdf
 from vehicles.models import VehicleCategory
 
 
@@ -290,6 +292,12 @@ class BookingModelViewSet(viewsets.ReadOnlyModelViewSet):
             return Response({"booking": "booking fulfilled"})
         else:
             raise ValidationError(serializer.errors)
+
+    @action(detail=True, methods=['GET'], permission_classes=[IsPosterOrReadOnly])
+    def invoice(self, request, pk=None):
+        booking = self.get_object()
+        pdf = render_to_pdf('bookings/invoice.html', {"booking": booking})
+        return HttpResponse(pdf, content_type='application/pdf')
 
 
 class TransactionModelViewSet(ModelViewSet):
