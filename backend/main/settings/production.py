@@ -23,3 +23,5 @@ DATABASES = {
         "PORT": rds_details.get("port"),
     }
 }
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
