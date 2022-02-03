@@ -350,3 +350,6 @@ class Transaction(models.Model):
     def save(self, *args, **kwargs):
         self.date = timezone.now()
         super().save(*args, **kwargs)
+
+    class Meta:
+        ordering = ['-date']
