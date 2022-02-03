@@ -105,7 +105,7 @@ class CustomerAdBid(models.Model):
             Notification.objects.create(
                 notification_type=Notification.BID,
                 subject=f"Order Accepted.",
-                message=f"Your order from '{self.ad.start_place}' to '{self.ad.end_place}' has been confirmed. {self.ad.bidder.user.full_name}  ({self.ad.bidder.user.phone_number}) will contact you immediately.",
+                message=f"Your order from '{self.ad.start_place}' to '{self.ad.end_place}' has been confirmed. {self.bidder.user.full_name}  ({self.bidder.user.phone_number}) will contact you immediately.",
                 entered_by=self.bidder.user,
                 created_for=self.ad.poster.user,
                 content_type=ContentType.objects.get_for_model(self),
@@ -186,7 +186,7 @@ class DriverAdBid(models.Model):
             Notification.objects.create(
                 notification_type=Notification.BID,
                 subject=f"Order Accepted",
-                message=f"Your order has been confirmed, please contact {self.ad.bidder.user.full_name}  ({self.ad.bidder.user.phone_number}) for further process.",
+                message=f"Your order has been confirmed, please contact {self.bidder.user.full_name}  ({self.bidder.user.phone_number}) for further process.",
                 entered_by=self.bidder.user,
                 created_for=self.ad.poster.user,
                 content_type=ContentType.objects.get_for_model(self),
