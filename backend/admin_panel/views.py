@@ -4,7 +4,6 @@ from itertools import chain
 from django.db import transaction
 from django.db.models import CharField, Value, Q
 from django.db.models import Prefetch
-from django.db.models.aggregates import Count
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone
@@ -12,7 +11,7 @@ from django.utils.html import escape
 from django.views.generic import TemplateView, FormView
 from django_datatables_view.base_datatable_view import BaseDatatableView
 
-from admin_panel.forms import VehicleCategoryModelForm, TransactionModelForm
+from admin_panel.forms import VehicleCategoryModelForm
 from bookings.models import CustomerAd, DriverAd, Booking, Transaction
 from main.custom.permissions import StaffUserRequiredMixin
 from main.helpers.weekdays import weekdays
@@ -421,8 +420,8 @@ class CustomerToDriverTransactionsListJson(StaffUserRequiredMixin, BaseDatatable
         for item in qs:
             json_data.append([
                 escape(item.id),
-                escape(item.driver.user.full_name),
-                escape(item.booking.customer.user.full_name) if item.booking else None,
+                escape(item.driver.user.full_name) if item.driver else None,
+                escape(item.booking.customer.user.full_name) if item.booking and item.booking.customer else None,
                 escape(item.amount),
                 escape(item.is_completed),
                 escape(item.date.strftime("%Y-%m-%d %H:%M")),

@@ -5,7 +5,7 @@
             <div class="d-flex justify-content-between">
                 <div class="logo">
                     <a href="{% url 'dashboard' %}">
-{#                        <img src="{% static 'images/faces/1.jpg' %}" alt="Logo" srcset="">#}
+                        {#                        <img src="{% static 'images/faces/1.jpg' %}" alt="Logo" srcset="">#}
                         Truck Admin
                     </a>
                 </div>
@@ -100,14 +100,6 @@
                     <a href="{{ bookings_page_url }}" class='sidebar-link'>
                         <i class="bi bi-grid-fill"></i>
                         <span>Bookings</span>
-                    </a>
-                </li>
-
-                {% url 'transactions_page' as transactions_page_url %}
-                <li class="sidebar-item {% if request.path == transactions_page_url %}active{% endif %} ">
-                    <a href="{{ transactions_page_url }}" class='sidebar-link'>
-                        <i class="bi bi-grid-fill"></i>
-                        <span>Transactions</span>
                     </a>
                 </li>
 
