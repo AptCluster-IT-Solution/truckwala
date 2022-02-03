@@ -47,6 +47,10 @@ jobs:
             backend/Dockerfile
             backend/pyproject.toml
 
+      - name: Check changed files.
+        run: |
+          echo "Changed files: ${{ steps.verify-changed-files.outputs.changed_files }}"
+
       - name: Build and push image to ECR
         if: steps.verify-changed-files.outputs.files_changed == 'true'
         env:
