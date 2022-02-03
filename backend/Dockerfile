@@ -16,6 +16,7 @@ RUN apt update && apt install -y netcat
 RUN pip install "poetry==$POETRY_VERSION"
 
 COPY pyproject.toml poetry.lock ./
+
 RUN poetry config virtualenvs.create false \
   && poetry lock \
   && poetry install --no-interaction --no-ansi
