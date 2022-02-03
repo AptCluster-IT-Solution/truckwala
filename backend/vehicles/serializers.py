@@ -1,16 +1,8 @@
 from django.db import transaction
 from rest_framework import serializers
 
+from main.custom.fields import ImageUrlField
 from .models import Vehicle, VehicleImage, VehicleCategory, VehicleDocument
-
-
-class ImageUrlField(serializers.RelatedField):  # noqa
-    def to_representation(self, instance):
-        url = instance.image.url
-        request = self.context.get('request', None)
-        if request is not None:
-            return request.build_absolute_uri(url)
-        return url
 
 
 class VehicleSerializer(serializers.ModelSerializer):

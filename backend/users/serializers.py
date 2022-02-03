@@ -1,7 +1,9 @@
+from django.apps import apps
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
+from main.custom.fields import ImageUrlField
 from .models import User, Driver, Customer, DriverDocument, CustomerDocument
 
 
@@ -70,7 +72,18 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class DriverSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+    class VehicleSerializer(serializers.ModelSerializer):
+        driver = serializers.StringRelatedField(required=False)
+        category = serializers.StringRelatedField()
+
+        images = ImageUrlField(many=True, read_only=True)
+        documents = ImageUrlField(many=True, read_only=True)
+
+        class Meta:
+            model = apps.get_model("vehicles", "Vehicle")
+            fields = "__all__"
+
+    vehicles = VehicleSerializer(many=True)
 
     class Meta:
         model = Driver
@@ -83,6 +96,33 @@ class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
         fields = "__all__"
+
+
+class UserDetailSerializer(serializers.ModelSerializer):
+    profile = serializers.SerializerMethodField()
+
+    @staticmethod
+    def get_profile(user):
+        if hasattr(user, "driver_profile"):
+            return {**DriverSerializer(user.driver_profile).data, "role": "driver"}
+        elif hasattr(user, "customer_profile"):
+            return {**CustomerSerializer(user.customer_profile).data, "role": "customer"}
+        else:
+            return None
+
+    class Meta:
+        model = User
+        fields = (
+            "id",
+            "full_name",
+            "email",
+            "gender",
+            "date_of_birth",
+            "phone_number",
+            "address",
+            "pan_number",
+            "profile",
+        )
 
 
 class DocumentUploadSerializer(serializers.Serializer):  # noqa

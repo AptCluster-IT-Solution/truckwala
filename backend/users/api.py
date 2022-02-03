@@ -22,7 +22,7 @@ from .serializers import (
     PasswordSerializer,
     DriverSerializer,
     CustomerSerializer,
-    DocumentUploadSerializer, ChangePasswordSerializer,
+    DocumentUploadSerializer, ChangePasswordSerializer, UserDetailSerializer,
 )
 
 
@@ -166,6 +166,10 @@ class UserViewset(ContextModelViewSet):
 
     def get_object(self):
         return self.request.user
+
+    @action(detail=False, methods=["GET"], permission_classes=[permissions.IsAuthenticated])
+    def me(self, request):
+        return Response(UserDetailSerializer(self.get_object()).data)
 
     @action(detail=False, methods=["post"], permission_classes=[permissions.AllowAny])
     def check_for_id(self, request):
