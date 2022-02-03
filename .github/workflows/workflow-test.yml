@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          fetch-depth: 2  # OR "2" -> To retrieve the preceding commit.
+          fetch-depth: 0  # OR "2" -> To retrieve the preceding commit.
 
       - name: Read secrets from AWS Secrets Manager into environment variables
         uses: abhilash1in/aws-secrets-manager-action@v1.1.0
