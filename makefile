@@ -55,7 +55,7 @@ install-ssl:
 
 pyinstall: ## install a poetry package
 	@echo "init install package"
-	@docker-compose -f docker-compose.yml run --rm backend poetry add $(c)
+	@docker-compose -f docker-compose.yml run --rm backend poetry add $(pkg)
 	@make build
 	@make restart
 	@echo "complete install package"

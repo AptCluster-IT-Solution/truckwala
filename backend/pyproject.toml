@@ -23,6 +23,7 @@ django-filter = "^21.1"
 django-datatables-view = "^1.19.1"
 django-crispy-forms = "^1.13.0"
 xhtml2pdf = "^0.2.5"
+num2words = "^0.5.10"
 
 [tool.poetry.dev-dependencies]
 

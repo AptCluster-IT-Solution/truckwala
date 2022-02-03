@@ -4,6 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import F
 from django.utils import timezone
+from num2words import num2words
 from rest_framework.exceptions import ValidationError
 
 from notifications.models import Notification
@@ -270,6 +271,18 @@ class Booking(models.Model):
     @property
     def commission(self):
         return self.vehicle.category.commission * self.cost
+
+    @property
+    def tax(self):
+        return self.cost * 0.13
+
+    @property
+    def cost_with_tax(self):
+        return self.cost + self.tax
+
+    @property
+    def cost_with_tax_in_words(self):
+        return num2words(self.cost_with_tax).title()
 
     def __str__(self):
         return f"{str(self.ad)} - {str(self.created)}"

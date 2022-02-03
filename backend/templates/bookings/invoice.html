@@ -41,39 +41,39 @@
         <td><h1>Online Transport Service</h1></td>
     </tr>
     <tr>
-        <td><h2>Address: Rupandehi,Bhairahawa</h2></td>
+        <td><h3>Address: Rupandehi, Bhairahawa</h3></td>
     </tr>
     <tr>
         <td>
-            <h2>Pan No:617611260</h2>
+            <h3>Pan No: 617611260</h3>
         </td>
     </tr>
     <tr style="border-top: 2px solid #0c0c0c;  padding-top: 4px">
         <td>Bill TO:</td>
-        <td>Invoice Number: {{ booking.invoice.id }}</td>
+        <td>Invoice Number: {{ booking.id }}</td>
     </tr>
     <tr>
         <td>Customer Name: {{ booking.customer.user.full_name }}</td>
         <td>Date: {{ booking.created }}</td>
     </tr>
     <tr>
-        <td>Address: address</td>
+        <td>Address: {{ booking.customer.user.address }}</td>
     </tr>
     <tr>
-        <td>Pan No: Pan Number</td>
+        <td>Pan No: {{ booking.customer.user.pan_number }}</td>
     </tr>
 
     <tr style="border-top: 2px solid #0c0c0c;  padding-top: 4px">
-        <td>From: [Shipper, City, and State]</td>
-        <td>Truck Number: {{ booking.vehicle.vehicle_number }}</td>
+        <td>From: {{ booking.ad.start_place }}</td>
+        <td>Truck Number: {{ booking.vehicle.registration_number }}</td>
     </tr>
     <tr>
-        <td>To: [Consignee, City, and State]</td>
-        <td>Driver: [Driver Name ]</td>
+        <td>To: {{ booking.ad.end_place }}</td>
+        <td>Driver: {{ booking.driver.user.full_name }}</td>
     </tr>
     <tr>
         <td></td>
-        <td>Mobile No :</td>
+        <td>Mobile No: {{ booking.driver.user.phone_number }}</td>
     </tr>
 </table>
 
@@ -86,36 +86,31 @@
     </thead>
     <tbody>
     <tr>
-        <td>1 truck Shipped/category/booked on(Booking date)</td>
-        <td>10000</td>
-        <td>10000</td>
+        <td>1 {{ booking.vehicle.category.title }} Shipped/booked on: {{ booking.created }}</td>
+        <td>{{ booking.cost }}</td>
+        <td>{{ booking.cost }}</td>
     </tr>
     </tbody>
     <tfoot>
     <tr style="border-top: 2px solid #0c0c0c; padding-top: 4px">
         <td>Sum</td>
         <td></td>
-        <td>$180</td>
+        <td>{{ booking.cost }}</td>
     </tr>
     <tr style="border-top: 2px solid #0c0c0c; padding-top: 4px">
-        <td>In words: {{ words }}</td>
-        <td></td>
-        <td>$180</td>
-    </tr>
-    <tr>
-        <td></td>
+        <td>In words: {{ booking.cost_with_tax_in_words }} only.</td>
         <td>SubTotal:</td>
-        <td>subtotal</td>
+        <td>{{ booking.cost }}</td>
     </tr>
     <tr>
         <td></td>
         <td>Tax:</td>
-        <td>tax</td>
+        <td>{{ booking.tax }}</td>
     </tr>
     <tr>
         <td></td>
         <td>Total:</td>
-        <td>total</td>
+        <td>{{ booking.cost_with_tax }} </td>
     </tr>
     </tfoot>
 </table>
