@@ -44,8 +44,8 @@ jobs:
         id: verify-changed-files
         with:
           files: |
-            backend/Dockerfile
-            backend/pyproject.toml
+            Dockerfile
+            pyproject.toml
 
       - name: Check changed files.
         run: |
