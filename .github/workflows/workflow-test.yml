@@ -39,9 +39,15 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Get changed files
-        id: changed-files
+      - name: Get specific changed files
+        id: changed-files-specific
         uses: tj-actions/changed-files@v14.3
+        with:
+          files: |
+            Dockerfile
+            backend/Dockerfile
+            pyproject.toml
+            backend/pyproject.toml
 
       - name: List all changed files
         run: |
@@ -50,7 +56,7 @@ jobs:
           done
 
       - name: Build and push image to ECR
-        if: steps.verify-changed-files.outputs.files_changed == 'true'
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
         env:
           ECR_WEB_IMAGE: ${{ secrets.ECR_WEB_IMAGE }}
           SSH_USER: ${{ secrets.SSH_USER }}

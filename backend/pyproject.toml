@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "truckbooking"
 version = "0.1.0"
-description = ""
+description = "description"
 authors = ["zeph <zephyrr2722@gmail.com>"]
 
 [tool.poetry.dependencies]
