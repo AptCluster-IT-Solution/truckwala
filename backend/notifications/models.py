@@ -52,6 +52,9 @@ class Notification(models.Model):
     object_id = models.PositiveIntegerField(blank=True, null=True)
     content_object = GenericForeignKey("content_type", "object_id")
 
+    class Meta:
+        ordering = ["-created"]
+
     def __str__(self):
         return self.subject
 
