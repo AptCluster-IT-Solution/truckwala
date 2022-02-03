@@ -48,6 +48,7 @@ class User(AbstractUser):
     phone_number = models.CharField(unique=True, max_length=20, db_index=True)
     date_of_birth = models.DateField(null=True, blank=True)
     address = models.CharField(max_length=255, default="kathmandu")
+    pan_number = models.CharField(blank=True, null=True, max_length=255)
 
     USERNAME_FIELD = "phone_number"
     REQUIRED_FIELDS = []
