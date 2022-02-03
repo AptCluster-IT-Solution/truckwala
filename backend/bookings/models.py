@@ -186,7 +186,7 @@ class DriverAdBid(models.Model):
             Notification.objects.create(
                 notification_type=Notification.BID,
                 subject=f"Order Accepted",
-                message=f"Your order has been confirmed, please contact {self.ad.poster.user.full_name}  ({self.ad.poster.user.phone_number}) for further process.",
+                message=f"Your order has been confirmed, please contact {self.ad.bidder.user.full_name}  ({self.ad.bidder.user.phone_number}) for further process.",
                 entered_by=self.bidder.user,
                 created_for=self.ad.poster.user,
                 content_type=ContentType.objects.get_for_model(self),
