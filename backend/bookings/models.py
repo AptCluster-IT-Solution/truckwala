@@ -94,6 +94,8 @@ class CustomerAdBid(models.Model):
         _is_adding = self._state.adding
         if _is_adding and self.ad.bids.filter(is_accepted=True).exists():
             raise ValidationError({"msg": "this ad is already accepted."})
+        if not self.cost:
+            self.cost = self.ad.cost
         super().save(force_insert, force_update, *args, **kwargs)
 
         if _is_adding and self.is_accepted:
