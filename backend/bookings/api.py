@@ -1,6 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
-from django.shortcuts import render
 from django.utils import timezone
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -299,9 +298,12 @@ class BookingModelViewSet(viewsets.ReadOnlyModelViewSet):
     @action(detail=True, methods=['GET'], permission_classes=[IsPosterOrReadOnly])
     def invoice(self, request, pk=None):
         booking = self.get_object()
-        if self.request.GET.get('is_pdf'):
-            return render_to_pdf('bookings/invoice.html', {"booking": booking})
-        return render(request, 'bookings/invoice.html', {"booking": booking})
+
+        return render_to_pdf(
+            'bookings/invoice.html',
+            {"booking": booking},
+            download=self.request.GET.get('is_pdf', False),
+        )
 
 
 class TransactionModelViewSet(ModelViewSet):

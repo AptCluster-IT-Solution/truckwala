@@ -39,11 +39,12 @@ def link_callback(uri, rel):
     return path
 
 
-def render_to_pdf(template_src, context=None):
+def render_to_pdf(template_src, context=None, download=False):
     if context is None:
         context = {}
     response = HttpResponse(content_type='application/pdf')
-    # response['Content-Disposition'] = 'attachment; filename="report.pdf"'
+    if download:
+        response['Content-Disposition'] = 'attachment; filename="invoice.pdf"'
     template = get_template(template_src)
     html = template.render(context)
     pdf = pisa.CreatePDF(html, dest=response, link_callback=link_callback)
