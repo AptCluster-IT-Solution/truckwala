@@ -97,7 +97,11 @@ class VehicleCategoryWithAdsForCustomerSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_ads(obj):
         return DriverAdSerializer(
-            obj.driver_ads.filter(start_time__gte=timezone.now(), is_accepted=False),
+            DriverAd.objects.filter(
+                vehicle__category_id=obj.id, 
+                start_time__gte=timezone.now(), 
+                acceptor__isnull=True,
+            ),
             many=True, read_only=True
         ).data
 
