@@ -141,7 +141,7 @@ class DriverAdModelViewSet(viewsets.ModelViewSet):
     permission_classes = [ActionBasedPermission]
     action_permissions = {
         IsDriver: ["create"],
-        IsCustomer: ["bid"],
+        IsCustomer: ["bid", "for_me", ],
         IsPosterOrReadOnly: ["update", "partial_update", "destroy", "list", "retrieve", "me"],
     }
     filterset_fields = ['start_place', 'end_place', 'vehicle__category']
