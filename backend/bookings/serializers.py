@@ -20,7 +20,7 @@ class CustomerAdSerializer(serializers.ModelSerializer):
             fields = "__all__"
 
     poster = UserSerializer(source="poster.user", required=False)
-    acceptor = serializers.StringRelatedField(required=False)
+    acceptor = UserSerializer(source="acceptor.user", required=False)
     bids = BidSerializer(read_only=True, many=True)
 
     class Meta:
@@ -31,7 +31,7 @@ class CustomerAdSerializer(serializers.ModelSerializer):
 class VehicleCategoryWithAdsSerializer(serializers.ModelSerializer):
     class CustomerAdSerializer(serializers.ModelSerializer):
         poster = UserSerializer(source="poster.user", required=False)
-        acceptor = serializers.StringRelatedField(required=False)
+        acceptor = UserSerializer(source="acceptor.user", required=False)
 
         class Meta:
             model = CustomerAd
@@ -42,7 +42,7 @@ class VehicleCategoryWithAdsSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_ads(obj):
         return CustomerAdSerializer(
-            obj.customer_ads.filter(start_time__gte=timezone.now()),
+            obj.customer_ads.filter(start_time__gte=timezone.now(), is_accepted=False),
             many=True, read_only=True
         ).data
 
@@ -54,7 +54,7 @@ class VehicleCategoryWithAdsSerializer(serializers.ModelSerializer):
 class CustomerAdBidSerializer(serializers.ModelSerializer):
     class AdSerializer(serializers.ModelSerializer):
         poster = UserSerializer(source="poster.user", required=False)
-        acceptor = serializers.StringRelatedField(required=False)
+        acceptor = UserSerializer(source="acceptor.user", required=False)
 
         class Meta:
             model = CustomerAd
@@ -83,6 +83,29 @@ class CustomerAdBidSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 
+class VehicleCategoryWithAdsForCustomerSerializer(serializers.ModelSerializer):
+    class DriverAdSerializer(serializers.ModelSerializer):
+        poster = UserSerializer(source="poster.user", required=False)
+        acceptor = UserSerializer(source="acceptor.user", required=False)
+
+        class Meta:
+            model = DriverAd
+            fields = "__all__"
+
+    ads = serializers.SerializerMethodField()
+
+    @staticmethod
+    def get_ads(obj):
+        return DriverAdSerializer(
+            obj.driver_ads.filter(start_time__gte=timezone.now(), is_accepted=False),
+            many=True, read_only=True
+        ).data
+
+    class Meta:
+        model = VehicleCategory
+        fields = "__all__"
+
+
 class DriverAdSerializer(serializers.ModelSerializer):
     class BidSerializer(serializers.ModelSerializer):
         bidder = UserSerializer(source="bidder.user", read_only=True)
@@ -92,7 +115,7 @@ class DriverAdSerializer(serializers.ModelSerializer):
             fields = "__all__"
 
     poster = UserSerializer(source="poster.user", required=False)
-    acceptor = serializers.StringRelatedField(required=False)
+    acceptor = UserSerializer(source="acceptor.user", required=False)
     vehicle = VehicleSerializer(read_only=True)
     vehicle_id = serializers.CharField(write_only=True, required=False)
     bids = BidSerializer(read_only=True, many=True)
@@ -108,7 +131,7 @@ class DriverAdSerializer(serializers.ModelSerializer):
 class DriverAdBidSerializer(serializers.ModelSerializer):
     class AdSerializer(serializers.ModelSerializer):
         poster = UserSerializer(source="poster.user", required=False)
-        acceptor = serializers.StringRelatedField(required=False)
+        acceptor = UserSerializer(source="acceptor.user", required=False)
         vehicle = VehicleSerializer(read_only=True)
         vehicle_id = serializers.CharField(write_only=True)
 

@@ -11,7 +11,7 @@ from rest_framework.viewsets import ModelViewSet
 from bookings.models import CustomerAd, DriverAd, CustomerAdBid, DriverAdBid, Booking, Transaction
 from bookings.serializers import CustomerAdSerializer, DriverAdSerializer, CustomerAdBidSerializer, \
     DriverAdBidSerializer, BookingSerializer, BookingCompleteSerializer, TransactionSerializer, \
-    VehicleCategoryWithAdsSerializer
+    VehicleCategoryWithAdsSerializer, VehicleCategoryWithAdsForCustomerSerializer
 from main.custom.permissions import (
     IsPosterOrReadOnly,
     IsCustomer,
@@ -175,6 +175,12 @@ class DriverAdModelViewSet(viewsets.ModelViewSet):
             return self.get_paginated_response(serializer.data)
 
         serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+    
+    @action(detail=False, methods=["GET"], url_path="for-me")
+    def for_me(self, request, *args, **kwargs):
+        queryset = VehicleCategory.objects.all()
+        serializer = VehicleCategoryWithAdsForCustomerSerializer(queryset, many=True)
         return Response(serializer.data)
 
     @action(detail=True, methods=["patch"])
