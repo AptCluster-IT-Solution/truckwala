@@ -77,3 +77,6 @@ class Notification(models.Model):
             ).distinct()
 
         user_device.send_message(Message(notification=FirebaseNotification(title=self.subject, body=self.message)))
+
+        if self.notification_type in [Notification.CUSTOMER_AD, Notification.DRIVER_AD,]:
+            self.delete()
