@@ -103,6 +103,14 @@ class Driver(models.Model):
         ).aggregate(paid_amount=Coalesce(Sum('amount'), Value(0)))["paid_amount"]
 
     @property
+    def earned_amount(self):
+        return apps.get_model("bookings", "Transaction").objects.filter(
+            driver_id=self.pk, booking__isnull=False
+        ).aggregate(
+            earned_amount=Coalesce(Sum('amount'), Value(0))
+        )["earned_amount"] - self.paid_amount()
+
+    @property
     def due_amount(self):
         # ads by customer commission + ads by driver commission - total paid till now
         return \
