@@ -65,7 +65,7 @@ class CustomerAdModelViewSet(viewsets.ModelViewSet):
         queryset = VehicleCategory.objects.filter(
             vehicles__driver__user=request.user,
             customer_ads__start_time__gte=timezone.now()
-        )
+        ).distinct()
         serializer = VehicleCategoryWithAdsSerializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -176,7 +176,7 @@ class DriverAdModelViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
-    
+
     @action(detail=False, methods=["GET"], url_path="for-me")
     def for_me(self, request, *args, **kwargs):
         queryset = VehicleCategory.objects.all()
