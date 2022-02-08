@@ -218,6 +218,7 @@ class DriverViewset(ContextModelViewSet):
         return Response({
             "paid_amount": self.request.user.driver_profile.paid_amount,
             "due_amount": self.request.user.driver_profile.due_amount,
+            "earned_amount": self.request.user.driver_profile.earned_amount,
             "transactions": serializer.data
         })
 
