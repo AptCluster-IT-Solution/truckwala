@@ -200,7 +200,14 @@ class BookingCompleteSerializer(serializers.ModelSerializer):
 class TransactionSerializer(serializers.ModelSerializer):
     customer = serializers.StringRelatedField(source="booking.customer")
     driver = serializers.StringRelatedField()
+    commission = serializers.SerializerMethodField()
+
+    @staticmethod
+    def get_commission(obj):
+        if obj.booking:
+            return obj.booking.vehicle.category.commission * obj.booking.cost / 100
+        return None
 
     class Meta:
         model = Transaction
-        fields = ['id', 'customer', 'driver', 'amount', 'date']
+        fields = ['id', 'customer', 'driver', 'amount', 'commission', 'date']
