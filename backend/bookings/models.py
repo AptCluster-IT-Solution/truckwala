@@ -274,7 +274,7 @@ class Booking(models.Model):
 
     @property
     def tax(self):
-        return self.cost * 0.13
+        return 0  # self.cost * 0.13  # remove tax for now
 
     @property
     def cost_with_tax(self):
