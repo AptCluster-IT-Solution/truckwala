@@ -108,7 +108,7 @@ class Driver(models.Model):
             driver_id=self.pk, booking__isnull=False
         ).aggregate(
             earned_amount=Coalesce(Sum('amount'), Value(0))
-        )["earned_amount"] - self.paid_amount()
+        )["earned_amount"] - self.paid_amount
 
     @property
     def due_amount(self):
