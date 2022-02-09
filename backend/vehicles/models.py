@@ -22,7 +22,7 @@ class Vehicle(models.Model):
         Driver, on_delete=models.CASCADE, related_name="vehicles"
     )
     registration_number = models.CharField(max_length=255, unique=True)
-    capacity = models.PositiveIntegerField()
+    area_of_loading_space = models.CharField(max_length=255)
     category = models.ForeignKey(
         VehicleCategory, on_delete=models.CASCADE, related_name="vehicles"
     )

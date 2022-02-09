@@ -1,5 +1,4 @@
 from rest_framework import viewsets
-from rest_framework.response import Response
 
 from main.custom.permissions import ActionBasedPermission, IsPosterOrReadOnly, IsDriver
 from vehicles.models import Vehicle, VehicleCategory
@@ -36,7 +35,7 @@ class OrderListJson(BaseDatatableView):
     model = Vehicle
 
     # define the columns that will be returned
-    columns = ['driver', 'registration_number', 'capacity', 'category']
+    columns = ['driver', 'registration_number', 'area_of_loading_space', 'category']
 
     # define column names that will be used in sorting
     # order is important and should be same as order of columns
