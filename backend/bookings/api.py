@@ -45,6 +45,11 @@ class CustomerAdModelViewSet(viewsets.ModelViewSet):
             return qs
         return CustomerAd.objects.all()
 
+    def perform_destroy(self, instance):
+        if self.get_object().booking.status not in [Booking.PENDING]:
+            raise ValidationError({"msg": "Sorry, this order has been accepted."})
+        instance.delete()
+
     def perform_create(self, serializer):
         serializer.save(poster=self.request.user.customer_profile)
 
@@ -150,6 +155,11 @@ class DriverAdModelViewSet(viewsets.ModelViewSet):
         if self.action in ['list']:
             return DriverAd.objects.exclude(bids__is_accepted=True)
         return DriverAd.objects.all()
+
+    def perform_destroy(self, instance):
+        if self.get_object().booking.status not in [Booking.PENDING]:
+            raise ValidationError({"msg": "Sorry, this order has been accepted."})
+        instance.delete()
 
     def perform_create(self, serializer):
         if DriverAd.objects.filter(poster__user=self.request.user, acceptor__isnull=True).count():
