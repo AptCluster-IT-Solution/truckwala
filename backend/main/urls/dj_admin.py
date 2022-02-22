@@ -1,11 +1,11 @@
+from django.conf import settings
+from django.conf.urls.static import static
+from django.contrib import admin
 from django.contrib.auth.decorators import login_required
 from django.urls import path
-from django.contrib import admin
-from django.contrib.auth import views as auth_views
 
-import users.views as users_views
 import admin_panel.views as admin_views
-
+import users.views as users_views
 # admin.autodiscover()
 from vehicles.views import OrderListJson
 
@@ -47,6 +47,11 @@ urlpatterns = [
          name="driver_to_admin_transactions_page"),
     path('driver_transactions_list_data/', admin_views.DriverToAdminTransactionsListJson.as_view(),
          name="driver_to_admin_transactions_list_json"),
+
+    # debug mode urls
+    *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
+    *static(settings.STATIC_URL, document_root=settings.STATIC_ROOT),
+    # ----------------
 
     path("", admin_views.Dashboard.as_view(), name="dashboard"),
     path("", admin.site.urls),
