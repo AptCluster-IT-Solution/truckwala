@@ -340,8 +340,8 @@ class BookingsPage(StaffUserRequiredMixin, TemplateView):
 
 class BookingsListJson(StaffUserRequiredMixin, BaseDatatableView):
     model = Booking
-    columns = ['id', 'driver', 'customer', 'vehicle', 'vehicle_category', 'start_place', 'end_place', 'price', 'status',
-               'created', ]
+    columns = ['id', 'driver', 'customer', 'initiator', 'vehicle', 'vehicle_category', 'start_place', 'end_place',
+               'price', 'status', 'created', ]
 
     def filter_queryset(self, qs):
         qs = qs.filter(Q(status__in=[Booking.ACCEPTED, Booking.DISPATCHED, Booking.FULFILLED]))
@@ -363,6 +363,7 @@ class BookingsListJson(StaffUserRequiredMixin, BaseDatatableView):
         json_data = []
         for item in qs:
             details = {
+                'initiator': item.started_by,
                 'start_place': item.ad.start_place,
                 'end_place': item.ad.end_place,
             }
@@ -383,6 +384,7 @@ class BookingsListJson(StaffUserRequiredMixin, BaseDatatableView):
                 escape(item.id),
                 escape(details['driver']),
                 escape(details['customer']),
+                escape(details['initiator']),
                 escape(details['vehicle']),
                 escape(details['vehicle_category']),
                 escape(details['start_place']),
