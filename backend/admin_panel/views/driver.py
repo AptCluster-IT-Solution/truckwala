@@ -45,7 +45,7 @@ def driver_payment(request):
 class DriversListJson(StaffUserRequiredMixin, BaseDatatableView):
     model = Driver
     columns = ['id', 'user__full_name', 'user__phone_number', 'user__email', 'vehicles__registration_number',
-               'vehicles__category__title', 'due_amount', 'created', 'documents']
+               'vehicles__area_of_loading_space', 'due_amount', 'created', 'documents']
 
     def get_initial_queryset(self):
         return Driver.objects.filter(is_verified=True)
@@ -72,7 +72,7 @@ class DriversListJson(StaffUserRequiredMixin, BaseDatatableView):
                 item.user.phone_number,
                 item.user.email,
                 item.vehicles.first().registration_number if item.vehicles.count() else None,
-                item.vehicles.first().category.title if item.vehicles.count() else None,
+                item.vehicles.first().area_of_loading_space if item.vehicles.count() else None,
                 item.due_amount,
                 item.user.date_joined.strftime("%Y-%m-%d %H:%M:%S"),
                 list(item.documents.all().values_list("image", flat=True))

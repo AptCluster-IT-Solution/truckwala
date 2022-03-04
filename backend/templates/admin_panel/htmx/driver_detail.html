@@ -17,6 +17,14 @@
                     <div class="col-6">Date Joined: {{ driver.user.date_joined }}</div>
                 </div>
                 <div class="row mb-4">
+                    <h5>Vehicle Details</h5>
+                    {% for vehicle in driver.vehicles.all %}
+                        <div class="col-4">Reg. No.: {{ vehicle.registration_number }}</div>
+                        <div class="col-4">Category: {{ vehicle.category }}</div>
+                        <div class="col-4">Area of Loading Space: {{ vehicle.area_of_loading_space }}</div>
+                    {% endfor %}
+                </div>
+                <div class="row mb-4">
                     <h5>Transactions Summary</h5>
                     <div class="col-4">Total Earnings: {{ driver.earned_amount }}</div>
                     <div class="col-4">Total Commission Paid: {{ driver.paid_amount }}</div>
