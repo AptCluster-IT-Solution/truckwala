@@ -22,7 +22,6 @@
             src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" charset="utf8"
             src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap5.min.js"></script>
-    <script src="https://unpkg.com/htmx.org@1.6.0"></script>
 
 
     {% block extra_head %}{% endblock %}
@@ -42,5 +41,10 @@
 <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 <script src="{% static 'vendors/apexcharts/apexcharts.js' %}"></script>
 <script src="{% static 'js/mazer.js' %}"></script>
+<script src="https://unpkg.com/htmx.org@1.6.1"
+        integrity="sha384-tvG/2mnCFmGQzYC1Oh3qxQ7CkQ9kMzYjWZSNtrRZygHPDDqottzEJsqS4oUVodhW"
+        crossorigin="anonymous"></script>
+{% load django_htmx %}
+{% django_htmx_script %}
 </body>
 </html>

@@ -25,6 +25,8 @@ django-crispy-forms = "^1.13.0"
 xhtml2pdf = "^0.2.5"
 num2words = "^0.5.10"
 django-storages = "^1.12.3"
+django-htmx = "^1.8.0"
+reportlab = "3.6.6"
 
 [tool.poetry.dev-dependencies]
 

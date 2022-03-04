@@ -1,0 +1,107 @@
+<div class="modal fade" id="documentsModal{{ driver.id }}" tabindex="-1"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">{{ driver.user.full_name }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="row mb-4">
+                    <h5>User Details</h5>
+                    <div class="col-6">Name: {{ driver.user.full_name }}</div>
+                    <div class="col-6">Phone: {{ driver.user.phone_number }}</div>
+                    <div class="col-6">Email: {{ driver.user.email }}</div>
+                    <div class="col-6">Date Joined: {{ driver.user.date_joined }}</div>
+                </div>
+                <div class="row mb-4">
+                    <h5>Transactions Summary</h5>
+                    <div class="col-4">Total Earnings: {{ driver.earned_amount }}</div>
+                    <div class="col-4">Total Commission Paid: {{ driver.paid_amount }}</div>
+                    <div class="col-4">Remaining Due Amount: {{ driver.due_amount }}</div>
+                </div>
+                <div class="row mb-4">
+                    <h5>Booking List</h5>
+                    <table class="table table-striped mb-0">
+                        <thead>
+                        <tr>
+                            <th>Customer</th>
+                            <th>Initiator</th>
+                            <th>Status</th>
+                            <th>Cost</th>
+                            <th>Commission</th>
+                            <th>Created Date</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for booking in driver.bookings %}
+                            <tr>
+                                <td class="text-bold-500">{{ booking.customer }}</td>
+                                <td class="text-bold-500">{{ booking.started_by }}</td>
+                                <td class="text-bold-500">{{ booking.status_verbose }}</td>
+                                <td>{{ booking.cost }}</td>
+                                <td>{{ booking.commission }}</td>
+                                <td>{{ booking.created }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <button onClick="toggleDocumentView()" class="btn btn-primary">View Documents</button>
+                <div id="documentsCarousel{{ driver.id }}" class="carousel slide"
+                     data-ride="carousel" style="display:none">
+                    <div class="carousel-indicators">
+                        {% for doc in driver.documents.all %}
+                            <button
+                                    type="button"
+                                    data-bs-target="#documentsCarousel{{ driver.id }}"
+                                    data-bs-slide-to="{{ forloop.counter0 }}"
+                                    {% if not forloop.counter0 %}
+                                    class="active"
+                                    aria-current="true"
+                                    {% endif %}
+                                    aria-label="Slide {{ forloop.counter0 }}"
+                            ></button>
+                        {% endfor %}
+
+                    </div>
+                    <div class="carousel-inner">
+                        {% for doc in driver.documents.all %}
+                            <div class="carousel-item{% if not forloop.counter0 %} active{% endif %}">
+                                <img src="{{ doc.image.url }}" class="d-block w-100" alt="...">
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <a href="#documentsCarousel{{ driver.id }}" class="carousel-control-prev" role="button"
+                       data-bs-target="#documentsCarousel{{ driver.id }}" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </a>
+                    <a href="#documentsCarousel{{ driver.id }}" class="carousel-control-next" role="button"
+                       data-bs-target="#documentsCarousel{{ driver.id }}" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        {#document.getElementById('documentsModal{{ driver.id }}').show()#}
+        new bootstrap.Modal(document.getElementById('documentsModal{{ driver.id }}'), {
+            keyboard: false,
+        }).show()
+
+        function toggleDocumentView() {
+            var x = document.getElementById("documentsCarousel{{ driver.id }}");
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+    </script>

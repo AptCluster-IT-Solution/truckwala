@@ -237,6 +237,14 @@ class Booking(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     @property
+    def status_verbose(self):
+        return dict(Booking.STATUS_TYPES)[self.status]
+
+    @property
+    def started_by(self):
+        return "Customer" if self.customer_ad else "Driver"
+
+    @property
     def ad(self):
         return self.customer_ad if self.customer_ad else self.driver_ad
 
@@ -270,7 +278,7 @@ class Booking(models.Model):
 
     @property
     def commission(self):
-        return self.vehicle.category.commission * self.cost
+        return self.vehicle.category.commission * self.cost / 100
 
     @property
     def tax(self):

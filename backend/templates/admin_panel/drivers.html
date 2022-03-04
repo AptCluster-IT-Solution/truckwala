@@ -3,6 +3,7 @@
 
 {% block extra_head %}
     <script type="text/javascript">
+
         let DRIVERS_LIST_JSON_URL = '{% url "drivers_list_json" %}';
         // translations for datatables
 
@@ -34,6 +35,9 @@
                 language: dt_language,  // global variable defined in html
                 order: [[0, "desc"]],
                 lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
+                "drawCallback": (_) => {
+                    htmx.process('#driver-datatable')
+                },
                 columnDefs: [
                     {
                         data: 'id',
@@ -76,70 +80,22 @@
                         orderable: false,
                         data: "documents",
                         render: function (url, type, full) {
+                            let detailUrl = "{% url 'driver_detail' 9999 %}".replace(9999, full[0])
                             return `
-                    <td><!-- Button trigger modal -->
-                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
-                                data-bs-target="#documentsModal${full[0]}">
-                            View Documents
-                        </button>
-
-                        <!-- Modal -->
-                        <div class="modal fade" id="documentsModal${full[0]}" tabindex="-1"
-                             aria-labelledby="exampleModalLabel"
-                             aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">${full[1]}</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div id="carouselExampleIndicators" class="carousel slide"
-                                             data-bs-ride="carousel">
-                                            <div class="carousel-indicators">
-                                                ${full[6].map((doc, i) => (
-                                `<button type="button" data-bs-target="#carouselExampleIndicators"
-                                                            data-bs-slide-to="${i}"
-                                                            ${i === 0 && `class="active"
-                                                            aria-current="true"`}
-                                                            aria-label="Slide ${i + 1}"></button>
-                                                    `))}
-                                            </div>
-                                            <div class="carousel-inner">
-                                                ${full[6].map((doc, i) => (`
-                                                    <div class="carousel-item ${i === 0 && "active"}">
-                                                        <img src="/media/${doc}"
-                                                             class="d-block w-100" alt="...">
-                                                    </div>
-                                                `))}
-                                            </div>
-                                            <button class="carousel-control-prev" type="button"
-                                                    data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-                                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                                <span class="visually-hidden">Previous</span>
-                                            </button>
-                                            <button class="carousel-control-next" type="button"
-                                                    data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-                                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                                <span class="visually-hidden">Next</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
-                                        </button>
-                                        <a
-                                                class="btn btn-primary"
-                                                href="{% url 'verification' %}?user_type=d&user_id=${full[0]}&response=1"
+                                    <td><!-- Button trigger modal -->
+                                        <button
+                                            hx-get="${detailUrl}"
+                                            hx-swap="outerHTML"
+                                            hx-target="#documentsModal${full[0]}"
+                                            class="btn btn-primary"
                                         >
-                                            Accept</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </td>
-                  `
+                                            Profile
+                                        </button>
+
+                                        <!-- Modal -->
+                                        <div id="documentsModal${full[0]}" ></div>
+                                       </td>
+                                    `
                         }
                     },
                     {

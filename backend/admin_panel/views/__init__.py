@@ -15,8 +15,9 @@ from admin_panel.forms import VehicleCategoryModelForm
 from bookings.models import CustomerAd, DriverAd, Booking, Transaction
 from main.custom.permissions import StaffUserRequiredMixin
 from main.helpers.weekdays import weekdays
-from users.models import User, Driver, Customer
+from users.models import User, Customer
 from vehicles.models import Vehicle, VehicleCategory
+from .driver import *
 
 
 class Dashboard(StaffUserRequiredMixin, TemplateView):

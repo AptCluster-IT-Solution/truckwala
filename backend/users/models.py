@@ -4,7 +4,7 @@ from django.apps import apps
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models, transaction
-from django.db.models import Sum, F, Value
+from django.db.models import Sum, F, Value, Q
 from django.db.models.functions import Coalesce
 
 
@@ -129,6 +129,12 @@ class Driver(models.Model):
                     Value(0))
             )['commission'] - \
             self.paid_amount
+
+    @property
+    def bookings(self):
+        return apps.get_model("bookings", "Booking").objects.filter(
+            Q(customer_bid__bidder__id=self.id) | Q(driver_bid__ad__poster__id=self.id)
+        ).order_by("-created")
 
 
 class Customer(models.Model):
