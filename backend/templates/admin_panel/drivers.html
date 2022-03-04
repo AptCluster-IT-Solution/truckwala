@@ -64,8 +64,14 @@
                         className: "center"
                     },
                     {
-                        data: 'created',
-                        orderable: true,
+                        data: 'vehicles__registration_number',
+                        orderable: false,
+                        searchable: false,
+                        className: "center"
+                    },
+                    {
+                        data: 'vehicles__category__title',
+                        orderable: false,
                         searchable: false,
                         className: "center"
                     },
@@ -178,7 +184,8 @@
                             <th>{% trans "Full Name" %}</th>
                             <th>{% trans "Phone Number" %}</th>
                             <th>{% trans "E-mail" %}</th>
-                            <th>{% trans "Date Joined" %}</th>
+                            <th>{% trans "Vehicle No." %}</th>
+                            <th>{% trans "Vehicle Type" %}</th>
                             <th>{% trans "Due Amount" %}</th>
                             <th>{% trans "Documents" %}</th>
                             <th>{% trans "Pay Due" %}</th>
