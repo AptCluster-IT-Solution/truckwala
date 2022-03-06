@@ -60,6 +60,18 @@
                         className: "center"
                     },
                     {
+                        data: 'user__pan_number',
+                        orderable: true,
+                        searchable: true,
+                        className: "center"
+                    },
+                    {
+                        data: 'user__address',
+                        orderable: true,
+                        searchable: true,
+                        className: "center"
+                    },
+                    {
                         data: 'created',
                         orderable: true,
                         searchable: false,
@@ -77,11 +89,11 @@
                 stateSave: true,
                 ajax: CUSTOMERS_LIST_JSON_URL
             });
-            $('#customer-datatable tbody').on( 'click', 'button.delete-btn', function () {
+            $('#customer-datatable tbody').on('click', 'button.delete-btn', function () {
                 if (confirm("Confirm delete?")) {
                     window.location.href = window.location.href + table.row($(this).parents('tr')).data()[0] + "/delete/"
                 }
-            } );
+            });
         });
     </script>
 {% endblock %}
@@ -134,6 +146,8 @@
                             <th>{% trans "Full Name" %}</th>
                             <th>{% trans "Phone Number" %}</th>
                             <th>{% trans "E-mail" %}</th>
+                            <th>{% trans "PAN" %}</th>
+                            <th>{% trans "Address" %}</th>
                             <th>{% trans "Date Joined" %}</th>
                             <th>{% trans "" %}</th>
                             </thead>

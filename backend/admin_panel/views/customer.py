@@ -34,7 +34,8 @@ class CustomersPage(StaffUserRequiredMixin, TemplateView):
 
 class CustomersListJson(StaffUserRequiredMixin, BaseDatatableView):
     model = Customer
-    columns = ['id', 'user__full_name', 'user__phone_number', 'user__email', 'created']
+    columns = ['id', 'user__full_name', 'user__phone_number', 'user__email', 'user__pan_number', 'user__address',
+               'created']
 
     def filter_queryset(self, qs):
         # qs = qs.filter(is_verified=True)
@@ -53,6 +54,8 @@ class CustomersListJson(StaffUserRequiredMixin, BaseDatatableView):
                 escape(item.user.full_name),
                 escape(item.user.phone_number),
                 escape(item.user.email),
+                escape(item.user.pan_number),
+                escape(item.user.address),
                 escape(item.user.date_joined.strftime("%Y-%m-%d %H:%M:%S")),
             ])
         return json_data
