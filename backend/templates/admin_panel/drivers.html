@@ -125,6 +125,8 @@
             $('#driver-datatable tbody').on('click', 'button.btn-outline-success', function () {
                 {#window.location.href = window.location.href+"/"+table.row( $(this).parents('tr') ).data()[0]#}
                 document.getElementById("driver_id").value = table.row($(this).parents('tr')).data()[0]
+                document.getElementById("amount").setAttribute("max", table.row($(this).parents('tr')).data()[6])
+                document.getElementById("amount").value = table.row($(this).parents('tr')).data()[6]
                 new bootstrap.Modal(document.getElementById('accountModal'), {}).show()
             });
             $('#driver-datatable tbody').on('click', 'button.delete-btn', function () {
@@ -218,7 +220,22 @@
 
                                     <label for="amount" class="form-label">Amount</label>
                                     <input type="number" name="amount" id="amount" class="accounts-input form-control"
-                                           required placeholder="Paid Amount">
+                                           required placeholder="Paid Amount" min="0">
+                                    <script>
+                                        $(document).ready(function () {
+                                            $('input[type="number"]').on('keyup', function () {
+                                                v = parseInt($(this).val());
+                                                min = parseInt($(this).attr('min'));
+                                                max = parseInt($(this).attr('max'));
+
+                                                if (v < min) {
+                                                    $(this).val(min);
+                                                } else if (v > max) {
+                                                    $(this).val(max);
+                                                }
+                                            })
+                                        })
+                                    </script>
                                 </div>
                                 <div class="col-auto">
                                     <button id="amount_submit" type="submit" class="btn btn-primary mb-3"
