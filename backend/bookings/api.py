@@ -17,6 +17,7 @@ from main.custom.permissions import (
     IsCustomer,
     ActionBasedPermission,
     IsVerifiedDriver,
+    IsDriver,
 )
 from main.custom.utils import render_to_pdf
 from vehicles.models import VehicleCategory
@@ -28,7 +29,8 @@ class CustomerAdModelViewSet(viewsets.ModelViewSet):
     permission_classes = [ActionBasedPermission]
     action_permissions = {
         IsCustomer: ["create"],
-        IsVerifiedDriver: ["bid", "for_me"],
+        IsVerifiedDriver: ["bid"],
+        IsDriver: ["for_me"],
         IsPosterOrReadOnly: ["update", "partial_update", "destroy", "list", "retrieve", "me"],
     }
     filterset_fields = ['start_place', 'end_place', 'vehicle_category']

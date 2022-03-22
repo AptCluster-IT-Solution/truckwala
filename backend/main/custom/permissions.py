@@ -67,6 +67,15 @@ class IsVerifiedDriver(permissions.BasePermission):
         return is_permitted
 
 
+class IsDriver(permissions.BasePermission):
+    """
+    Allows access only to Driver not checking verification.
+    """
+
+    def has_permission(self, request, view):
+        return request.user and request.user.is_authenticated and hasattr(request.user, "driver_profile")
+
+
 class IsPosterOrReadOnly(permissions.BasePermission):
     """
     Object-level permission to only allow owners of an object to edit it.

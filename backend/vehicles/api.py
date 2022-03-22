@@ -1,6 +1,6 @@
 from rest_framework import viewsets
 
-from main.custom.permissions import ActionBasedPermission, IsPosterOrReadOnly, IsVerifiedDriver
+from main.custom.permissions import ActionBasedPermission, IsPosterOrReadOnly, IsDriver
 from vehicles.models import Vehicle, VehicleCategory
 from vehicles.serializers import VehicleSerializer, VehicleCategorySerializer
 
@@ -10,7 +10,7 @@ class VehicleModelViewSet(viewsets.ModelViewSet):
     permission_classes = [ActionBasedPermission]
     action_permissions = {
         IsPosterOrReadOnly: ["update", "partial_update", "destroy", "list", "retrieve"],
-        IsVerifiedDriver: ["create"],
+        IsDriver: ["create"],
     }
 
     def get_queryset(self):
