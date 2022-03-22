@@ -11,7 +11,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from bookings.serializers import TransactionSerializer
-from main.custom.permissions import IsDriver, IsCustomer
+from main.custom.permissions import IsVerifiedDriver, IsCustomer
 from main.custom.viewsets import ContextModelViewSet
 from vehicles.serializers import VehicleSerializer
 from .models import Customer, Driver, User
@@ -203,7 +203,7 @@ class UserViewset(ContextModelViewSet):
 
 
 class DriverViewset(ContextModelViewSet):
-    permission_classes = [IsDriver]
+    permission_classes = [IsVerifiedDriver]
     queryset = Driver.objects.all()
     serializer_class = DriverSerializer
     parser_classes = (MultiPartParser, FileUploadParser)

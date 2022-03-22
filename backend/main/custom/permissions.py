@@ -50,9 +50,9 @@ class IsCustomer(permissions.BasePermission):
         return is_permitted
 
 
-class IsDriver(permissions.BasePermission):
+class IsVerifiedDriver(permissions.BasePermission):
     """
-    Allows access only to Driver.
+    Allows access only to Verified Driver.
     """
 
     def has_permission(self, request, view):

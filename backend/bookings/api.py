@@ -16,7 +16,7 @@ from main.custom.permissions import (
     IsPosterOrReadOnly,
     IsCustomer,
     ActionBasedPermission,
-    IsDriver,
+    IsVerifiedDriver,
 )
 from main.custom.utils import render_to_pdf
 from vehicles.models import VehicleCategory
@@ -28,7 +28,7 @@ class CustomerAdModelViewSet(viewsets.ModelViewSet):
     permission_classes = [ActionBasedPermission]
     action_permissions = {
         IsCustomer: ["create"],
-        IsDriver: ["bid", "for_me"],
+        IsVerifiedDriver: ["bid", "for_me"],
         IsPosterOrReadOnly: ["update", "partial_update", "destroy", "list", "retrieve", "me"],
     }
     filterset_fields = ['start_place', 'end_place', 'vehicle_category']
@@ -89,7 +89,7 @@ class CustomerAdBidModelViewSet(viewsets.ModelViewSet):
     serializer_class = CustomerAdBidSerializer
     permission_classes = [ActionBasedPermission]
     action_permissions = {
-        IsDriver: ["create"],
+        IsVerifiedDriver: ["create"],
         IsPosterOrReadOnly: ["accept", "reject", "update", "partial_update", "destroy", "list", "retrieve", "me"],
     }
 
@@ -145,7 +145,7 @@ class DriverAdModelViewSet(viewsets.ModelViewSet):
     serializer_class = DriverAdSerializer
     permission_classes = [ActionBasedPermission]
     action_permissions = {
-        IsDriver: ["create"],
+        IsVerifiedDriver: ["create"],
         IsCustomer: ["bid", "for_me", ],
         IsPosterOrReadOnly: ["update", "partial_update", "destroy", "list", "retrieve", "me"],
     }
@@ -301,7 +301,7 @@ class BookingModelViewSet(viewsets.ReadOnlyModelViewSet):
 
         return Response({"results": places})
 
-    @action(detail=True, methods=['POST'], permission_classes=[IsPosterOrReadOnly, IsDriver])
+    @action(detail=True, methods=['POST'], permission_classes=[IsPosterOrReadOnly, IsVerifiedDriver])
     def complete(self, request, pk=None):
         booking = self.get_object()
         serializer = BookingCompleteSerializer(instance=booking, data=request.data, partial=True)
@@ -326,7 +326,7 @@ class TransactionModelViewSet(ModelViewSet):
     serializer_class = TransactionSerializer
     permission_classes = [ActionBasedPermission]
     action_permissions = {
-        IsDriver: ["list", "retrieve"],
+        IsVerifiedDriver: ["list", "retrieve"],
         IsAdminUser: ["accept", "reject", "update", "partial_update", "destroy", "list", "retrieve", "me"],
     }
 
