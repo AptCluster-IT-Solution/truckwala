@@ -76,7 +76,7 @@ class DriversListJson(StaffUserRequiredMixin, BaseDatatableView):
                 item.vehicles.first().area_of_loading_space if item.vehicles.count() else None,
                 item.due_amount,
                 item.user.date_joined.strftime("%Y-%m-%d %H:%M:%S"),
-                list(item.documents.all().values_list("image", flat=True))
+                [i.image.url for i in item.documents.all()],
             ])
         return json_data
 
