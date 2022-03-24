@@ -1,50 +1,77 @@
-{% load static %}
-{% load i18n %}
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+{% load static %} {% load i18n %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
+  <head>
     <title>TruckWala Admin</title>
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
-    <link rel="stylesheet" href="{% static 'vendors/iconly/bold.css' %}">
-    <link rel="stylesheet" href="{% static 'vendors/perfect-scrollbar/perfect-scrollbar.css' %}">
-    <link rel="stylesheet" href="{% static 'vendors/bootstrap-icons/bootstrap-icons.css' %}">
-    <link rel="stylesheet" href="{% static 'css/app.css' %}">
-    <link rel="shortcut icon" href="{% static 'images/favicon.svg' %}" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" />
+    <link rel="stylesheet" href="{% static 'vendors/iconly/bold.css' %}" />
+    <link
+      rel="stylesheet"
+      href="{% static 'vendors/perfect-scrollbar/perfect-scrollbar.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      href="{% static 'vendors/bootstrap-icons/bootstrap-icons.css' %}"
+    />
+    <link rel="stylesheet" href="{% static 'css/app.css' %}" />
+    <link
+      rel="shortcut icon"
+      href="{% static 'images/favicon.svg' %}"
+      type="image/x-icon"
+    />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.js"></script>
-    {#    <link rel="stylesheet" type="text/css"#}
-    {#          href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.1/css/bootstrap.min.css">#}
-    {#    <link rel="stylesheet" type="text/css"#}
-    {#          href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap5.min.css">#}
-    <script type="text/javascript" charset="utf8"
-            src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" charset="utf8"
-            src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap5.min.js"></script>
-
+    <script
+      type="text/javascript"
+      charset="utf8"
+      src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      charset="utf8"
+      src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap5.min.js"
+    ></script>
 
     {% block extra_head %}{% endblock %}
-</head>
-<body>
-<div id="app">
+  </head>
+  <body>
+    <div id="app">
+      <!--sidebar-->
+      {% include "admin_panel/includes/sidebar.html" %}
+      <!--sidebar-->
 
-    {#  sidebar  #}
-    {% include "admin_panel/includes/sidebar.html" %}
-    {#  sidebar  #}
+      <!--messages-->
+      {% for message in messages %}
+      <div
+        class="alert alert-{% if message.tags %}{{ message.tags }}{% else %}primary{% endif %} alert-dismissible show fade"
+      >
+        {{ message }}
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"
+        ></button>
+      </div>
+      {% endfor %}
+      <!--messages-->
 
+      {% block content %}{% endblock %}
+    </div>
 
-    {% block content %}{% endblock %}
-</div>
-
-<script src="{% static 'vendors/perfect-scrollbar/perfect-scrollbar.min.js' %}"></script>
-<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-<script src="{% static 'vendors/apexcharts/apexcharts.js' %}"></script>
-<script src="{% static 'js/mazer.js' %}"></script>
-<script src="https://unpkg.com/htmx.org@1.6.1"
-        integrity="sha384-tvG/2mnCFmGQzYC1Oh3qxQ7CkQ9kMzYjWZSNtrRZygHPDDqottzEJsqS4oUVodhW"
-        crossorigin="anonymous"></script>
-{% load django_htmx %}
-{% django_htmx_script %}
-</body>
+    <script src="{% static 'vendors/perfect-scrollbar/perfect-scrollbar.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'vendors/apexcharts/apexcharts.js' %}"></script>
+    <script src="{% static 'js/mazer.js' %}"></script>
+    <script
+      src="https://unpkg.com/htmx.org@1.6.1"
+      integrity="sha384-tvG/2mnCFmGQzYC1Oh3qxQ7CkQ9kMzYjWZSNtrRZygHPDDqottzEJsqS4oUVodhW"
+      crossorigin="anonymous"
+    ></script>
+    {% load django_htmx %} {% django_htmx_script %}
+  </body>
 </html>
