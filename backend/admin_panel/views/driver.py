@@ -46,8 +46,9 @@ def driver_payment(request):
                 ).update(
                     amount=F('amount') - amount
                 )
-    except Exception as _:
-        pass
+    except Exception as e:
+        print(e)
+        # pass
     return redirect('drivers_page')
 
 
