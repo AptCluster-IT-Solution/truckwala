@@ -99,13 +99,13 @@ class Driver(models.Model):
     @property
     def paid_amount(self):
         return apps.get_model("bookings", "Transaction").objects.filter(
-            driver_id=self.pk, booking__isnull=True, completed=True,
+            driver_id=self.pk, booking__isnull=True, is_completed=True,
         ).aggregate(paid_amount=Coalesce(Sum('amount'), Value(0)))["paid_amount"]
 
     @property
     def earned_amount(self):
         return apps.get_model("bookings", "Transaction").objects.filter(
-            driver_id=self.pk, booking__isnull=False
+            driver_id=self.pk, booking__isnull=False, is_completed=True,
         ).aggregate(
             earned_amount=Coalesce(Sum('amount'), Value(0))
         )["earned_amount"] - self.paid_amount
@@ -113,22 +113,30 @@ class Driver(models.Model):
     @property
     def due_amount(self):
         # ads by customer commission + ads by driver commission - total paid till now
-        return \
-            apps.get_model("bookings", "Booking").objects.filter(
-                customer_bid__bidder__id=self.id
-            ).aggregate(
-                commission=Coalesce(
-                    Sum(F('customer_bid__vehicle__category__commission') * F('customer_bid__cost') / 100),
-                    Value(0))
-            )['commission'] + \
-            apps.get_model("bookings", "Booking").objects.filter(
-                driver_bid__ad__poster__id=self.id
-            ).aggregate(
-                commission=Coalesce(
-                    Sum(F('driver_bid__ad__vehicle__category__commission') * F('driver_bid__ad__cost') / 100),
-                    Value(0))
-            )['commission'] - \
-            self.paid_amount
+        # return \
+        #     apps.get_model("bookings", "Booking").objects.filter(
+        #         customer_bid__bidder__id=self.id
+        #     ).aggregate(
+        #         commission=Coalesce(
+        #             Sum(F('customer_bid__vehicle__category__commission') * F('customer_bid__cost') / 100),
+        #             Value(0))
+        #     )['commission'] + \
+        #     apps.get_model("bookings", "Booking").objects.filter(
+        #         driver_bid__ad__poster__id=self.id
+        #     ).aggregate(
+        #         commission=Coalesce(
+        #             Sum(F('driver_bid__ad__vehicle__category__commission') * F('driver_bid__ad__cost') / 100),
+        #             Value(0))
+        #     )['commission'] - \
+        #     self.paid_amount
+        return apps.get_model("bookings", "Transaction").objects.get_or_create(
+                booking_id=None,
+                driver_id=self.id,
+                is_completed=False,
+                defaults={
+                    "amount": 0
+                }
+            )[0]
 
     @property
     def bookings(self):
