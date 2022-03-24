@@ -36,7 +36,7 @@ def driver_payment(request):
     try:
         with transaction.atomic():
             driver_id = request.POST.get('driver_id')
-            amount = request.POST.get('amount')
+            amount = float(request.POST.get('amount'))
             if 0 < amount < Driver.objects.get(id=driver_id).due_amount:
                 Transaction.objects.create(driver_id=driver_id, amount=amount, is_completed=True)
                 Transaction.objects.filter(
