@@ -136,7 +136,7 @@ class Driver(models.Model):
                 defaults={
                     "amount": 0
                 }
-            )[0]
+            )[0].amount
 
     @property
     def bookings(self):
