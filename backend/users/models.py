@@ -99,7 +99,7 @@ class Driver(models.Model):
     @property
     def paid_amount(self):
         return apps.get_model("bookings", "Transaction").objects.filter(
-            driver_id=self.pk, booking__isnull=True
+            driver_id=self.pk, booking__isnull=True, completed=True,
         ).aggregate(paid_amount=Coalesce(Sum('amount'), Value(0)))["paid_amount"]
 
     @property
