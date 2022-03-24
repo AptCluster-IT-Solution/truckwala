@@ -57,7 +57,7 @@ class VehiclesPage(StaffUserRequiredMixin, TemplateView):
 
 class VehiclesListJson(StaffUserRequiredMixin, BaseDatatableView):
     model = Vehicle
-    columns = ['id', 'driver', 'registration_number', 'capacity', 'category']
+    columns = ['id', 'driver', 'registration_number', 'area_of_loading_space', 'category']
 
     def filter_queryset(self, qs):
         search = self.request.GET.get('search[value]', None)
@@ -72,7 +72,7 @@ class VehiclesListJson(StaffUserRequiredMixin, BaseDatatableView):
                 escape(item.id),
                 escape(item.driver.user.full_name),
                 escape(item.registration_number),
-                escape(item.capacity),
+                escape(item.area_of_loading_space),
                 escape(item.category.title),
             ])
         return json_data
