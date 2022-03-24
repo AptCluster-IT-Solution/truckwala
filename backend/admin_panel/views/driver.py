@@ -1,11 +1,11 @@
+from django.contrib import messages
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Q, F
 from django.shortcuts import redirect
 from django.utils.html import escape
 from django.views.generic import DetailView
 from django.views.generic import TemplateView
 from django_datatables_view.base_datatable_view import BaseDatatableView
-from django.db.models import F
 
 from bookings.models import Transaction
 from main.custom.permissions import StaffUserRequiredMixin
@@ -46,8 +46,10 @@ def driver_payment(request):
                 ).update(
                     amount=F('amount') - amount
                 )
+                messages.success(request, f'Driver payment of {amount} successfully added.')
+
     except Exception as e:
-        print(e)
+        messages.error(request, f'Driver payment failed.')
         # pass
     return redirect('drivers_page')
 
