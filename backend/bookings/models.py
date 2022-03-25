@@ -334,7 +334,7 @@ class Booking(models.Model):
                 driver_id=self.driver.pk,
                 is_completed=False,
             ).update(
-                amount=F('amount') + (self.vehicle.category.commission * self.cost)
+                amount=F('amount') + (self.vehicle.category.commission * self.cost / 100)
             )
             Notification.objects.create(
                 notification_type=Notification.BOOKING,
