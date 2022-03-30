@@ -18,6 +18,7 @@ class CustomerAdSerializer(serializers.ModelSerializer):
         class Meta:
             model = CustomerAdBid
             fields = "__all__"
+            ref_name = "CustomerAdBidSerializer"
 
     poster = UserSerializer(source="poster.user", required=False)
     acceptor = UserSerializer(source="acceptor.user", required=False)
@@ -63,6 +64,7 @@ class CustomerAdBidSerializer(serializers.ModelSerializer):
         class Meta:
             model = CustomerAd
             fields = "__all__"
+            ref_name = "CustomerAdSerializer"
 
     ad = AdSerializer(read_only=True)
     ad_id = serializers.CharField(write_only=True, required=False)

@@ -17,6 +17,7 @@ class VehicleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vehicle
         fields = "__all__"
+        ref_name = "VehicleSerializer"
 
     def create(self, validated_data):
         with transaction.atomic():
