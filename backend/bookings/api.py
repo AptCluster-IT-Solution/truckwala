@@ -1,5 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Q, Sum
+from django.db.models import Q, Sum, F
 from django.db.models.functions import Coalesce
 from django.utils import timezone
 from rest_framework import viewsets
@@ -321,15 +321,21 @@ class BookingModelViewSet(viewsets.ReadOnlyModelViewSet):
             booking_id=booking.pk, is_completed=True
         ).aggregate(paid_amount=Coalesce(Sum("amount"), 0))['paid_amount']
         pending_amount = booking.cost - paid_amount
+        if not pending_amount:
+            return Response({"msg": "no pending amount left for the booking"})
         amount = int(request.data.get('amount', 0))
-        if pending_amount and amount and amount <= pending_amount:
-            Transaction.objects.create(
-                booking_id=booking.pk,
-                is_completed=True,
-                driver=booking.driver,
-                amount=amount,
-            )
+        if not amount or amount > pending_amount:
+            return Response({"msg": f"invalid amount {amount}"})
 
+        Transaction.objects.create(
+            booking_id=booking.pk,
+            is_completed=True,
+            driver=booking.driver,
+            amount=amount,
+        )
+        Transaction.objects.filter(
+            booking_id=booking.pk, is_completed=False,
+        ).update(amount=F('amount') - amount)
         return Response({"msg": f"{amount} paid to {booking.driver}"})
 
     @action(detail=True, methods=['GET'], permission_classes=[IsPosterOrReadOnly])
