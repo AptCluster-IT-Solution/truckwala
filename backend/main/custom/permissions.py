@@ -1,3 +1,4 @@
+from django.apps import apps
 from django.contrib.auth.mixins import LoginRequiredMixin
 from rest_framework import permissions
 from rest_framework.permissions import AllowAny
@@ -95,4 +96,20 @@ class IsPosterOrReadOnly(permissions.BasePermission):
             return obj.status in [Booking.ACCEPTED, Booking.DISPATCHED] and obj.driver.user == request.user
         elif hasattr(obj, 'ad') and hasattr(obj.ad, "poster"):
             return obj.ad.poster.user == request.user
+        return False
+
+
+class IsBookingCustomer(permissions.BasePermission):
+    """
+    Allows access only to customer.
+    """
+
+    def has_object_permission(self, request, view, obj):
+        # Read permissions are allowed to any request,
+        # so we'll always allow GET, HEAD or OPTIONS requests.
+        if request.method in permissions.SAFE_METHODS:
+            return True
+
+        if isinstance(obj, apps.get_model("bookings", "Booking")):
+            return obj.customer.user == request.user
         return False
