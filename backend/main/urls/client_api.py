@@ -26,11 +26,15 @@ from knox import views as knox_views
 
 router = DefaultRouter()
 urlpatterns = []
-
+admin_urlpatterns = [
+    path("login/", LoginAPI.as_view(), name="login"),
+]
 # -------------- auth app view sets --------------
 urlpatterns += [
+    path("", include((admin_urlpatterns, "admin"), namespace="admin"))
+]
+urlpatterns += [
     path("register/", RegisterAPI.as_view()),
-    path("login/", LoginAPI.as_view()),
     path("user/", UserViewset.as_view({"get": "retrieve"})),
     path("logout/", knox_views.LogoutView.as_view(), name="knox_logout"),
 ]
