@@ -1,4 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import transaction
 from django.db.models import Q, Sum, F
 from django.db.models.functions import Coalesce
 from django.utils import timezone
@@ -21,7 +22,7 @@ from main.custom.permissions import (
     IsDriver, IsBookingCustomer,
 )
 from main.custom.utils import render_to_pdf
-from vehicles.models import VehicleCategory
+from vehicles.models import VehicleCategory, Driver
 
 
 class CustomerAdModelViewSet(viewsets.ModelViewSet):
@@ -361,3 +362,24 @@ class TransactionModelViewSet(ModelViewSet):
         if self.request.user.is_authenticated:
             return Transaction.objects.filter(driver__user=self.request.user)
         return Transaction.objects.none()
+
+    @action(detail=True, methods=['POST'], url_path="pay-commission", permission_classes=[IsVerifiedDriver])
+    def pay_commission(self, request):
+        try:
+            with transaction.atomic():
+                driver_id = request.user.driver_profile.id
+                amount = float(request.POST.get('amount'))
+                if 0 < amount <= Driver.objects.get(id=driver_id).due_amount:
+                    Transaction.objects.create(driver_id=driver_id, amount=amount, is_completed=True)
+                    Transaction.objects.filter(
+                        booking_id=None,
+                        driver_id=driver_id,
+                        is_completed=False,
+                    ).update(
+                        amount=F('amount') - amount
+                    )
+                    return Response({"msg": f"{amount} of commission paid."})
+                raise ValidationError({"msg": "amount should be more than 0 and less or equals to due amount."})
+
+        except Exception as e:
+            return ValidationError({"msg": e})
