@@ -57,15 +57,10 @@ class IsVerifiedDriver(permissions.BasePermission):
     """
 
     def has_permission(self, request, view):
-        is_permitted = False
-        if request.user and request.user.is_authenticated:
-            if request.user.is_superuser:
-                is_permitted = True
-            elif hasattr(request.user, "driver_profile"):
-                if request.user.driver_profile.is_verified:
-                    is_permitted = True
-
-        return is_permitted
+        return request.user \
+               and request.user.is_authenticated \
+               and hasattr(request.user, "driver_profile") \
+               and request.user.driver_profile.is_verified
 
 
 class IsDriver(permissions.BasePermission):
