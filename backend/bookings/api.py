@@ -354,7 +354,7 @@ class TransactionModelViewSet(ModelViewSet):
     serializer_class = TransactionSerializer
     permission_classes = [ActionBasedPermission]
     action_permissions = {
-        IsVerifiedDriver: ["list", "retrieve"],
+        IsVerifiedDriver: ["list", "retrieve", "pay_commission", ],
         IsAdminUser: ["accept", "reject", "update", "partial_update", "destroy", "list", "retrieve", "me"],
     }
 
@@ -363,7 +363,7 @@ class TransactionModelViewSet(ModelViewSet):
             return Transaction.objects.filter(driver__user=self.request.user)
         return Transaction.objects.none()
 
-    @action(detail=True, methods=['POST'], url_path="pay-commission", permission_classes=[IsVerifiedDriver])
+    @action(detail=True, methods=['POST'], url_path="pay-commission")
     def pay_commission(self, request):
         try:
             with transaction.atomic():
