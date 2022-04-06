@@ -382,4 +382,4 @@ class TransactionModelViewSet(ModelViewSet):
                 raise ValidationError({"msg": "amount should be more than 0 and less or equals to due amount."})
 
         except Exception as e:
-            return ValidationError({"msg": e})
+            raise ValidationError({"msg": e})
