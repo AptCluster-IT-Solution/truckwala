@@ -363,7 +363,7 @@ class TransactionModelViewSet(ModelViewSet):
             return Transaction.objects.filter(driver__user=self.request.user)
         return Transaction.objects.none()
 
-    @action(detail=True, methods=['POST'], url_path="pay-commission")
+    @action(detail=False, methods=['POST'], url_path="pay-commission")
     def pay_commission(self, request):
         try:
             with transaction.atomic():
