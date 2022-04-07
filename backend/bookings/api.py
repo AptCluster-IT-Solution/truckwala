@@ -368,7 +368,9 @@ class TransactionModelViewSet(ModelViewSet):
         try:
             with transaction.atomic():
                 driver_id = request.user.driver_profile.id
-                amount = float(request.POST.get('amount', 0))
+                amount = int(request.data.get('amount'))
+                if not amount:
+                    raise ValidationError({"msg": "amount required."})
                 if 0 < amount <= Driver.objects.get(id=driver_id).due_amount:
                     Transaction.objects.create(driver_id=driver_id, amount=amount, is_completed=True)
                     Transaction.objects.filter(
