@@ -360,7 +360,7 @@ class TransactionModelViewSet(ModelViewSet):
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
-            return Transaction.objects.filter(driver__user=self.request.user)
+            return Transaction.objects.filter(driver__user=self.request.user, is_completed=True)
         return Transaction.objects.none()
 
     @action(detail=False, methods=['POST'], url_path="pay-commission")
