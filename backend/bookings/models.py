@@ -235,6 +235,9 @@ class Booking(models.Model):
     invoice_image = models.ImageField(upload_to=get_invoice_image_path, blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ["-created"]
+
     @property
     def status_verbose(self):
         return dict(Booking.STATUS_TYPES)[self.status]
