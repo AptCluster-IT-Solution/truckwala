@@ -114,7 +114,7 @@ class DriverToAdminTransactionsListJson(CustomerToDriverTransactionsListJson):
     columns = ['id', 'driver', 'amount', 'is_completed', 'created']
 
     def get_initial_queryset(self):
-        return Transaction.objects.filter(booking__isnull=True)
+        return Transaction.objects.filter(booking__isnull=True, is_completed=True)
 
     def prepare_results(self, qs):
         json_data = []
