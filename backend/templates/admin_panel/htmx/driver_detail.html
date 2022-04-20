@@ -58,41 +58,21 @@
                     </table>
                 </div>
 
-                <button onClick="toggleDocumentView()" class="btn btn-primary">View Documents</button>
-                <div id="documentsCarousel{{ driver.id }}" class="carousel slide"
-                     data-ride="carousel" style="display:none">
-                    <div class="carousel-indicators">
-                        {% for doc in driver.documents.all %}
-                            <button
-                                    type="button"
-                                    data-bs-target="#documentsCarousel{{ driver.id }}"
-                                    data-bs-slide-to="{{ forloop.counter0 }}"
-                                    {% if not forloop.counter0 %}
-                                    class="active"
-                                    aria-current="true"
-                                    {% endif %}
-                                    aria-label="Slide {{ forloop.counter0 }}"
-                            ></button>
-                        {% endfor %}
-
-                    </div>
-                    <div class="carousel-inner">
-                        {% for doc in driver.documents.all %}
-                            <div class="carousel-item{% if not forloop.counter0 %} active{% endif %}">
-                                <img src="{{ doc.image.url }}" class="d-block w-100" alt="...">
+                <div class="row">
+                    {% with documents=driver.documents.all %}
+                        {% if documents %}
+                            <h5>Documents</h5>
+                        {% endif %}
+                        {% for doc in documents %}
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <img src="{{ doc.image.url }}" class="d-block w-100" alt="...">
+                                    </div>
+                                </div>
                             </div>
                         {% endfor %}
-                    </div>
-                    <a href="#documentsCarousel{{ driver.id }}" class="carousel-control-prev" role="button"
-                       data-bs-target="#documentsCarousel{{ driver.id }}" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </a>
-                    <a href="#documentsCarousel{{ driver.id }}" class="carousel-control-next" role="button"
-                       data-bs-target="#documentsCarousel{{ driver.id }}" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </a>
+                    {% endwith %}
                 </div>
             </div>
         </div>
