@@ -213,7 +213,7 @@ class DriverViewset(ContextModelViewSet):
 
     @action(detail=False)
     def transactions(self, request, *args, **kwargs):
-        qs = apps.get_model("bookings", "Transaction").objects.filter(driver__user=self.request.user)
+        qs = apps.get_model("bookings", "Transaction").objects.filter(driver__user=self.request.user, is_completed=True)
         serializer = TransactionSerializer(qs, many=True)
         return Response({
             "paid_amount": self.request.user.driver_profile.paid_amount,
